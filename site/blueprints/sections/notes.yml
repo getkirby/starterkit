@@ -1,0 +1,7 @@
+type: pages
+headline: Notes
+parent: site.find("notes")
+info: "{{ page.date.toDate('d.m.Y') }}"
+template: note
+empty: No notes yet
+sortBy: date desc

@@ -1,0 +1,27 @@
+{
+    "name": "getkirby/starterkit",
+    "description": "Kirby Starterkit",
+    "type": "project",
+    "keywords": ["kirby", "cms", "starterkit"],
+    "homepage": "https://getkirby.com",
+    "authors": [
+        {
+            "name": "Bastian Allgeier",
+            "email": "bastian@getkirby.com",
+            "homepage": "https://getkirby.com"
+        }
+    ],
+    "support": {
+        "email": "support@getkirby.com",
+        "issues": "https://github.com/getkirby/starterkit/issues",
+        "forum": "https://forum.getkirby.com",
+        "source": "https://github.com/getkirby/starterkit"
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "getkirby/cms": "^3.0"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

@@ -1,0 +1,12 @@
+title: Photos
+
+sections:
+  drafts:
+    extends: sections/albums
+    headline: Drafts
+    status: draft
+
+  listed:
+    extends: sections/albums
+    headline: Published Albums
+    status: listed

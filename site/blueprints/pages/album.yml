@@ -1,0 +1,32 @@
+title: Album
+
+icon: 🖼
+
+status:
+  draft: true
+  listed: true
+
+columns:
+  - width: 2/3
+    sections:
+      images:
+        type: files
+        layout: cards
+        template: image
+        info: "{{ file.dimensions }}"
+        image:
+          ratio: 5/4
+          cover: true
+        min: 1
+        size: small
+
+  - width: 1/3
+    fields:
+      cover:
+        type: files
+        multiple: false
+      headline:
+        type: text
+      description:
+        type: textarea
+      tags: true

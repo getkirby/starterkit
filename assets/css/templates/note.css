@@ -1,0 +1,33 @@
+.note {
+  max-width: 35rem;
+  margin: 0 auto;
+}
+.note-header {
+  text-align: center;
+}
+.note-date {
+  margin-bottom: .5rem;
+  display: block;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 3rem 0;
+}
+.gallery figure a {
+  border: 0;
+}
+.gallery figure {
+  margin: 0;
+  padding: 0;
+}
+
+@media screen and (min-width: 45rem) {
+  .gallery {
+    margin-left: -3rem;
+    margin-right: -3rem;
+  }
+}

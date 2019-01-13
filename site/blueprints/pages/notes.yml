@@ -1,0 +1,21 @@
+title: Photos
+
+columns:
+  - width: 1/2
+    sections:
+      drafts:
+        extends: sections/notes
+        headline: Drafts
+        status: draft
+
+      unlisted:
+        extends: sections/notes
+        headline: In Review
+        status: unlisted
+
+  - width: 1/2
+    sections:
+      listed:
+        extends: sections/notes
+        headline: Published
+        status: listed

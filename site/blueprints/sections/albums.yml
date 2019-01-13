@@ -1,0 +1,12 @@
+type: pages
+headline: Photography
+parent: site.find("photography")
+size: tiny
+info: "{{ page.images.count }} image(s)"
+layout: cards
+template: album
+empty: No albums yet
+image:
+  query: page.cover
+  cover: true
+  ratio: 5/4

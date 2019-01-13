@@ -1,0 +1,19 @@
+title: Home
+
+icon: 🏠
+
+options:
+  status: false
+
+sections:
+  info:
+    headline: Info
+    type: info
+    text: All content for the homepage is being pulled from the photography page.
+
+  photography:
+    headline: Photography
+    extends: sections/albums
+    status: listed
+
+

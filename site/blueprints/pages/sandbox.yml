@@ -1,0 +1,21 @@
+title: Sandbox
+preset: page
+
+
+num: zero
+
+pages:
+  template: sandbox
+
+fields:
+  headline:
+    type: text
+  test:
+    type: structure
+    translate: false
+    fields:
+      itemimage:
+        label: Image
+        type: files
+        max: 1
+        parent: site.find('photography').children.first
