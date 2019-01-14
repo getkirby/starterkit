@@ -91,11 +91,11 @@ trait HasChildren
     }
 
     /**
-     * Return all drafts for the site
+     * Return all drafts of the model
      *
      * @return Pages
      */
-    public function drafts(): Pages
+    public function drafts()
     {
         if (is_a($this->drafts, 'Kirby\Cms\Pages') === true) {
             return $this->drafts;
