@@ -23,9 +23,6 @@ Kirby's Starterkit comes with a small demo website and a fully
 configured panel. Feel free to modify it and play with it as
 much as you like.
 
-There's also the [Langkit](https://github.com/getkirby/langkit.git)
-in case you need a multi-language installation.
-
 ## The Panel
 
 You can find the login for Kirby's admin interface at
