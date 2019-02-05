@@ -24,6 +24,8 @@ use Throwable;
  */
 class Page extends ModelWithContent
 {
+    const CLASS_ALIAS = 'page';
+
     use PageActions;
     use PageSiblings;
     use HasChildren;
@@ -179,6 +181,10 @@ class Page extends ModelWithContent
      */
     public function __construct(array $props)
     {
+        // set the slug as the first property
+        $this->slug = $props['slug'] ?? null;
+
+        // add all other properties
         $this->setProperties($props);
     }
 
@@ -592,7 +598,11 @@ class Page extends ModelWithContent
      */
     public function isChildOf($parent): bool
     {
-        return $this->parent()->is($parent);
+        if ($parent = $this->parent()) {
+            return $parent->is($parent);
+        }
+
+        return false;
     }
 
     /**
@@ -1478,7 +1488,11 @@ class Page extends ModelWithContent
         }
 
         if ($parent = $this->parent()) {
-            return $this->url = $this->parent()->url() . '/' . $this->uid();
+            if ($parent->isHomePage() === true) {
+                return $this->url = $this->kirby()->url('base') . '/' . $parent->uid() . '/' . $this->uid();
+            } else {
+                return $this->url = $this->parent()->url() . '/' . $this->uid();
+            }
         }
 
         return $this->url = $this->kirby()->url('base') . '/' . $this->uid();
@@ -1502,7 +1516,11 @@ class Page extends ModelWithContent
         }
 
         if ($parent = $this->parent()) {
-            return $this->url = $this->parent()->urlForLanguage($language) . '/' . $this->slug($language);
+            if ($parent->isHomePage() === true) {
+                return $this->url = $this->site()->urlForLanguage($language) . '/' . $parent->slug($language) . '/' . $this->slug($language);
+            } else {
+                return $this->url = $this->parent()->urlForLanguage($language) . '/' . $this->slug($language);
+            }
         }
 
         return $this->url = $this->site()->urlForLanguage($language) . '/' . $this->slug($language);

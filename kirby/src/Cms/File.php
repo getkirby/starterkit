@@ -25,6 +25,8 @@ use Throwable;
  */
 class File extends ModelWithContent
 {
+    const CLASS_ALIAS = 'file';
+
     use FileActions;
     use FileFoundation;
     use HasMethods;

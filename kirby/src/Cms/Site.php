@@ -20,6 +20,8 @@ use Kirby\Toolkit\Str;
  */
 class Site extends ModelWithContent
 {
+    const CLASS_ALIAS = 'site';
+
     use SiteActions;
     use HasChildren;
     use HasFiles;
