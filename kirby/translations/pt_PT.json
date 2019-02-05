@@ -27,26 +27,26 @@
   "edit": "Editar",
 
   "email": "Email",
-  "email.placeholder": "mail@exemplo.com",
+  "email.placeholder": "mail@exemplo.pt",
 
   "error.access.login": "Login inválido",
-  "error.access.panel": "Você não tem permissão para acessar o painel",
+  "error.access.panel": "Não tem permissões para aceder ao painel",
 
-  "error.avatar.create.fail": "A foto de perfil não pôde ser enviada",
-  "error.avatar.delete.fail": "A foto do perfil não pôde ser deletada",
+  "error.avatar.create.fail": "A foto de perfil não foi enviada",
+  "error.avatar.delete.fail": "A foto do perfil não foi deletada",
   "error.avatar.dimensions.invalid":
     "Por favor, use uma foto de perfil com largura e altura menores que 3000 pixels",
   "error.avatar.mime.forbidden":
     "A foto de perfil deve ser um arquivo JPEG ou PNG",
 
-  "error.blueprint.notFound": "O blueprint \"{name}\" não pôde ser carregado",
+  "error.blueprint.notFound": "O blueprint \"{name}\" não pode ser carregado",
 
   "error.email.preset.notFound": "Preset de email \"{name}\" não encontrado",
 
   "error.field.converter.invalid": "Conversor \"{converter}\" inválido",
 
   "error.file.changeName.permission":
-    "Você não tem permissão para alterar o nome de \"{filename}\"",
+    "Não tem permissões para alterar o nome de \"{filename}\"",
   "error.file.duplicate": "Um arquivo com o nome \"{filename}\" já existe",
   "error.file.extension.forbidden":
     "Extensão \"{extension}\" não permitida",
@@ -59,16 +59,16 @@
     "Tipo de mídia de \"{filename}\" não detectado",
   "error.file.name.missing": "O nome do arquivo não pode ficar em branco",
   "error.file.notFound": "Arquivo \"{filename}\" não encontrado",
-  "error.file.type.forbidden": "Você não tem permissão para enviar arquivos {type}",
+  "error.file.type.forbidden": "Não tem permissões para enviar arquivos {type}",
   "error.file.undefined": "Arquivo n\u00e3o encontrado",
 
   "error.form.incomplete": "Por favor, corrija os erros do formulário…",
-  "error.form.notSaved": "O formulário não pôde ser salvo",
+  "error.form.notSaved": "O formulário não foi guardado",
 
   "error.page.changeSlug.permission":
-    "Você não tem permissão para alterar a URL de \"{slug}\"",
+    "Não tem permissões para alterar a URL de \"{slug}\"",
   "error.page.changeStatus.incomplete":
-    "A página possui erros e não pode ser salva",
+    "A página possui erros e não pode ser guardada",
   "error.page.changeStatus.permission":
     "O estado desta página não pode ser alterado",
   "error.page.changeStatus.toDraft.invalid":
@@ -76,16 +76,16 @@
   "error.page.changeTemplate.invalid":
     "O tema da página \"{slug}\" não pode ser alterado",
   "error.page.changeTemplate.permission":
-    "Você não tem permissão para alterar o tema de \"{slug}\"",
+    "Não tem permissões para alterar o tema de \"{slug}\"",
   "error.page.changeTitle.empty": "O título não pode ficar em branco",
   "error.page.changeTitle.permission":
-    "Você não tem permissão para alterar o título de \"{slug}\"",
-  "error.page.create.permission": "Você não tem permissão para criar \"{slug}\"",
+    "Não tem permissões para alterar o título de \"{slug}\"",
+  "error.page.create.permission": "Não tem permissões para criar \"{slug}\"",
   "error.page.delete": "A página \"{slug}\" não pode ser excluída",
   "error.page.delete.confirm": "Por favor, digite o título da página para confirmar",
   "error.page.delete.hasChildren":
     "A página possui subpáginas e não pode ser excluída",
-  "error.page.delete.permission": "Você não tem permissão para excluir \"{slug}\"",
+  "error.page.delete.permission": "Não tem permissões para excluir \"{slug}\"",
   "error.page.draft.duplicate":
     "Um rascunho de página com a URL \"{slug}\" já existe",
   "error.page.duplicate":
@@ -97,21 +97,21 @@
   "error.page.sort.permission": "A página \"{slug}\" não pode ser ordenada",
   "error.page.status.invalid": "Por favor, defina um estado de página válido",
   "error.page.undefined": "P\u00e1gina n\u00e3o encontrada",
-  "error.page.update.permission": "Você não tem permissão para atualizar \"{slug}\"",
+  "error.page.update.permission": "Não tem permissões para atualizar \"{slug}\"",
 
   "error.section.files.max.plural":
-    "Você não pode adicionar mais do que {max} arquivos à seção \"{section}\"",
+    "Não pode adicionar mais do que {max} arquivos à seção \"{section}\"",
   "error.section.files.max.singular":
-    "Você não pode adicionar mais do que um arquivo à seção \"{section}\"",
+    "Não pode adicionar mais do que um arquivo à seção \"{section}\"",
   "error.section.files.min.plural":
     "Adicione pelo menos {min} arquivos à seção \"{section}\"",
   "error.section.files.min.singular":
     "Adicione pelo menos um arquivo à seção \"{section}\"",
 
   "error.section.pages.max.plural":
-    "Você não pode adicionar mais do que {max} página à seção \"{section}\"",
+    "Não pode adicionar mais do que {max} página à seção \"{section}\"",
   "error.section.pages.max.singular":
-    "Você não pode adicionar mais do que uma página à seção \"{section}\"",
+    "Não pode adicionar mais do que uma página à seção \"{section}\"",
   "error.section.pages.min.plural":
     "Adicione pelo menos {min} páginas à seção \"{section}\"",
   "error.section.pages.min.singular":
@@ -121,42 +121,42 @@
   "error.section.type.invalid": "O tipo da seção \"{type}\" não é válido",
 
   "error.site.changeTitle.permission":
-    "Você não tem permissão para alterar o título do site",
-  "error.site.update.permission": "Você não tem permissão para atualizar o site",
+    "Não tem permissões para alterar o título do site",
+  "error.site.update.permission": "Não tem permissões para atualizar o site",
 
   "error.template.default.notFound": "O tema padrão não existe",
 
   "error.user.changeEmail.permission":
-    "Você não tem permissão para alterar o email do usuário \"{name}\"",
+    "Não tem permissões para alterar o email do utilizador \"{name}\"",
   "error.user.changeLanguage.permission":
-    "Você não tem permissão para alterar o idioma do usuário \"{name}\"",
+    "Não tem permissões para alterar o idioma do utilizador \"{name}\"",
   "error.user.changeName.permission":
-    "Você não tem permissão para alterar o nome do usuário \"{name}\"",
+    "Não tem permissões para alterar o nome do utilizador \"{name}\"",
   "error.user.changePassword.permission":
-    "Você não tem permissão para alterar a senha do usuário \"{name}\"",
+    "Não tem permissões para alterar a palavra-passe do utilizador \"{name}\"",
   "error.user.changeRole.lastAdmin":
-    "O papel do último administrador não pode ser alterado",
+    "A função do último administrador não pode ser alterado",
   "error.user.changeRole.permission":
-    "Você não tem permissão para alterar o papel do usuário \"{name}\"",
-  "error.user.create.permission": "Você não tem permissão para criar este usuário",
-  "error.user.delete": "O usuário \"{name}\" não pode ser excluído",
+    "Não tem permissões para alterar a função do utilizador \"{name}\"",
+  "error.user.create.permission": "Não tem permissões para criar este utilizador",
+  "error.user.delete": "O utilizador \"{name}\" não pode ser excluído",
   "error.user.delete.lastAdmin": "O último administrador não pode ser excluído",
-  "error.user.delete.lastUser": "O último usuário não pode ser excluído",
+  "error.user.delete.lastUser": "O último utilizador não pode ser excluído",
   "error.user.delete.permission":
-    "Você não tem permissão para excluir o usuário \"{name}\"",
+    "Não tem permissões para excluir o utilizador \"{name}\"",
   "error.user.duplicate":
-    "Um usuário com o email \"{email}\" já existe",
+    "Um utilizador com o email \"{email}\" já existe",
   "error.user.email.invalid": "Digite um endereço de email válido",
   "error.user.language.invalid": "Digite um idioma válido",
-  "error.user.notFound": "Usuário \"{name}\" não encontrado",
+  "error.user.notFound": "Utilizador \"{name}\" não encontrado",
   "error.user.password.invalid":
-    "Digite uma senha válida. Sua senha deve ter pelo menos 8 caracteres.",
-  "error.user.password.notSame": "As senhas não combinam",
-  "error.user.password.undefined": "O usuário não possui uma senha",
-  "error.user.role.invalid": "Digite um papel válido",
+    "Digite uma palavra-passe válida. A sua palavra-passe deve ter pelo menos 8 caracteres.",
+  "error.user.password.notSame": "As palavras-passe não combinam",
+  "error.user.password.undefined": "O utilizador não possui uma palavra-passe",
+  "error.user.role.invalid": "Digite uma função válida",
   "error.user.undefined": "Usu\u00e1rio n\u00e3o encontrado",
   "error.user.update.permission":
-    "Você não tem permissão para atualizar o usuário \"{name}\"",
+    "Não tem permissões para atualizar o utilizador \"{name}\"",
 
   "error.validation.accepted": "Por favor, confirme",
   "error.validation.alpha": "Por favor, use apenas caracteres entre a-z",
@@ -204,7 +204,7 @@
   "field.pages.empty": "Nenhuma página selecionada",
   "field.structure.delete.confirm": "Deseja realmente excluir este registro?",
   "field.structure.empty": "Nenhum registro",
-  "field.users.empty": "Nenhum usuário selecionado",
+  "field.users.empty": "Nenhum utilizador selecionado",
 
   "file.delete.confirm":
     "Deseja realmente excluir <br> <strong>{filename}</strong>?",
@@ -218,7 +218,7 @@
 
   "installation": "Instalação",
   "installation.completed": "Painel instalado com sucesso",
-  "installation.disabled": "O instalador do painel está desabilitado em servidores públicos por padrão. Por favor, execute o instalador em uma máquina local ou habilite a opção <code>panel.install</code>.",
+  "installation.disabled": "Por padrão, o instalador do painel está desabilitado em servidores públicos. Por favor, execute o instalador numa máquina local ou habilite a opção <code>panel.install</code>.",
   "installation.issues.accounts":
     "A pasta <code>/site/accounts</code> não existe ou não possui permissão de escrita",
   "installation.issues.content":
@@ -229,9 +229,9 @@
     "A extensão <code>MB String</code> é necessária",
   "installation.issues.media":
     "A pasta <code>/media</code> não existe ou não possui permissão de escrita",
-  "installation.issues.php": "Certifique-se que você está usando o <code>PHP 7+</code>",
+  "installation.issues.php": "Certifique-se que está a usar o <code>PHP 7+</code>",
   "installation.issues.server":
-    "Kirby necessita do <code>Apache</code>, <code>Nginx</code> ou <code>Caddy</code>",
+    "O Kirby necessita do <code>Apache</code>, <code>Nginx</code> ou <code>Caddy</code>",
   "installation.issues.sessions": "A pasta <code>/site/sessions</code> não existe ou não possui permissão de escrita",
 
   "language": "Idioma",
@@ -241,7 +241,7 @@
     "<p>Deseja realmente converter <strong>{name}</strong> para o idioma padrão? Esta ação não poderá ser revertida.</p><p>Se <strong>{name}</strong> tiver conteúdo não traduzido, partes do seu site poderão ficar sem conteúdo.</p>",
   "language.create": "Adicionar novo idioma",
   "language.delete.confirm":
-    "Deseja realmente excluir o idioma <strong>{name}</strong> incluíndo todas as traduções. Esta ação não poderá ser revertida!",
+    "Deseja realmente excluir o idioma <strong>{name}</strong> incluíndo todas as traduções? Esta ação não poderá ser revertida!",
   "language.deleted": "Idioma excluído",
   "language.direction": "Direção de leitura",
   "language.direction.ltr": "Esquerda para direita",
@@ -257,10 +257,10 @@
   "languages.secondary.empty": "Nenhum idioma secundário",
 
   "license": "Licen\u00e7a do Kirby ",
-  "license.buy": "Comprar licença",
+  "license.buy": "Comprar uma licença",
   "license.register": "Registrar",
   "license.register.help":
-    "Você recebeu o código da sua licença por email após a compra. Por favor, copie e cole-a para completar o registro.",
+    "Recebeu o código da sua licença por email após a compra. Por favor, copie e cole-o para completar o registro.",
   "license.register.label": "Por favor, digite o código da sua licença",
   "license.register.success": "Obrigado por apoiar o Kirby",
   "license.unregistered": "Esta é uma demonstração não registrada do Kirby",
@@ -268,7 +268,7 @@
   "link": "Link",
   "link.text": "Texto do link",
 
-  "loading": "Carregando",
+  "loading": "A carregar",
 
   "login": "Entrar",
   "login.remember": "Manter-me conectado",
@@ -320,9 +320,9 @@
   "page.status": "Estado",
   "page.status.draft": "Rascunho",
   "page.status.draft.description":
-    "A página em modo de rascunho é visível somente para editores",
+    "A página está em modo de rascunho e é visível somente para editores",
   "page.status.listed": "Pública",
-  "page.status.listed.description": "A página pública é visível para todos",
+  "page.status.listed.description": "A página é pública para todos",
   "page.status.unlisted": "Não listadas",
   "page.status.unlisted.description": "Esta página é acessível somente através da URL",
 
@@ -332,7 +332,7 @@
   "pages.status.listed": "Publicadas",
   "pages.status.unlisted": "Não listadas",
 
-  "password": "Senha",
+  "password": "Palavra-passe",
   "pixel": "Pixel",
   "prev": "Anterior",
   "remove": "Remover",
@@ -341,9 +341,9 @@
   "retry": "Tentar novamente",
   "revert": "Descartar",
 
-  "role": "Papel",
+  "role": "Função",
   "role.all": "Todos",
-  "role.empty": "Não há usuários com este papel",
+  "role.empty": "Não há utilizadores com esta função",
   "role.description.placeholder": "Sem descrição",
 
   "save": "Salvar",
@@ -371,38 +371,38 @@
 
   "translation.author": "Kirby Team",
   "translation.direction": "ltr",
-  "translation.name": "Português (Brasileiro)",
+  "translation.name": "Português (Europeu)",
 
   "upload": "Enviar",
   "upload.errors": "Erro",
-  "upload.progress": "Enviando…",
+  "upload.progress": "A enviar…",
 
   "url": "Url",
-  "url.placeholder": "https://exemplo.com",
+  "url.placeholder": "https://exemplo.pt",
 
-  "user": "Usuário",
+  "user": "Utilizador",
   "user.blueprint":
-    "Você pode definir seções e campos de formulário adicionais para este papel de usuário em <strong>/site/blueprints/users/{role}.yml</strong>",
+    "Pode definir seções e campos de formulário adicionais para esta função de utilizador em <strong>/site/blueprints/users/{role}.yml</strong>",
   "user.changeEmail": "Alterar email",
   "user.changeLanguage": "Alterar idioma",
-  "user.changeName": "Renomear usuário",
-  "user.changePassword": "Alterar senha",
-  "user.changePassword.new": "Nova senha",
-  "user.changePassword.new.confirm": "Confirme a nova senha…",
-  "user.changeRole": "Alterar papel",
-  "user.changeRole.select": "Selecione um novo papel",
-  "user.create": "Adicionar novo usuário",
-  "user.delete": "Excluir este usuário",
+  "user.changeName": "Renomear este utilizador",
+  "user.changePassword": "Alterar palavra-passe",
+  "user.changePassword.new": "Nova palavra-passe",
+  "user.changePassword.new.confirm": "Confirme a nova palavra-passe…",
+  "user.changeRole": "Alterar Função",
+  "user.changeRole.select": "Selecione uma nova função",
+  "user.create": "Adicionar novo utilizador",
+  "user.delete": "Excluir este utilizador",
   "user.delete.confirm":
     "Deseja realmente excluir <br><strong>{email}</strong>?",
 
   "version": "Vers\u00e3o do Kirby",
 
-  "view.account": "Sua conta",
+  "view.account": "A sua conta",
   "view.installation": "Instala\u00e7\u00e3o",
   "view.settings": "Configurações",
   "view.site": "Site",
-  "view.users": "Usu\u00e1rios",
+  "view.users": "Utilizadores",
 
   "welcome": "Bem-vindo",
   "year": "Ano"

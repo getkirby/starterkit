@@ -23,15 +23,19 @@
   <?= $icons ?>
   <div id="app"></div>
 
+  <noscript>
+    Please enable JavaScript in your browser
+  </noscript>
+
   <script>window.panel = <?= json_encode($options, JSON_UNESCAPED_SLASHES) ?></script>
 
-  <script src="<?= $assetUrl ?>/js/plugins.js"></script>
-  <script src="<?= $assetUrl ?>/js/vendor.js"></script>
-  <script src="<?= $pluginJs ?>"></script>
+  <script src="<?= $assetUrl ?>/js/plugins.js" defer></script>
+  <script src="<?= $assetUrl ?>/js/vendor.js" defer></script>
+  <script src="<?= $pluginJs ?>" defer></script>
   <?php if (isset($config['js'])) : ?>
-    <script src="<?= Url::to($config['js']) ?>"></script>
+    <script src="<?= Url::to($config['js']) ?>" defer></script>
   <?php endif ?>
-  <script src="<?= $assetUrl ?>/js/app.js"></script>
+  <script src="<?= $assetUrl ?>/js/app.js" defer></script>
 
 </body>
 </html>
