@@ -1,7 +1,7 @@
 {
   "name": "getkirby/cms",
   "description": "The Kirby 3 core",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "license": "proprietary",
   "keywords": ["kirby", "cms", "core"],
   "homepage": "https://getkirby.com",
@@ -23,7 +23,7 @@
     "php": ">=7.1.0",
     "ext-mbstring": "*",
     "ext-ctype": "*",
-    "getkirby/composer-installer": "*",
+    "getkirby/composer-installer": "^1.0",
     "mustangostang/spyc": "0.6.2",
     "michelf/php-smartypants": "1.8.1",
     "claviska/simpleimage": "3.3.3",

@@ -1,6 +1,7 @@
 <?php
 
 use Kirby\Cms\App;
+use Kirby\Cms\Asset;
 use Kirby\Cms\Html;
 use Kirby\Cms\Response;
 use Kirby\Cms\Url;
@@ -10,6 +11,17 @@ use Kirby\Toolkit\Escape;
 use Kirby\Toolkit\F;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\View;
+
+/**
+ * Helper to create an asset object
+ *
+ * @param string $path
+ * @return Asset
+ */
+function asset(string $path)
+{
+    return new Asset($path);
+}
 
 /**
  * Generates a list of HTML attributes
@@ -425,6 +437,9 @@ function kirbytext(string $text = null, array $data = []): string
  */
 function load(array $classmap, string $base = null)
 {
+    // convert all classnames to lowercase
+    $classmap = array_change_key_case($classmap);
+
     spl_autoload_register(function ($class) use ($classmap, $base) {
         $class = strtolower($class);
 
@@ -640,15 +655,25 @@ function snippet(string $name, $data = [], bool $return = false)
  */
 function svg(string $file)
 {
-    $root = App::instance()->root();
-    $file = $root . '/' . $file;
+    $extension = F::extension($file);
 
-    if (file_exists($file) === false) {
+    // check for valid svg files
+    if ($extension !== 'svg') {
         return false;
     }
 
+    // try to convert relative paths to absolute
+    if (file_exists($file) === false) {
+        $root = App::instance()->root();
+        $file = realpath($root . '/' . $file);
+
+        if (file_exists($file) === false) {
+            return false;
+        }
+    }
+
     ob_start();
-    include F::realpath($file, $root);
+    include $file;
     $svg = ob_get_contents();
     ob_end_clean();
 
