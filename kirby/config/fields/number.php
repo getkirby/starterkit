@@ -36,10 +36,7 @@ return [
                 return null;
             }
 
-            $value = str_replace(',', '.', $value);
-            $value = floatval($value);
-
-            return $value;
+            return (float)Str::float($value);
         }
     ],
     'validations' => [
