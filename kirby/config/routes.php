@@ -148,7 +148,12 @@ return function ($kirby) {
             'method'  => 'ALL',
             'env'     => 'site',
             'action'  => function (string $path) use ($kirby) {
-                if ($page = $kirby->page($path)) {
+
+                // check for content representations or files
+                $extension = F::extension($path);
+
+                // try to redirect prefixed pages
+                if (empty($extension) === true && $page = $kirby->page($path)) {
                     $url = $kirby->request()->url([
                         'query'    => null,
                         'params'   => null,
@@ -160,9 +165,9 @@ return function ($kirby) {
                             ->response()
                             ->redirect($page->url());
                     }
-
-                    return $kirby->resolve($path, $kirby->defaultLanguage()->code());
                 }
+
+                return $kirby->resolve($path, $kirby->defaultLanguage()->code());
             }
         ];
     } else {
