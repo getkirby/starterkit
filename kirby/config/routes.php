@@ -56,11 +56,7 @@ return function ($kirby) {
             'pattern' => 'media/plugins/(:any)/(:any)/(:all).(css|gif|js|jpg|png|svg|webp|woff2|woff)',
             'env'     => 'media',
             'action'  => function (string $provider, string $pluginName, string $filename, string $extension) use ($kirby) {
-                if ($url = PluginAssets::resolve($provider . '/' . $pluginName, $filename . '.' . $extension)) {
-                    return $kirby
-                        ->response()
-                        ->redirect($url, 307);
-                }
+                return PluginAssets::resolve($provider . '/' . $pluginName, $filename . '.' . $extension);
             }
         ],
         [
@@ -115,7 +111,7 @@ return function ($kirby) {
             'action'  => function () use ($kirby) {
                 $home = $kirby->site()->homePage();
 
-                if ($kirby->url() !== $home->url()) {
+                if ($home && $kirby->url() !== $home->url()) {
                     if ($kirby->option('languages.detect') === true) {
                         return $kirby
                             ->response()
@@ -126,7 +122,7 @@ return function ($kirby) {
                             ->redirect($kirby->site()->url());
                     }
                 } else {
-                    return $home;
+                    return $kirby->resolve(null, $kirby->detectedLanguage()->code());
                 }
             }
         ];
@@ -178,7 +174,7 @@ return function ($kirby) {
             'method'  => 'ALL',
             'env'     => 'site',
             'action'  => function () use ($kirby) {
-                return $kirby->site()->homePage();
+                return $kirby->resolve();
             }
         ];
 
