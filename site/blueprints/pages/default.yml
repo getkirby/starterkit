@@ -1,7 +1,6 @@
 title: Simple Page
-preset: page
-
 icon: 📝
+preset: page
 
 status:
   draft: true
