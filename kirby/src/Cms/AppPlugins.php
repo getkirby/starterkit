@@ -86,6 +86,10 @@ trait AppPlugins
     protected function extendApi($api): array
     {
         if (is_array($api) === true) {
+            if (is_a($api['routes'] ?? [], Closure::class) === true) {
+                $api['routes'] = $api['routes']($this);
+            }
+
             return $this->extensions['api'] = A::merge($this->extensions['api'], $api, A::MERGE_APPEND);
         } else {
             return $this->extensions['api'];
@@ -363,6 +367,7 @@ trait AppPlugins
     protected function extensionsFromSystem()
     {
         // Form Field Mixins
+        FormField::$mixins['min']     = include static::$root . '/config/fields/mixins/min.php';
         FormField::$mixins['options'] = include static::$root . '/config/fields/mixins/options.php';
 
         // Tag Aliases

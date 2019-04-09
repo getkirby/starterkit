@@ -188,7 +188,7 @@ return [
             }
 
             if ($this->validateMin() === false) {
-                $errors['min'] = I18n::template('error.section.pages.min.' . I18n::form($this->max), [
+                $errors['min'] = I18n::template('error.section.pages.min.' . I18n::form($this->min), [
                     'min'     => $this->min,
                     'section' => $this->headline
                 ]);
@@ -228,7 +228,7 @@ return [
             return $this->pagination();
         },
         'sortable' => function () {
-            if ($this->status !== 'listed' && $this->status !== 'all') {
+            if (in_array($this->status, ['listed', 'published', 'all']) === false) {
                 return false;
             }
 

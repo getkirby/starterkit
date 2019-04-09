@@ -4,6 +4,7 @@ use Kirby\Cms\Form;
 use Kirby\Cms\Blueprint;
 
 return [
+    'mixins' => ['min'],
     'props' => [
         /**
          * Unset inherited props
@@ -28,6 +29,14 @@ return [
         'empty' => function ($empty = null) {
             return I18n::translate($empty, $empty);
         },
+
+        /**
+         * Set the default rows for the structure
+         */
+        'default' => function (array $default = null) {
+            return $default;
+        },
+
         /**
          * Fields setup for the structure form. Works just like fields in regular forms.
          */
@@ -113,7 +122,7 @@ return [
             }
 
             return $columns;
-        },
+        }
     ],
     'methods' => [
         'rows' => function ($value) {
@@ -149,11 +158,11 @@ return [
             ]
         ];
     },
-    'save' => function () {
+    'save' => function ($value) {
         $data = [];
 
-        foreach ($this->value() as $row) {
-            $data[] = $this->form($row)->data();
+        foreach ($value as $row) {
+            $data[] = $this->form($row)->data(true);
         }
 
         return $data;
