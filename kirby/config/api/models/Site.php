@@ -20,8 +20,11 @@ return [
         'content' => function (Site $site) {
             return Form::for($site)->values();
         },
+        'drafts' => function (Site $site) {
+            return $site->drafts();
+        },
         'files' => function (Site $site) {
-            return $site->files();
+            return $site->files()->sortBy('sort', 'asc');
         },
         'options' => function (Site $site) {
             return $site->permissions()->toArray();
