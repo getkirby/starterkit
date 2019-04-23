@@ -233,6 +233,33 @@ class App
     }
 
     /**
+     * Returns all available blueprints for this installation
+     *
+     * @param string $type
+     * @return array
+     */
+    public function blueprints(string $type = 'pages')
+    {
+        $blueprints = [];
+
+        foreach ($this->extensions('blueprints') as $name => $blueprint) {
+            if (dirname($name) === $type) {
+                $name = basename($name);
+                $blueprints[$name] = $name;
+            }
+        }
+
+        foreach (glob($this->root('blueprints') . '/' . $type . '/*.yml') as $blueprint) {
+            $name = F::name($blueprint);
+            $blueprints[$name] = $name;
+        }
+
+        ksort($blueprints);
+
+        return array_values($blueprints);
+    }
+
+    /**
      * Calls any Kirby route
      *
      * @return mixed
@@ -406,7 +433,7 @@ class App
         $visitor   = $this->visitor();
 
         foreach ($visitor->acceptedLanguages() as $lang) {
-            if ($language = $languages->findBy('locale', $lang->locale())) {
+            if ($language = $languages->findBy('locale', $lang->locale(LC_ALL))) {
                 return $language;
             }
         }
@@ -1156,9 +1183,11 @@ class App
     public function trigger(string $name, ...$arguments)
     {
         if ($functions = $this->extension('hooks', $name)) {
+            static $level = 0;
             static $triggered = [];
+            $level++;
 
-            foreach ($functions as $function) {
+            foreach ($functions as $index => $function) {
                 if (in_array($function, $triggered[$name] ?? []) === true) {
                     continue;
                 }
@@ -1168,6 +1197,12 @@ class App
 
                 // bind the App object to the hook
                 $function->call($this, ...$arguments);
+            }
+
+            $level--;
+
+            if ($level === 0) {
+                $triggered = [];
             }
         }
     }
@@ -1202,6 +1237,16 @@ class App
     public static function version()
     {
         return static::$version = static::$version ?? Data::read(static::$root . '/composer.json')['version'] ?? null;
+    }
+
+    /**
+     * Creates a hash of the version number
+     *
+     * @return string
+     */
+    public static function versionHash(): string
+    {
+        return md5(static::version());
     }
 
     /**

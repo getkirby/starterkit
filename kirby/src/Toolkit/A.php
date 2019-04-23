@@ -57,8 +57,12 @@ class A
      *                          returned if no element has been found
      * @return  mixed
      */
-    public static function get(array $array, $key, $default = null)
+    public static function get($array, $key, $default = null)
     {
+        if (is_array($array) === false) {
+            return $array;
+        }
+
         // return the entire array if the key is null
         if ($key === null) {
             return $array;
@@ -79,17 +83,28 @@ class A
 
         // support dot notation
         if (strpos($key, '.') !== false) {
-            $keys = explode('.', $key);
+            $keys     = explode('.', $key);
+            $firstKey = array_shift($keys);
 
-            foreach ($keys as $innerKey) {
-                if (isset($array[$innerKey]) === false) {
-                    return $default;
+            if (isset($array[$firstKey]) === false) {
+                $currentKey = $firstKey;
+
+                while ($innerKey = array_shift($keys)) {
+                    $currentKey = $currentKey . '.' . $innerKey;
+
+                    if (isset($array[$currentKey]) === true) {
+                        return static::get($array[$currentKey], implode('.', $keys), $default);
+                    }
                 }
 
-                $array = $array[$innerKey];
+                return $default;
             }
 
-            return $array;
+            if (is_array($array[$firstKey]) === true) {
+                return static::get($array[$firstKey], implode('.', $keys), $default);
+            }
+
+            return $default;
         }
 
         return $default;

@@ -35,11 +35,6 @@ class FileCache extends Cache
 
         // try to create the directory
         Dir::make($this->options['root'], true);
-
-        // check for a valid cache directory
-        if (is_dir($this->options['root']) === false) {
-            throw new Exception('The cache directory does not exist');
-        }
     }
 
     /**
@@ -51,7 +46,8 @@ class FileCache extends Cache
     protected function file(string $key): string
     {
         $extension = isset($this->options['extension']) ? '.' . $this->options['extension'] : '';
-        return $this->options['root'] . '/' . $key . $extension;
+
+        return $this->options['root'] . '/' . $this->key($key) . $extension;
     }
 
     /**
@@ -117,7 +113,13 @@ class FileCache extends Cache
      */
     public function flush(): bool
     {
-        if (Dir::remove($this->options['root']) === true && Dir::make($this->options['root']) === true) {
+        $root = $this->options['root'];
+
+        if (empty($this->options['prefix']) === false) {
+            $root = $root . '/' . $this->options['prefix'];
+        }
+
+        if (Dir::remove($root) === true && Dir::make($root) === true) {
             return true;
         }
 

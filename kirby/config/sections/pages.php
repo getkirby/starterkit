@@ -249,9 +249,7 @@ return [
             $templates  = empty($this->create) === false ? $this->create : $this->templates;
 
             if (empty($templates) === true) {
-                foreach (glob(App::instance()->root('blueprints') . '/pages/*.yml') as $blueprint) {
-                    $templates[] = F::name($blueprint);
-                }
+                $templates = $this->kirby()->blueprints();
             }
 
             // convert every template to a usable option array
@@ -285,6 +283,8 @@ return [
                 'headline' => $this->headline,
                 'layout'   => $this->layout,
                 'link'     => $this->link,
+                'max'      => $this->max,
+                'min'      => $this->min,
                 'size'     => $this->size,
                 'sortable' => $this->sortable
             ],
