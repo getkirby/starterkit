@@ -405,15 +405,16 @@ abstract class ModelWithContent extends Model
      * Updates the model data
      *
      * @param array $input
-     * @param string $language
+     * @param string $languageCode
      * @param boolean $validate
      * @return self
      */
     public function update(array $input = null, string $languageCode = null, bool $validate = false)
     {
         $form = Form::for($this, [
-            'input'          => $input,
             'ignoreDisabled' => $validate === false,
+            'input'          => $input,
+            'language'       => $languageCode,
         ]);
 
         // validate the input
