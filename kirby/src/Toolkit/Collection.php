@@ -132,7 +132,7 @@ class Collection extends Iterator implements Countable
      * @return Collection        A new collection with an element for each chunk and
      *                           a sub collection in each chunk
      */
-    public function chunk(int $size): self
+    public function chunk(int $size)
     {
         // create a multidimensional array that is chunked with the given
         // chunk size keep keys of the elements
@@ -219,7 +219,7 @@ class Collection extends Iterator implements Countable
      * @param Closure $filter
      * @return self
      */
-    public function filter($filter): self
+    public function filter($filter)
     {
         if (is_callable($filter) === true) {
             $collection = clone $this;
@@ -246,7 +246,7 @@ class Collection extends Iterator implements Countable
      * @param string $field
      * @return self
      */
-    public function filterBy(string $field, ...$args): self
+    public function filterBy(string $field, ...$args)
     {
         $operator = '==';
         $test     = $args[0] ?? null;
@@ -405,7 +405,7 @@ class Collection extends Iterator implements Countable
      *
      * @return Collection
      */
-    public function flip(): self
+    public function flip()
     {
         $collection = clone $this;
         $collection->data = array_reverse($this->data, true);
@@ -433,14 +433,19 @@ class Collection extends Iterator implements Countable
      * @param array|object $item
      * @param string $attribute
      * @param boolean $split
+     * @param mixed $related
      * @return mixed
      */
-    public function getAttribute($item, string $attribute, $split = false)
+    public function getAttribute($item, string $attribute, $split = false, $related = null)
     {
         $value = $this->{'getAttributeFrom' . gettype($item)}($item, $attribute);
 
         if ($split !== false) {
-            $value = Str::split($value, $split === true ? ',' : $split);
+            return Str::split($value, $split === true ? ',' : $split);
+        }
+
+        if ($related !== null) {
+            return Str::toType((string)$value, $related);
         }
 
         return $value;
@@ -516,7 +521,7 @@ class Collection extends Iterator implements Countable
      * @param bool $i
      * @return Collection A new collection with an element for each group and a subcollection in each group
      */
-    public function groupBy(string $field, bool $i = true)
+    public function groupBy($field, bool $i = true)
     {
         if (is_string($field) === false) {
             throw new Exception('Cannot group by non-string values. Did you mean to call group()?');
@@ -587,7 +592,7 @@ class Collection extends Iterator implements Countable
      * @param  int        $limit  The number of elements to return
      * @return Collection
      */
-    public function limit(int $limit): self
+    public function limit(int $limit)
     {
         return $this->slice(0, $limit);
     }
@@ -598,7 +603,7 @@ class Collection extends Iterator implements Countable
      * @param  callable $callback
      * @return Collection
      */
-    public function map(callable $callback): self
+    public function map(callable $callback)
     {
         $this->data = array_map($callback, $this->data);
         return $this;
@@ -625,7 +630,7 @@ class Collection extends Iterator implements Countable
     {
         $collection = clone $this;
         foreach ($keys as $key) {
-            unset($collection->$key);
+            unset($collection->data[$key]);
         }
         return $collection;
     }
@@ -636,7 +641,7 @@ class Collection extends Iterator implements Countable
      * @param  int        $offset  The index to start from
      * @return Collection
      */
-    public function offset(int $offset): self
+    public function offset(int $offset)
     {
         return $this->slice($offset);
     }
@@ -798,7 +803,7 @@ class Collection extends Iterator implements Countable
      *
      * @return Collection
      */
-    public function shuffle(): self
+    public function shuffle()
     {
         $data = $this->data;
         $keys = $this->keys();
@@ -821,7 +826,7 @@ class Collection extends Iterator implements Countable
      * @param  int        $limit   The optional number of elements to return
      * @return Collection
      */
-    public function slice(int $offset = 0, int $limit = null): self
+    public function slice(int $offset = 0, int $limit = null)
     {
         if ($offset === 0 && $limit === null) {
             return $this;
@@ -840,7 +845,7 @@ class Collection extends Iterator implements Countable
      * @param   $method     int              The sort flag, SORT_REGULAR, SORT_NUMERIC etc.
      * @return  Collection
      */
-    public function sortBy(): self
+    public function sortBy()
     {
         // there is no need to sort empty collections
         if (empty($this->data) === true) {
@@ -983,13 +988,13 @@ class Collection extends Iterator implements Countable
  */
 Collection::$filters['=='] = function ($collection, $field, $test, $split = false) {
     foreach ($collection->data as $key => $item) {
-        $value = $collection->getAttribute($item, $field, $split);
+        $value = $collection->getAttribute($item, $field, $split, $test);
 
         if ($split !== false) {
             if (in_array($test, $value) === false) {
                 unset($collection->data[$key]);
             }
-        } elseif ($value != $test) {
+        } elseif ($value !== $test) {
             unset($collection->data[$key]);
         }
     }
@@ -1002,13 +1007,13 @@ Collection::$filters['=='] = function ($collection, $field, $test, $split = fals
  */
 Collection::$filters['!='] = function ($collection, $field, $test, $split = false) {
     foreach ($collection->data as $key => $item) {
-        $value = $collection->getAttribute($item, $field, $split);
+        $value = $collection->getAttribute($item, $field, $split, $test);
 
         if ($split !== false) {
             if (in_array($test, $value) === true) {
                 unset($collection->data[$key]);
             }
-        } elseif ($value == $test) {
+        } elseif ((string)$value == $test) {
             unset($collection->data[$key]);
         }
     }
