@@ -132,6 +132,11 @@ class Language extends Model
         $kirby = App::instance();
         $site  = $kirby->site();
 
+        // convert site
+        foreach ($site->files() as $file) {
+            F::move($file->contentFile($from, true), $file->contentFile($to, true));
+        }
+
         F::move($site->contentFile($from, true), $site->contentFile($to, true));
 
         // convert all pages
@@ -489,7 +494,7 @@ class Language extends Model
      */
     public function url(): string
     {
-        return Url::to($this->pattern());
+        return Url::makeAbsolute($this->pattern(), $this->kirby()->url());
     }
 
     /**
