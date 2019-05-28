@@ -5,8 +5,9 @@
     <h1><?= $site->title() ?></h1>
   </header>
 
+  <?php if ($photographyPage = page('photography')): ?>
   <ul class="grid">
-    <?php foreach (page('photography')->children()->listed() as $album): ?>
+    <?php foreach ($photographyPage->children()->listed() as $album): ?>
     <li>
       <a href="<?= $album->url() ?>">
         <figure>
@@ -23,6 +24,7 @@
     </li>
     <?php endforeach ?>
   </ul>
+  <?php endif ?>
 
 </main>
 
