@@ -10,6 +10,12 @@ use Exception;
  * The collection class provides a nicer
  * interface around arrays of arrays or objects,
  * with advanced filters, sorting, navigation and more.
+ *
+ * @package   Kirby Toolkit
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Collection extends Iterator implements Countable
 {
@@ -111,7 +117,7 @@ class Collection extends Iterator implements Countable
      *
      * @param  mixed      $key
      * @param  mixed      $item
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function append(...$args)
     {
@@ -129,7 +135,7 @@ class Collection extends Iterator implements Countable
      * The last chunk may be smaller
      *
      * @param  int        $size  Number of elements per chunk
-     * @return Collection        A new collection with an element for each chunk and
+     * @return Kirby\Toolkit\Collection        A new collection with an element for each chunk and
      *                           a sub collection in each chunk
      */
     public function chunk(int $size)
@@ -162,7 +168,7 @@ class Collection extends Iterator implements Countable
      *
      * @return self
      */
-    public function clone(): self
+    public function clone()
     {
         return clone $this;
     }
@@ -191,7 +197,7 @@ class Collection extends Iterator implements Countable
     /**
      * Clone and remove all elements from the collection
      *
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function empty()
     {
@@ -204,9 +210,9 @@ class Collection extends Iterator implements Countable
     /**
      * Adds all elements to the collection
      *
-     * @return Collection
+     * @return self
      */
-    public function extend($items): self
+    public function extend($items)
     {
         $collection = clone $this;
         return $collection->set($items);
@@ -366,11 +372,11 @@ class Collection extends Iterator implements Countable
      *
      * @param string $attribute
      * @param mixed $value
-     * @return mixed
+     * @return mixed|null
      */
     public function findBy(string $attribute, $value)
     {
-        foreach ($this->data as $key => $item) {
+        foreach ($this->data as $item) {
             if ($this->getAttribute($item, $attribute) == $value) {
                 return $item;
             }
@@ -384,7 +390,7 @@ class Collection extends Iterator implements Countable
      * @param string $key
      * @return mixed
      */
-    public function findByKey($key)
+    public function findByKey(string $key)
     {
         return $this->get($key);
     }
@@ -403,7 +409,7 @@ class Collection extends Iterator implements Countable
     /**
      * Returns the elements in reverse order
      *
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function flip()
     {
@@ -475,9 +481,9 @@ class Collection extends Iterator implements Countable
      * Groups the elements by a given callback
      *
      * @param Closure $callback
-     * @return Collection A new collection with an element for each group and a subcollection in each group
+     * @return self A new collection with an element for each group and a subcollection in each group
      */
-    public function group(Closure $callback): Collection
+    public function group(Closure $callback)
     {
         $groups = [];
 
@@ -519,7 +525,7 @@ class Collection extends Iterator implements Countable
      *
      * @param string $field
      * @param bool $i
-     * @return Collection A new collection with an element for each group and a subcollection in each group
+     * @return Kirby\Toolkit\Collection A new collection with an element for each group and a subcollection in each group
      */
     public function groupBy($field, bool $i = true)
     {
@@ -590,7 +596,7 @@ class Collection extends Iterator implements Countable
      * Returns a new object with a limited number of elements
      *
      * @param  int        $limit  The number of elements to return
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function limit(int $limit)
     {
@@ -601,7 +607,7 @@ class Collection extends Iterator implements Countable
      * Map a function to each element
      *
      * @param  callable $callback
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function map(callable $callback)
     {
@@ -624,7 +630,7 @@ class Collection extends Iterator implements Countable
      * Returns a Collection without the given element(s)
      *
      * @param  args    any number of keys, passed as individual arguments
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function not(...$keys)
     {
@@ -639,7 +645,7 @@ class Collection extends Iterator implements Countable
      * Returns a new object starting from the given offset
      *
      * @param  int        $offset  The index to start from
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function offset(int $offset)
     {
@@ -649,7 +655,7 @@ class Collection extends Iterator implements Countable
     /**
      * Add pagination
      *
-     * @return Collection a sliced set of data
+     * @return Kirby\Toolkit\Collection a sliced set of data
      */
     public function paginate(...$arguments)
     {
@@ -662,7 +668,7 @@ class Collection extends Iterator implements Countable
     /**
      * Get the previously added pagination object
      *
-     * @return Pagination|null
+     * @return Kirby\Toolkit\Pagination|null
      */
     public function pagination()
     {
@@ -704,9 +710,9 @@ class Collection extends Iterator implements Countable
      *
      * @param  mixed       $key
      * @param  mixed       $item
-     * @return Collection
+     * @return self
      */
-    public function prepend(...$args): self
+    public function prepend(...$args)
     {
         if (count($args) === 1) {
             array_unshift($this->data, $args[0]);
@@ -786,7 +792,7 @@ class Collection extends Iterator implements Countable
      * @param  mixed  $value
      * @return self
      */
-    public function set($key, $value = null): self
+    public function set($key, $value = null)
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -801,7 +807,7 @@ class Collection extends Iterator implements Countable
     /**
      * Shuffle all elements
      *
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function shuffle()
     {
@@ -824,7 +830,7 @@ class Collection extends Iterator implements Countable
      *
      * @param  int        $offset  The optional index to start the slice from
      * @param  int        $limit   The optional number of elements to return
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function slice(int $offset = 0, int $limit = null)
     {
@@ -975,7 +981,7 @@ class Collection extends Iterator implements Countable
      * Alias for $this->not()
      *
      * @param  args    any number of keys, passed as individual arguments
-     * @return Collection
+     * @return Kirby\Toolkit\Collection
      */
     public function without(...$keys)
     {

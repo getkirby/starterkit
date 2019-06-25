@@ -4,33 +4,38 @@ namespace Kirby\Cms;
 
 use Closure;
 use Kirby\Data\Data;
-use Kirby\Exception\Exception;
 use Kirby\Exception\InvalidArgumentException;
-use Kirby\Exception\LogicException;
-use Kirby\Toolkit\A;
-use Kirby\Toolkit\F;
 use Kirby\Toolkit\Str;
 use Throwable;
 
+/**
+ * ModelWithContent
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
+ */
 abstract class ModelWithContent extends Model
 {
 
     /**
      * The content
      *
-     * @var Content
+     * @var Kirby\Cms\Content
      */
     public $content;
 
     /**
-     * @var Translations
+     * @var Kirby\Cms\Translations
      */
     public $translations;
 
     /**
      * Returns the blueprint of the model
      *
-     * @return Blueprint
+     * @return Kirby\Cms\Blueprint
      */
     abstract public function blueprint();
 
@@ -48,9 +53,9 @@ abstract class ModelWithContent extends Model
      * Returns the content
      *
      * @param string $languageCode
-     * @return Content
+     * @return Kirby\Cms\Content
      */
-    public function content(string $languageCode = null): Content
+    public function content(string $languageCode = null)
     {
 
         // single language support
@@ -117,6 +122,26 @@ abstract class ModelWithContent extends Model
             }
         } else {
             return $directory . '/' . $filename . '.' . $extension;
+        }
+    }
+
+    /**
+     * Returns an array with all content files
+     *
+     * @return array
+     */
+    public function contentFiles(): array
+    {
+        if ($this->kirby()->multilang() === true) {
+            $files = [];
+            foreach ($this->kirby()->languages()->codes() as $code) {
+                $files[] = $this->contentFile($code);
+            }
+            return $files;
+        } else {
+            return [
+                $this->contentFile()
+            ];
         }
     }
 
@@ -233,6 +258,148 @@ abstract class ModelWithContent extends Model
     }
 
     /**
+     * Returns the lock object for this model
+     *
+     * @return Kirby\Cms\ContentLock
+     */
+    public function lock()
+    {
+        return new ContentLock($this);
+    }
+
+    /**
+     * Returns the panel icon definition
+     *
+     * @internal
+     * @param array $params
+     * @return array
+     */
+    public function panelIcon(array $params = null): array
+    {
+        $defaults = [
+            'type'  => 'page',
+            'ratio' => null,
+            'back'  => 'pattern',
+            'color' => '#c5c9c6',
+        ];
+
+        return array_merge($defaults, $params ?? []);
+    }
+
+    /**
+     * @internal
+     * @param string|array|false $settings
+     * @return array|null
+     */
+    public function panelImage($settings = null): ?array
+    {
+        $defaults = [
+            'ratio' => '3/2',
+            'back'  => 'pattern',
+            'cover' => false
+        ];
+
+        // switch the image off
+        if ($settings === false) {
+            return null;
+        }
+
+        if (is_string($settings) === true) {
+            $settings = [
+                'query' => $settings
+            ];
+        }
+
+        if ($image = $this->panelImageSource($settings['query'] ?? null)) {
+
+            // main url
+            $settings['url'] = $image->url();
+
+            // for cards
+            $settings['cards'] = [
+                'url' => 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw',
+                'srcset' => $image->srcset([
+                    352,
+                    864,
+                    1408,
+                ])
+            ];
+
+            // for lists
+            $settings['list'] = [
+                'url' => 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw',
+                'srcset' => $image->srcset([
+                    '1x' => [
+                        'width' => 38,
+                        'height' => 38,
+                        'crop' => 'center'
+                    ],
+                    '2x' => [
+                        'width' => 76,
+                        'height' => 76,
+                        'crop' => 'center'
+                    ],
+                ])
+            ];
+
+            unset($settings['query']);
+        }
+
+        return array_merge($defaults, (array)$settings);
+    }
+
+    /**
+     * Returns the image file object based on provided query
+     *
+     * @internal
+     * @param string|null $query
+     * @return Kirby\Cms\File|Kirby\Cms\Asset|null
+     */
+    protected function panelImageSource(string $query = null)
+    {
+        $image = $this->query($query ?? null);
+
+        // validate the query result
+        if (is_a($image, File::class) === false && is_a($image, Asset::class) === false) {
+            $image = null;
+        }
+
+        // fallback for files
+        if ($image === null && is_a($this, File::class) === true && $this->isViewable() === true) {
+            $image = $this;
+        }
+
+        return $image;
+    }
+
+    /**
+     * Creates a string query, starting from the model
+     *
+     * @internal
+     * @param string|null $query
+     * @param string|null $expect
+     * @return mixed
+     */
+    public function query(string $query = null, string $expect = null)
+    {
+        if ($query === null) {
+            return null;
+        }
+
+        $result = Str::query($query, [
+            'kirby'             => $this->kirby(),
+            'site'              => is_a($this, Site::class) ? $this : $this->site(),
+            static::CLASS_ALIAS => $this
+        ]);
+
+        if ($expect !== null && is_a($result, $expect) !== true) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
      * Read the content from the content file
      *
      * @internal
@@ -251,7 +418,7 @@ abstract class ModelWithContent extends Model
     /**
      * Returns the absolute path to the model
      *
-     * @return string
+     * @return string|null
      */
     abstract public function root(): ?string;
 
@@ -330,7 +497,7 @@ abstract class ModelWithContent extends Model
     /**
      * Sets the Content object
      *
-     * @param Content|null $content
+     * @param array|null $content
      * @return self
      */
     protected function setContent(array $content = null)
@@ -365,11 +532,32 @@ abstract class ModelWithContent extends Model
     }
 
     /**
+     * String template builder
+     *
+     * @param string|null $template
+     * @return string
+     */
+    public function toString(string $template = null): string
+    {
+        if ($template === null) {
+            return $this->id();
+        }
+
+        $result = Str::template($template, [
+            'kirby'             => $this->kirby(),
+            'site'              => is_a($this, Site::class) ? $this : $this->site(),
+            static::CLASS_ALIAS => $this
+        ]);
+
+        return $result;
+    }
+
+    /**
      * Returns a single translation by language code
      * If no code is specified the current translation is returned
      *
-     * @param string $languageCode
-     * @return Translation|null
+     * @param string|null $languageCode
+     * @return Kirby\Cms\ContentTranslation|null
      */
     public function translation(string $languageCode = null)
     {
@@ -379,7 +567,7 @@ abstract class ModelWithContent extends Model
     /**
      * Returns the translations collection
      *
-     * @return Collection
+     * @return Kirby\Cms\Collection
      */
     public function translations()
     {

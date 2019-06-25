@@ -3,7 +3,6 @@
 namespace Kirby\Toolkit;
 
 use Exception;
-use Kirby\Http\Header;
 use Throwable;
 use ZipArchive;
 
@@ -15,8 +14,9 @@ use ZipArchive;
  *
  * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class F
 {
@@ -77,6 +77,7 @@ class F
             'jpeg',
             'jpg',
             'jpe',
+            'jp2',
             'png',
             'ps',
             'psd',
@@ -455,7 +456,7 @@ class F
             }
 
             // delete the existing file
-            unlink($newRoot);
+            static::remove($newRoot);
         }
 
         // actually move the file if it exists

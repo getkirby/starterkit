@@ -6,6 +6,12 @@ use Exception;
 
 /**
  * Basic pagination handling
+ *
+ * @package   Kirby Toolkit
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Pagination
 {
@@ -48,7 +54,7 @@ class Pagination
      * Creates a pagination instance for the given
      * collection with a flexible argument api
      *
-     * @param Collection $collection
+     * @param Kirby\CmToolkits\Collection $collection
      * @param ...mixed $arguments
      * @return self
      */

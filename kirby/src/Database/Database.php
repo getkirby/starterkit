@@ -12,6 +12,12 @@ use Throwable;
 
 /**
  * A simple database class
+ *
+ * @package   Kirby Database
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Database
 {
@@ -153,9 +159,9 @@ class Database
      * Returns one of the started instance
      *
      * @param string $id
-     * @return Database
+     * @return self
      */
-    public static function instance(string $id = null): self
+    public static function instance(string $id = null)
     {
         return $id === null ? A::last(static::$connections) : static::$connections[$id] ?? null;
     }
@@ -174,7 +180,7 @@ class Database
      * Connects to a database
      *
      * @param array|null $params This can either be a config key or an array of parameters for the connection
-     * @return Database
+     * @return Kirby\Database\Database
      */
     public function connect(array $params = null)
     {
@@ -217,7 +223,7 @@ class Database
     /**
      * Returns the currently active connection
      *
-     * @return Database|null
+     * @return Kirby\Database\Database|null
      */
     public function connection()
     {
@@ -228,7 +234,7 @@ class Database
      * Sets the exception mode for the next query
      *
      * @param boolean $fail
-     * @return Database
+     * @return Kirby\Database\Database
      */
     public function fail(bool $fail = true)
     {
@@ -461,7 +467,7 @@ class Database
      * Returns the correct Sql generator instance
      * for the type of database
      *
-     * @return Sql
+     * @return Kirby\Database\Sql
      */
     public function sql()
     {
@@ -470,10 +476,12 @@ class Database
     }
 
     /**
-     * Sets the current table, which should be queried
+     * Sets the current table, which should be queried. Returns a
+     * Query object, which can be used to build a full query
+     * for that table
      *
      * @param string $table
-     * @return Query Returns a Query object, which can be used to build a full query for that table
+     * @return Kirby\Database\Query
      */
     public function table(string $table)
     {

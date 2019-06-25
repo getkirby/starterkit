@@ -15,9 +15,9 @@ use Kirby\Toolkit\Str;
 /**
  * @package   Kirby Session
  * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
- * @license   MIT
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Session
 {
@@ -49,7 +49,7 @@ class Session
     /**
      * Creates a new Session instance
      *
-     * @param Sessions    $sessions Parent sessions object
+     * @param Kirby\Session\Sessions    $sessions Parent sessions object
      * @param string|null $token    Session token or null for a new session
      * @param array       $options  Optional additional options:
      *                              - `mode`:       Token transmission mode (cookie or manual)
@@ -305,9 +305,9 @@ class Session
     /**
      * Returns the session data object
      *
-     * @return SessionData
+     * @return Kirby\Session\SessionData
      */
-    public function data(): SessionData
+    public function data()
     {
         return $this->data;
     }

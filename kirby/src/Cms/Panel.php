@@ -15,6 +15,12 @@ use Throwable;
  * a working panel view with all the right URLs
  * and other panel options. The view template is
  * located in `kirby/views/panel.php`
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class Panel
 {
@@ -23,7 +29,7 @@ class Panel
      * Links all dist files in the media folder
      * and returns the link to the requested asset
      *
-     * @param App $kirby
+     * @param Kirby\Cms\App $kirby
      * @return bool
      */
     public static function link(App $kirby): bool
@@ -45,7 +51,7 @@ class Panel
         Dir::make($mediaRoot, true);
 
         // create a symlink to the dist folder
-        if (Dir::copy($kirby->root('panel') . '/dist', $versionRoot) !== true) {
+        if (Dir::copy($panelRoot, $versionRoot) !== true) {
             throw new Exception('Panel assets could not be linked');
         }
 
@@ -55,10 +61,10 @@ class Panel
     /**
      * Renders the main panel view
      *
-     * @param App $kirby
-     * @return Response
+     * @param Kirby\Cms\App $kirby
+     * @return Kirby\Cms\Response
      */
-    public static function render(App $kirby): Response
+    public static function render(App $kirby)
     {
         try {
             if (static::link($kirby) === true) {
@@ -72,15 +78,15 @@ class Panel
         // get the uri object for the panel url
         $uri = new Uri($url = $kirby->url('panel'));
 
-        $pluginCss = new PanelPlugins('css');
-        $pluginJs  = new PanelPlugins('js');
+        // fetch all plugins
+        $plugins = new PanelPlugins();
 
         $view = new View($kirby->root('kirby') . '/views/panel.php', [
             'kirby'     => $kirby,
             'config'    => $kirby->option('panel'),
             'assetUrl'  => $kirby->url('media') . '/panel/' . $kirby->versionHash(),
-            'pluginCss' => $pluginCss->url(),
-            'pluginJs'  => $pluginJs->url(),
+            'pluginCss' => $plugins->url('css'),
+            'pluginJs'  => $plugins->url('js'),
             'icons'     => F::read($kirby->root('panel') . '/dist/img/icons.svg'),
             'panelUrl'  => $uri->path()->toString(true) . '/',
             'options'   => [

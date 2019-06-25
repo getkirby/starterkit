@@ -2,14 +2,10 @@
 
 namespace Kirby\Cms;
 
-use Kirby\Data\Data;
-use Kirby\Exception\Exception;
-use Kirby\Exception\InvalidArgumentException;
 use Kirby\Image\Image;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\F;
 use Kirby\Toolkit\Str;
-use Throwable;
 
 /**
  * The `$file` object provides a set
@@ -27,8 +23,9 @@ use Throwable;
  *
  * @package   Kirby Cms
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class File extends ModelWithContent
 {
@@ -45,14 +42,14 @@ class File extends ModelWithContent
      * This is used to do actual file
      * method calls, like size, mime, etc.
      *
-     * @var Image
+     * @var Kirby\Image\Image
      */
     protected $asset;
 
     /**
      * Cache for the initialized blueprint object
      *
-     * @var FileBlueprint
+     * @var Kirby\Cms\FileBlueprint
      */
     protected $blueprint;
 
@@ -74,9 +71,17 @@ class File extends ModelWithContent
     public static $methods = [];
 
     /**
+     * Registry with all File models
+     *
+     * @var array
+     */
+    public static $models = [];
+
+
+    /**
      * The parent object
      *
-     * @var Model
+     * @var Kirby\Cms\Model
      */
     protected $parent;
 
@@ -140,7 +145,7 @@ class File extends ModelWithContent
     }
 
     /**
-     * Improved var_dump() output
+     * Improved `var_dump` output
      *
      * @return array
      */
@@ -168,9 +173,9 @@ class File extends ModelWithContent
      * Returns the Image object
      *
      * @internal
-     * @return Image
+     * @return Kirby\Image\Image
      */
-    public function asset(): Image
+    public function asset()
     {
         return $this->asset = $this->asset ?? new Image($this->root());
     }
@@ -178,9 +183,9 @@ class File extends ModelWithContent
     /**
      * Returns the FileBlueprint object for the file
      *
-     * @return FileBlueprint
+     * @return Kirby\Cms\FileBlueprint
      */
-    public function blueprint(): FileBlueprint
+    public function blueprint()
     {
         if (is_a($this->blueprint, 'Kirby\Cms\FileBlueprint') === true) {
             return $this->blueprint;
@@ -261,6 +266,22 @@ class File extends ModelWithContent
     }
 
     /**
+     * Constructs a File object and also
+     * takes File models into account.
+     *
+     * @internal
+     * @return self
+     */
+    public static function factory($props)
+    {
+        if (empty($props['model']) === false) {
+            return static::model($props['model'], $props);
+        }
+
+        return new static($props);
+    }
+
+    /**
      * Returns the filename with extension
      *
      * @return string
@@ -273,9 +294,9 @@ class File extends ModelWithContent
     /**
      * Returns the parent Files collection
      *
-     * @return Files
+     * @return Kirby\Cms\Files
      */
-    public function files(): Files
+    public function files()
     {
         return $this->siblingsCollection();
     }
@@ -303,7 +324,7 @@ class File extends ModelWithContent
     /**
      * Compares the current object with the given file object
      *
-     * @param File $file
+     * @param Kirby\Cms\File $file
      * @return bool
      */
     public function is(File $file): bool
@@ -319,7 +340,7 @@ class File extends ModelWithContent
      */
     public function mediaHash(): string
     {
-        return crc32($this->filename()) . '-' . $this->modified();
+        return crc32($this->filename()) . '-' . $this->modifiedFile();
     }
 
     /**
@@ -347,24 +368,32 @@ class File extends ModelWithContent
     /**
      * @deprecated 3.0.0 Use `File::content()` instead
      *
-     * @return Content
+     * @return Kirby\Cms\Content
      */
-    public function meta(): Content
+    public function meta()
     {
         return $this->content();
     }
 
     /**
-     * Returns the parent model.
-     * This is normally the parent page
-     * or the site object.
+     * Creates a file model if it has been registered
      *
      * @internal
-     * @return Site|Page
+     * @param string $name
+     * @param array $props
+     * @return Kirby\Cms\File
      */
-    public function model()
+    public static function model(string $name, array $props = [])
     {
-        return $this->parent();
+        if ($class = (static::$models[$name] ?? null)) {
+            $object = new $class($props);
+
+            if (is_a($object, 'Kirby\Cms\File') === true) {
+                return $object;
+            }
+        }
+
+        return new static($props);
     }
 
     /**
@@ -376,8 +405,8 @@ class File extends ModelWithContent
      */
     public function modified(string $format = null, string $handler = null)
     {
-        $file     = F::modified($this->root());
-        $content  = F::modified($this->contentFile());
+        $file     = $this->modifiedFile();
+        $content  = $this->modifiedContent();
         $modified = max($file, $content);
 
         if (is_null($format) === true) {
@@ -390,9 +419,31 @@ class File extends ModelWithContent
     }
 
     /**
+     * Timestamp of the last modification
+     * of the content file
+     *
+     * @return integer
+     */
+    protected function modifiedContent(): int
+    {
+        return F::modified($this->contentFile());
+    }
+
+    /**
+     * Timestamp of the last modification
+     * of the source file
+     *
+     * @return integer
+     */
+    protected function modifiedFile(): int
+    {
+        return F::modified($this->root());
+    }
+
+    /**
      * Returns the parent Page object
      *
-     * @return Page
+     * @return Kirby\Cms\Page|null
      */
     public function page()
     {
@@ -440,53 +491,26 @@ class File extends ModelWithContent
 
         $definition = array_merge($types[$this->type()] ?? [], $extensions[$this->extension()] ?? []);
 
-        return [
-            'type'  => $definition['type'] ?? 'file',
-            'color' => $definition['color'] ?? $colorWhite,
-            'back'  => $params['back'] ?? 'pattern',
-            'ratio' => $params['ratio'] ?? null,
-        ];
+        $params['type']  = $definition['type']  ?? 'file';
+        $params['color'] = $definition['color'] ?? $colorWhite;
+
+        return parent::panelIcon($params);
     }
 
     /**
-     * Panel image definition
+     * Returns the image file object based on provided query
      *
      * @internal
-     * @param string|array|false $settings
-     * @param array $thumbSettings
-     * @return array
+     * @param string|null $query
+     * @return Kirby\Cms\File|Kirby\Cms\Asset|null
      */
-    public function panelImage($settings = null, array $thumbSettings = null): ?array
+    protected function panelImageSource(string $query = null)
     {
-        $defaults = [
-            'ratio' => '3/2',
-            'back'  => 'pattern',
-            'cover' => false
-        ];
-
-        // switch the image off
-        if ($settings === false) {
-            return null;
+        if ($query === null && $this->isViewable()) {
+            return $this;
         }
 
-        if (is_string($settings) === true) {
-            $settings = [
-                'query' => $settings
-            ];
-        }
-
-        $image = $this->query($settings['query'] ?? null, 'Kirby\Cms\File');
-
-        if ($image === null && $this->isViewable() === true) {
-            $image = $this;
-        }
-
-        if ($image) {
-            $settings['url'] = $image->thumb($thumbSettings)->url(true);
-            unset($settings['query']);
-        }
-
-        return array_merge($defaults, (array)$settings);
+        return parent::panelImageSource($query);
     }
 
     /**
@@ -498,6 +522,38 @@ class File extends ModelWithContent
     public function panelPath(): string
     {
         return 'files/' . $this->filename();
+    }
+
+    /**
+     * Prepares the response data for file pickers
+     * and file fields
+     *
+     * @param array|null $params
+     * @return array
+     */
+    public function panelPickerData(array $params = []): array
+    {
+        $image = $this->panelImage($params['image'] ?? []);
+        $icon  = $this->panelIcon($image);
+        $uuid  = $this->id();
+
+        if (empty($params['model']) === false) {
+            $uuid = $this->parent() === $params['model'] ? $this->filename() : $this->id();
+        }
+
+        return [
+            'filename' => $this->filename(),
+            'dragText' => $this->dragText(),
+            'icon'     => $icon,
+            'id'       => $this->id(),
+            'image'    => $image,
+            'info'     => $this->toString($params['info'] ?? false),
+            'link'     => $this->panelUrl(true),
+            'text'     => $this->toString($params['text'] ?? '{{ file.filename }}'),
+            'type'     => $this->type(),
+            'url'      => $this->url(),
+            'uuid'     => $uuid,
+        ];
     }
 
     /**
@@ -516,7 +572,7 @@ class File extends ModelWithContent
     /**
      * Returns the parent Model object
      *
-     * @return Model
+     * @return Kirby\Cms\Model
      */
     public function parent()
     {
@@ -541,9 +597,9 @@ class File extends ModelWithContent
     /**
      * Returns a collection of all parent pages
      *
-     * @return Pages
+     * @return Kirby\Cms\Pages
      */
-    public function parents(): Pages
+    public function parents()
     {
         if (is_a($this->parent(), 'Kirby\Cms\Page') === true) {
             return $this->parent()->parents()->prepend($this->parent()->id(), $this->parent());
@@ -555,38 +611,11 @@ class File extends ModelWithContent
     /**
      * Returns the permissions object for this file
      *
-     * @return FilePermissions
+     * @return Kirby\Cms\FilePermissions
      */
     public function permissions()
     {
         return new FilePermissions($this);
-    }
-
-    /**
-     * Creates a string query, starting from the model
-     *
-     * @internal
-     * @param string|null $query
-     * @param string|null $expect
-     * @return mixed
-     */
-    public function query(string $query = null, string $expect = null)
-    {
-        if ($query === null) {
-            return null;
-        }
-
-        $result = Str::query($query, [
-            'kirby' => $this->kirby(),
-            'site'  => $this->site(),
-            'file'  => $this
-        ]);
-
-        if ($expect !== null && is_a($result, $expect) !== true) {
-            return null;
-        }
-
-        return $result;
     }
 
     /**
@@ -603,7 +632,7 @@ class File extends ModelWithContent
      * Returns the FileRules class to
      * validate any important action.
      *
-     * @return FileRules
+     * @return Kirby\Cms\FileRules
      */
     protected function rules()
     {
@@ -616,7 +645,7 @@ class File extends ModelWithContent
      * @param array|null $blueprint
      * @return self
      */
-    protected function setBlueprint(array $blueprint = null): self
+    protected function setBlueprint(array $blueprint = null)
     {
         if ($blueprint !== null) {
             $blueprint['model'] = $this;
@@ -632,7 +661,7 @@ class File extends ModelWithContent
      * @param string $filename
      * @return self
      */
-    protected function setFilename(string $filename): self
+    protected function setFilename(string $filename)
     {
         $this->filename = $filename;
         return $this;
@@ -641,10 +670,10 @@ class File extends ModelWithContent
     /**
      * Sets the parent model object
      *
-     * @param Model $parent
+     * @param Kirby\Cms\Model $parent
      * @return self
      */
-    protected function setParent(Model $parent = null): self
+    protected function setParent(Model $parent = null)
     {
         $this->parent = $parent;
         return $this;
@@ -667,7 +696,7 @@ class File extends ModelWithContent
      * @param string $template
      * @return self
      */
-    protected function setTemplate(string $template = null): self
+    protected function setTemplate(string $template = null)
     {
         $this->template = $template;
         return $this;
@@ -679,7 +708,7 @@ class File extends ModelWithContent
      * @param string $url
      * @return self
      */
-    protected function setUrl(string $url = null): self
+    protected function setUrl(string $url = null)
     {
         $this->url = $url;
         return $this;
@@ -689,7 +718,7 @@ class File extends ModelWithContent
      * Returns the parent Files collection
      * @internal
      *
-     * @return Files
+     * @return Kirby\Cms\Files
      */
     protected function siblingsCollection()
     {
@@ -699,9 +728,9 @@ class File extends ModelWithContent
     /**
      * Returns the parent Site object
      *
-     * @return Site
+     * @return Kirby\Cms\Site
      */
-    public function site(): Site
+    public function site()
     {
         return is_a($this->parent(), 'Kirby\Cms\Site') === true ? $this->parent() : $this->kirby()->site();
     }
@@ -720,7 +749,7 @@ class File extends ModelWithContent
      * Returns siblings with the same template
      *
      * @param bool $self
-     * @return self
+     * @return Kirby\Cms\Files
      */
     public function templateSiblings(bool $self = true)
     {
@@ -737,25 +766,6 @@ class File extends ModelWithContent
     public function toArray(): array
     {
         return array_merge($this->asset()->toArray(), parent::toArray());
-    }
-
-    /**
-     * String template builder
-     *
-     * @param string|null $template
-     * @return string
-     */
-    public function toString(string $template = null): string
-    {
-        if ($template === null) {
-            return $this->id();
-        }
-
-        return Str::template($template, [
-            'file'  => $this,
-            'site'  => $this->site(),
-            'kirby' => $this->kirby()
-        ]);
     }
 
     /**

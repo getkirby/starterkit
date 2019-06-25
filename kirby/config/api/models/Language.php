@@ -22,6 +22,9 @@ return [
         'name' => function (Language $language) {
             return $language->name();
         },
+        'rules' => function (Language $language) {
+            return $language->rules();
+        },
         'url' => function (Language $language) {
             return $language->url();
         },
@@ -32,6 +35,8 @@ return [
             'code',
             'default',
             'name',
+            'rules',
+            'direction'
         ]
     ]
 ];

@@ -18,9 +18,9 @@ use Kirby\Toolkit\Str;
  *
  * @package   Kirby Http
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
- * @license   MIT
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Request
 {
@@ -62,18 +62,9 @@ class Request
     protected $files;
 
     /**
-     * The Method object is a tiny
-     * wrapper around the request method
-     * name, which will validate and sanitize
-     * the given name and always return
-     * its uppercase version.
+     * The Method type
      *
-     * Examples:
-     *
-     * `$request->method()->name()`
-     * `$request->method()->is('post')`
-     *
-     * @var Method
+     * @var string
      */
     protected $method;
 
@@ -137,7 +128,7 @@ class Request
     }
 
     /**
-     * Improved var_dump output
+     * Improved `var_dump` output
      *
      * @return array
      */
@@ -165,7 +156,7 @@ class Request
     /**
      * Returns the Auth object if authentication is set
      *
-     * @return BasicAuth|BearerAuth|null
+     * @return Kirby\Http\Request\Auth\BasicAuth|Kirby\Http\Request\Auth\BearerAuth|null
      */
     public function auth()
     {
@@ -191,9 +182,9 @@ class Request
     /**
      * Returns the Body object
      *
-     * @return Body
+     * @return Kirby\Http\Request\Body
      */
-    public function body(): Body
+    public function body()
     {
         return $this->body = $this->body ?? new Body();
     }
@@ -229,6 +220,16 @@ class Request
     }
 
     /**
+     * Returns the domain
+     *
+     * @return string
+     */
+    public function domain(): string
+    {
+        return $this->url()->domain();
+    }
+
+    /**
      * Fetches a single file array
      * from the Files object by key
      *
@@ -243,9 +244,9 @@ class Request
     /**
      * Returns the Files object
      *
-     * @return Files
+     * @return Kirby\Cms\Files
      */
-    public function files(): Files
+    public function files()
     {
         return $this->files = $this->files ?? new Files();
     }
@@ -343,11 +344,19 @@ class Request
     }
 
     /**
+     * Shortcut to the Path object
+     */
+    public function path()
+    {
+        return $this->url()->path();
+    }
+
+    /**
      * Returns the Query object
      *
-     * @return Query
+     * @return Kirby\Http\Query
      */
-    public function query(): Query
+    public function query()
     {
         return $this->query = $this->query ?? new Query();
     }
@@ -369,9 +378,9 @@ class Request
      * the original object.
      *
      * @param array $props
-     * @return Uri
+     * @return Kirby\Http\Uri
      */
-    public function url(array $props = null): Uri
+    public function url(array $props = null)
     {
         if ($props !== null) {
             return $this->url()->clone($props);

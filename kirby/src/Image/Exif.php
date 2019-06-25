@@ -9,9 +9,9 @@ use Kirby\Toolkit\V;
  *
  * @package   Kirby Image
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
- * @license   MIT
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Exif
 {
@@ -84,7 +84,7 @@ class Exif
     /**
      * Constructor
      *
-     * @param Image $image
+     * @param Kirby\Image\Image $image
      */
     public function __construct(Image $image)
     {
@@ -106,7 +106,7 @@ class Exif
     /**
      * Returns the Camera object
      *
-     * @return Camera|null
+     * @return Kirby\Image\Camera|null
      */
     public function camera()
     {
@@ -120,7 +120,7 @@ class Exif
     /**
      * Returns the location object
      *
-     * @return Location|null
+     * @return Kirby\Image\Location|null
      */
     public function location()
     {
@@ -283,7 +283,7 @@ class Exif
     }
 
     /**
-     * Improved var_dump() output
+     * Improved `var_dump` output
      *
      * @return array
      */
