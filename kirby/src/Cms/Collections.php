@@ -2,7 +2,6 @@
 
 namespace Kirby\Cms;
 
-use Closure;
 use Kirby\Exception\NotFoundException;
 use Kirby\Toolkit\Controller;
 
@@ -16,8 +15,9 @@ use Kirby\Toolkit\Controller;
  *
  * @package   Kirby Cms
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class Collections
 {
@@ -45,7 +45,7 @@ class Collections
      *
      * @param  string $name
      * @param  array $arguments
-     * @return Collection|null
+     * @return Kirby\Cms\Collection|null
      */
     public function __call(string $name, array $arguments = [])
     {
@@ -57,7 +57,7 @@ class Collections
      *
      * @param string $name
      * @param array $data
-     * @return Collection|null
+     * @return Kirby\Cms\Collection|null
      */
     public function get(string $name, array $data = [])
     {

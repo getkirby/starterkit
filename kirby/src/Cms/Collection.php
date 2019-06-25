@@ -19,8 +19,9 @@ use Kirby\Toolkit\Str;
  *
  * @package   Kirby Cms
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class Collection extends BaseCollection
 {
@@ -100,9 +101,9 @@ class Collection extends BaseCollection
     /**
      * Appends an element to the data array
      *
-     * @param  mixed      $key
-     * @param  mixed      $item
-     * @return Collection
+     * @param  mixed $key
+     * @param  mixed $item
+     * @return Kirby\Cms\Collection
      */
     public function append(...$args)
     {
@@ -120,11 +121,12 @@ class Collection extends BaseCollection
     }
 
     /**
-     * Groups the items by a given field
+     * Groups the items by a given field. Returns a collection
+     * with an item for each group and a collection for each group.
      *
      * @param string $field
-     * @param bool   $i (ignore upper/lowercase for group names)
-     * @return Collection A collection with an item for each group and a Collection for each group
+     * @param bool $i Ignore upper/lowercase for group names
+     * @return Kirby\Cms\Collection
      */
     public function groupBy($field, bool $i = true)
     {
@@ -195,8 +197,8 @@ class Collection extends BaseCollection
     /**
      * Returns a Collection without the given element(s)
      *
-     * @param  args    any number of keys, passed as individual arguments
-     * @return Collection
+     * @param  mixxed[] $keys any number of keys, passed as individual arguments
+     * @return Kirby\Cms\Collection
      */
     public function not(...$keys)
     {
@@ -213,9 +215,9 @@ class Collection extends BaseCollection
     }
 
     /**
-     * Add pagination
+     * Add pagination and return a sliced set of data.
      *
-     * @return Collection a sliced set of data
+     * @return Kirby\Cms\Collection
      */
     public function paginate(...$arguments)
     {
@@ -228,7 +230,7 @@ class Collection extends BaseCollection
     /**
      * Returns the parent model
      *
-     * @return Model
+     * @return Kirby\Cms\Model
      */
     public function parent()
     {

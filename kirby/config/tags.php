@@ -39,6 +39,7 @@ return [
     'file' => [
         'attr' => [
             'class',
+            'download',
             'rel',
             'target',
             'text',
@@ -57,7 +58,7 @@ return [
 
             return Html::a($file->url(), $tag->text, [
                 'class'    => $tag->class,
-                'download' => true,
+                'download' => $tag->download !== 'false',
                 'rel'      => $tag->rel,
                 'target'   => $tag->target,
                 'title'    => $tag->title,
@@ -105,8 +106,14 @@ return [
                 if (empty($tag->link) === true) {
                     return $img;
                 }
+                
+                if ($link = $tag->file($tag->link)) {
+                    $link = $link->url();
+                } else {
+                    $link = $tag->link === 'self' ? $tag->src : $tag->link;
+                }
 
-                return Html::a($tag->link === 'self' ? $tag->src : $tag->link, [$img], [
+                return Html::a($link, [$img], [
                     'rel'    => $tag->rel,
                     'class'  => $tag->linkclass,
                     'target' => $tag->target
