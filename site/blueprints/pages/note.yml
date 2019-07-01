@@ -34,7 +34,7 @@ columns:
           tags: true
           gallery:
             type: pages
-            query: site.find("photography").children
+            query: kirby.page("photography").children
             multiple: false
             info: "{{ page.images.count }} image(s)"
             empty: "No gallery selected"
