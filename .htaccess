@@ -16,7 +16,7 @@ RewriteEngine on
 #
 # RewriteBase /mysite
 
-# In some enviroments it's necessary to
+# In some environments it's necessary to
 # set the RewriteBase to:
 #
 # RewriteBase /
