@@ -1,3 +1,13 @@
+<?php
+/**
+ * Templates render the content of your pages. 
+ * They contain the markup together with some control structures like loops or if-statements.
+ * This template is responsible for rendering all the subpages of the `notes` page.
+ * Snippets like the header and footer contain markup used in multiple templates. They also help to keep templates clean.
+ * More about templates: https://getkirby.com/docs/guide/templates/basics
+ */
+?>
+
 <?php snippet('header') ?>
 
 <main>
