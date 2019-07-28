@@ -1,9 +1,17 @@
+<?php
+/**
+ * Templates render the content of your pages. 
+ * They contain the markup together with some control structures like loops or if-statements.
+ * This example templates only echos the field values from the content file and doesn't need any special logic from a controller.
+ * Snippets like the header, footer and intro contain markup used in multiple templates. They also help to keep templates clean.
+ * More about templates: https://getkirby.com/docs/guide/templates/basics
+ */
+?>
+
 <?php snippet('header') ?>
 
 <main>
-  <header class="intro">
-    <h1><?= $page->title() ?></h1>
-  </header>
+    <?php snippet('intro') ?>
 
   <div class="layout">
 

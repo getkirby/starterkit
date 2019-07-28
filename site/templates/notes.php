@@ -1,9 +1,18 @@
+<?php
+/**
+ * Templates render the content of your pages. 
+ * They contain the markup together with some control structures like loops or if-statements.
+ * This template lists all all the subpages of the `notes` page with their title date sorted by date and links to each subpage.
+ * Snippets like the header, footer and intro contain markup used in multiple templates. They also help to keep templates clean.
+ * More about templates: https://getkirby.com/docs/guide/templates/basics
+ */
+?>
+
 <?php snippet('header') ?>
 
 <main>
-  <header class="intro">
-    <h1><?= $page->title() ?></h1>
-  </header>
+  <?php snippet('intro') ?>
+
 
   <div class="notes">
     <?php foreach ($page->children()->listed()->sortBy('date', 'desc') as $note): ?>
