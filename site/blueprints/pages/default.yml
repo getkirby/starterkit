@@ -1,4 +1,5 @@
 # Each page blueprint must have a title, the title may be different from the file name
+# This default blueprint is used to display a page in the Panel whenever a custom page blueprint is missing.
 title: Simple Page
 
 # Each page can have an icon that is shown in page listings when no preview image is available.
