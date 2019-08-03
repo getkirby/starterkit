@@ -5,7 +5,7 @@ title: Home
 icon: 🏠
 
 # Page options allow you to control how users can interact with the page.
-# Here we prevent changing the page slug (the home page cannot be deleted)
+# Here we prevent changing the page status (the home page cannot be renamed or deleted by default)
 # More about page options: https://getkirby.com/docs/reference/panel/blueprints/page#options
 options:
   status: false
