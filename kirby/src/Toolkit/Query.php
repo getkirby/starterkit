@@ -76,6 +76,11 @@ class Query
      */
     protected function resolve(string $query)
     {
+        // direct key access in arrays
+        if (is_array($this->data) === true && array_key_exists($query, $this->data) === true) {
+            return $this->data[$query];
+        }
+
         $parts = $this->parts($query);
         $data  = $this->data;
         $value = null;

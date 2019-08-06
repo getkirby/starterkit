@@ -82,7 +82,7 @@ return [
             $files = $this->parent->files()->template($this->template);
 
             if ($this->sortBy) {
-                $files = $files->sortBy(...Str::split($this->sortBy, ' '));
+                $files = $files->sortBy(...$files::sortArgs($this->sortBy));
             } elseif ($this->sortable === true) {
                 $files = $files->sortBy('sort', 'asc');
             }

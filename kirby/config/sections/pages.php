@@ -122,7 +122,7 @@ return [
 
             // sort
             if ($this->sortBy) {
-                $pages = $pages->sortBy(...Str::split($this->sortBy, ' '));
+                $pages = $pages->sortBy(...$pages::sortArgs($this->sortBy));
             }
 
             // pagination
