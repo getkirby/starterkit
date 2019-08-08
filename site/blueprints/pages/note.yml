@@ -1,7 +1,15 @@
+# Each page blueprint must have a title, the title may be different from the file name
 title: Note
+
+# Sorting number scheme that is applied when page status is changed to `listed`
+# More about page sorting: https://getkirby.com/docs/reference/panel/blueprints/page#sorting
 num: date
+
+# Each page can have an icon that is shown in page listings when no preview image is available.
 icon: 📖
 
+# Custom descriptions for each page status depending on use case
+# More about page status: https://getkirby.com/docs/reference/panel/blueprints/page#statuses
 status:
   draft:
     label: Draft
@@ -13,14 +21,20 @@ status:
     label: Published
     text: The note is online and listed in the blog
 
+# Define the form layout with two columns
+# Columns are optional but help structure the form layout
+# More about columns: https://getkirby.com/docs/guide/blueprints/layout#defining-columns
 columns:
   - width: 2/3
+    # This columns only has a single field
     fields:
       text:
         type: textarea
         size: large
 
   - width: 1/3
+    # This second column holds a fields section with multiple fields
+    # More about fields sections: https://getkirby.com/docs/reference/panel/sections/fields
     sections:
       meta:
         type: fields
@@ -31,6 +45,8 @@ columns:
             default: now
           author:
             type: users
+          # Fields types can be added using the shortcut `fieldname: true`
+          # (however, you can only use a fieldname once per page and this only makes sense for simple fields without configuration)
           tags: true
           gallery:
             type: pages
@@ -40,4 +56,5 @@ columns:
             empty: "No gallery selected"
             image:
               cover: true
+            # Use the `help` property of fields and section to provide editors with helpful information
             help: Place the {{ gallery }} tag anywhere in your text to add the selected gallery
