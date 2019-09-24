@@ -48,6 +48,7 @@ class F
             'py',
             'scss',
             'xml',
+            'yaml',
             'yml',
         ],
         'document' => [
@@ -102,7 +103,7 @@ class F
         ],
     ];
 
-    public static $units = ['B','kB','MB','GB','TB','PB', 'EB', 'ZB', 'YB'];
+    public static $units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
     /**
      * Appends new content to an existing file
@@ -130,7 +131,7 @@ class F
     /**
      * Copy a file to a new location.
      *
-     * @param  string  $file
+     * @param  string  $source
      * @param  string  $target
      * @param  boolean $force
      * @return boolean
@@ -359,6 +360,7 @@ class F
      * Loads a file and returns the result
      *
      * @param string $file
+     * @param mixed $fallback
      * @return mixed
      */
     public static function load(string $file, $fallback = null)
@@ -574,6 +576,31 @@ class F
     }
 
     /**
+     * Returns the relative path of the file
+     * starting after $in
+     *
+     * @param string $file
+     * @param string $in
+     * @return string
+     */
+    public static function relativepath(string $file, string $in = null): string
+    {
+        if (empty($in) === true) {
+            return basename($file);
+        }
+
+        // windows
+        $file = str_replace('\\', '/', $file);
+        $in   = str_replace('\\', '/', $in);
+
+        if (Str::contains($file, $in) === false) {
+            return basename($file);
+        }
+
+        return Str::after($file, $in);
+    }
+
+    /**
      * Deletes a file
      *
      * <code>
@@ -633,6 +660,7 @@ class F
      * building a glob based on the path
      *
      * @param string $path
+     * @param string $pattern
      * @return array
      */
     public static function similar(string $path, string $pattern = '*'): array
@@ -708,7 +736,7 @@ class F
             throw new Exception('The ZipArchive class is not available');
         }
 
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
 
         if ($zip->open($file) === true) {
             $zip->extractTo($to);

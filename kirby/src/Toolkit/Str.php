@@ -17,7 +17,6 @@ use Exception;
  */
 class Str
 {
-
     /**
      * Language translation table
      *
@@ -804,7 +803,7 @@ class Str
     {
         if (!ctype_lower($value)) {
             $value = preg_replace('/\s+/u', '', ucwords($value));
-            $value = static::lower(preg_replace('/(.)(?=[A-Z])/u', '$1'.$delimiter, $value));
+            $value = static::lower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
         }
         return $value;
     }
@@ -883,6 +882,8 @@ class Str
      * @param  array   $data     Associative array with placeholders as
      *                           keys and replacements as values
      * @param  string  $fallback A fallback if a token does not have any matches
+     * @param  string  $start    Placeholder start characters
+     * @param  string  $end      Placeholder end characters
      * @return string            The filled-in string
      */
     public static function template(string $string = null, array $data = [], string $fallback = null, string $start = '{{', string $end = '}}'): string
@@ -894,6 +895,33 @@ class Str
             }
             return $data[$query] ?? $fallback;
         }, $string);
+    }
+
+    /**
+     * Converts a filesize string with shortcuts
+     * like M, G or K to an integer value
+     *
+     * @param mixed $size
+     * @return int
+     */
+    public static function toBytes($size): int
+    {
+        $size = trim($size);
+        $last = strtolower($size[strlen($size)-1] ?? null);
+        $size = (int)$size;
+
+        switch ($last) {
+            case 'g':
+                $size *= 1024;
+                // no break
+            case 'm':
+                $size *= 1024;
+                // no break
+            case 'k':
+                $size *= 1024;
+        }
+
+        return $size;
     }
 
     /**
@@ -917,10 +945,10 @@ class Str
                 return filter_var($string, FILTER_VALIDATE_BOOLEAN);
             case 'double':
             case 'float':
-                return floatval($string);
+                return (float)$string;
             case 'int':
             case 'integer':
-                return intval($string);
+                return (int)$string;
         }
 
         return (string)$string;
@@ -1020,7 +1048,7 @@ class Str
     {
         return preg_replace_callback('|([^\s])\s+([^\s]+)\s*$|u', function ($matches) {
             if (static::contains($matches[2], '-')) {
-                return $matches[1] . ' ' . str_replace('-', '&#8209;', $matches[2]);
+                return $matches[1] . '&nbsp;' . str_replace('-', '&#8209;', $matches[2]);
             } else {
                 return $matches[1] . '&nbsp;' . $matches[2];
             }
