@@ -16,7 +16,6 @@ use Exception;
  */
 class I18n
 {
-
     /**
      * Custom loader function
      *
@@ -116,7 +115,7 @@ class I18n
                 return $key[$locale];
             }
             if (is_array($fallback)) {
-                return $fallback[$locale] ?? null;
+                return $fallback[$locale] ?? $fallback['en'] ?? reset($fallback);
             }
             return $fallback;
         }
@@ -196,6 +195,7 @@ class I18n
      *
      * @param string $key
      * @param integer $count
+     * @param string $locale
      * @return mixed
      */
     public static function translateCount(string $key, int $count, string $locale = null)

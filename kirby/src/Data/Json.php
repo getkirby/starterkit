@@ -15,7 +15,6 @@ use Exception;
  */
 class Json extends Handler
 {
-
     /**
      * Converts an array to an encoded JSON string
      *
@@ -24,13 +23,13 @@ class Json extends Handler
      */
     public static function encode($data): string
     {
-        return json_encode($data);
+        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     /**
      * Parses an encoded JSON string and returns a multi-dimensional array
      *
-     * @param  string $string
+     * @param string $json
      * @return array
      */
     public static function decode($json): array

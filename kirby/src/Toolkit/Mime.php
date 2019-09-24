@@ -106,6 +106,8 @@ class Mime
         'xlsx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'xltx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
         'xsl'   => 'text/xml',
+        'yaml'  => ['application/yaml', 'text/yaml'],
+        'yml'   => ['application/yaml', 'text/yaml'],
         'zip'   => ['application/x-zip', 'application/zip', 'application/x-zip-compressed'],
     ];
 
@@ -122,12 +124,12 @@ class Mime
         // fixing map
         $map = [
             'text/html' => [
-                'svg' => [Mime::class, 'fromSvg'],
+                'svg' => ['Kirby\Toolkit\Mime', 'fromSvg'],
             ],
             'text/plain' => [
                 'css'  => 'text/css',
                 'json' => 'application/json',
-                'svg'  => [Mime::class, 'fromSvg'],
+                'svg'  => ['Kirby\Toolkit\Mime', 'fromSvg'],
             ],
             'text/x-asm' => [
                 'css' => 'text/css'
@@ -219,6 +221,8 @@ class Mime
     /**
      * Undocumented function
      *
+     * @param string $mime
+     * @param string $pattern
      * @return boolean
      */
     public static function isAccepted(string $mime, string $pattern): bool
@@ -284,6 +288,7 @@ class Mime
      * Returns the mime type of a file
      *
      * @param string $file
+     * @param string $extension
      * @return string|false
      */
     public static function type(string $file, string $extension = null)

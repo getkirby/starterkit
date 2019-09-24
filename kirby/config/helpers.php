@@ -5,18 +5,18 @@ use Kirby\Cms\Asset;
 use Kirby\Cms\Html;
 use Kirby\Cms\Response;
 use Kirby\Cms\Url;
-use Kirby\Exception\Exception;
 use Kirby\Http\Server;
 use Kirby\Toolkit\Escape;
 use Kirby\Toolkit\F;
 use Kirby\Toolkit\I18n;
-use Kirby\Toolkit\View;
+use Kirby\Toolkit\Str;
+use Kirby\Toolkit\V;
 
 /**
  * Helper to create an asset object
  *
  * @param string $path
- * @return Kirby\Cms\Asset
+ * @return \Kirby\Cms\Asset
  */
 function asset(string $path)
 {
@@ -44,7 +44,7 @@ function attr(array $attr = null, $before = null, $after = null)
  * Returns the result of a collection by name
  *
  * @param string $name
- * @return Kirby\Cms\Collection|null
+ * @return \Kirby\Cms\Collection|null
  */
 function collection(string $name)
 {
@@ -217,7 +217,7 @@ function go(string $url = null, int $code = 302)
 /**
  * Shortcut for html()
  *
- * @param string $text unencoded text
+ * @param string $string unencoded text
  * @param bool $keepTags
  * @return string
  */
@@ -229,7 +229,7 @@ function h(string $string = null, bool $keepTags = false)
 /**
  * Creates safe html by encoding special characters
  *
- * @param string $text unencoded text
+ * @param string $string unencoded text
  * @param bool $keepTags
  * @return string
  */
@@ -246,7 +246,7 @@ function html(string $string = null, bool $keepTags = false)
  * <?= image('some/page/myimage.jpg') ?>
  *
  * @param string $path
- * @return Kirby\Cms\File|null
+ * @return \Kirby\Cms\File|null
  */
 function image(string $path = null)
 {
@@ -346,7 +346,7 @@ function invalid(array $data = [], array $rules = [], array $messages = [])
 /**
  * Creates a script tag to load a javascript file
  *
- * @param string|array $src
+ * @param string|array $url
  * @param string|array $options
  * @return void
  */
@@ -382,7 +382,7 @@ function js($url, $options = null)
 /**
  * Returns the Kirby object in any situation
  *
- * @return Kirby\Cms\App
+ * @return \Kirby\Cms\App
  */
 function kirby()
 {
@@ -527,7 +527,7 @@ function option(string $key, $default = null)
  * id or the current page when no id is specified
  *
  * @param string|array ...$id
- * @return Kirby\Cms\Page|null
+ * @return \Kirby\Cms\Page|null
  */
 function page(...$id)
 {
@@ -542,7 +542,7 @@ function page(...$id)
  * Helper to build page collections
  *
  * @param string|array ...$id
- * @return Kirby\Cms\Pages
+ * @return \Kirby\Cms\Pages
  */
 function pages(...$id)
 {
@@ -616,7 +616,7 @@ function timestamp(string $date = null, int $step = null): ?string
 /**
  * Returns the currrent site object
  *
- * @return Kirby\Cms\Site
+ * @return \Kirby\Cms\Site
  */
 function site()
 {
