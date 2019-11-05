@@ -8,7 +8,7 @@ icon: 🏠
 # Here we prevent changing the page status (the home page cannot be renamed or deleted by default)
 # More about page options: https://getkirby.com/docs/reference/panel/blueprints/page#options
 options:
-  status: false
+  changeStatus: false
 
 # Here we define an info section and a pages section (`photography`)
 sections:
