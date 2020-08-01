@@ -57,4 +57,4 @@ columns:
             image:
               cover: true
             # Use the `help` property of fields and section to provide editors with helpful information
-            help: Place the {{ gallery }} tag anywhere in your text to add the selected gallery
+            help: Place the \{\{ gallery }} tag anywhere in your text to add the selected gallery
