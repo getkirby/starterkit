@@ -9,7 +9,7 @@
 
 return function ($page) {
 
-    $gallery = $page->images()->sortBy("sort");
+    $gallery = $page->images()->sortBy('sort', 'filename');
 
     return [
         'gallery' => $gallery
