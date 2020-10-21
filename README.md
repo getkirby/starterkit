@@ -32,5 +32,4 @@ If you are familiar with Git, you can clone Kirby's Starterkit repository from G
 ---
 
 © 2009-2020 Bastian Allgeier (Bastian Allgeier GmbH)  
-[License agreement](https://getkirby.com/license)  
-<https://getkirby.com>
+[getkirby.com](https://getkirby.com) · [License agreement](https://getkirby.com/license)
