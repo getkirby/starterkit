@@ -1,82 +1,36 @@
-# Kirby Starterkit
+<img src="http://getkirby.com/assets/images/github/starterkit.jpg" width="300">
 
-Kirby is a file-based CMS.
-Easy to setup. Easy to use. Flexible as hell.
 
-## Trial
+**Kirby: the CMS that adapts to any project, loved by developers and editors alike.**  
+The Starterkit is a full-blown Kirby installation with a lot of example content, blueprints, templates and more.  
+It is ideal for new users to explore many of Kirby's options and get to know the Panel.
 
-You can try Kirby on your local machine or on a test
-server as long as you need to make sure it is the right
-tool for your next project.
+You can learn more about Kirby at [getkirby.com](https://getkirby.com).
 
-## Buy a license
+### Try Kirby for free  
+You can try Kirby and the Starterkit on your local machine or on a test server as long as you need to make sure it is the right tool for your next project. … and when you’re convinced, [buy your license](https://getkirby.com/buy).
 
-You can purchase your Kirby license at
-<https://getkirby.com/buy>
+### Get going
+Read our guide on [how to get started with Kirby](https://getkirby.com/docs/guide/quickstart).
 
-A Kirby license is valid for a single domain. You can find
-Kirby's license agreement here: <https://getkirby.com/license>
-
-## The Starterkit
-
-Kirby's Starterkit comes with a small demo website and a fully
-configured panel. Feel free to modify it and play with it as
-much as you like.
-
-## The Panel
-
-You can find the login for Kirby's admin interface at
-http://yourdomain.com/panel. You will be guided through the signup
-process for your first user, when you visit the panel
-for the first time.
-
-## Installation
-
-Kirby does not require a database, which makes it very easy to
-install. Just copy Kirby's files to your server and visit the
-URL for your website in the browser.
-
-**Please check if the invisible .htaccess file has been
-copied to your server correctly**
-
-### Requirements
-
-Kirby runs on PHP 7.1+, Apache or Nginx.
-
-### Download
-
-You can download the latest version of the Starterkit
-from https://download.getkirby.com
-
-### With Git
-
-If you are familiar with Git, you can clone Kirby's
-Starterkit repository from Github.
+You can download the latest version of the Starterkit from https://download.getkirby.com/.  
+If you are familiar with Git, you can clone Kirby's Starterkit repository from Github.
 
     git clone https://github.com/getkirby/starterkit.git
 
-## Documentation
+## What's Kirby?
+- **[getkirby.com](https://getkirby.com)** – Get to know the CMS.
+- **[Try it](https://getkirby.com/try)** – Take a test ride with our online demo. Or download one of our kits to get started.
+- **[Documentation](https://getkirby.com/docs/guide)** – Read the official guide, reference and cookbook recipes.
+- **[Issues](https://github.com/getkirby/kirby/issues)** – Report bugs and other problems.
+- **[Feedback](https://feedback.getkirby.com)** – You have an idea for Kirby? Share it.
+- **[Forum](https://forum.getkirby.com)** – The place for questions and support. Whenever you get stuck, don't hesitate to reach out.
+- **[Discord](https://chat.getkirby.com)** – Hang out and meet the community.
+- **[Twitter](https://twitter.com/getkirby)** – Spread the word.
+- **[Instagram](https://www.instagram.com/getkirby/)** – Share your creations: #madewithkirby.
 
-<https://getkirby.com/docs>
+---
 
-## Issues
-
-If you have a Github account, please report issues
-directly on Github: <https://github.com/getkirby/kirby/issues>
-
-Otherwise you can use Kirby's forum: https://forum.getkirby.com
-or send us an email: <support@getkirby.com>
-
-## Ideas & Feature Requests
-
-If you have ideas for new features, please submit a ticket in our ideas repository:
-<https://github.com/getkirby/kirby/ideas>
-
-## Support
-
-<https://getkirby.com/support>
-
-## Copyright
-
-© 2009-2019 Bastian Allgeier (Bastian Allgeier GmbH)
+© 2009-2020 Bastian Allgeier (Bastian Allgeier GmbH)  
+[License agreement](https://getkirby.com/license)  
 <https://getkirby.com>
