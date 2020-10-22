@@ -7,6 +7,8 @@ It is ideal for new users to explore many of Kirby's options and get to know the
 
 You can learn more about Kirby at [getkirby.com](https://getkirby.com).
 
+<img src="http://getkirby.com/assets/images/github/starterkit-screen.png" />
+
 ### Try Kirby for free  
 You can try Kirby and the Starterkit on your local machine or on a test server as long as you need to make sure it is the right tool for your next project. … and when you’re convinced, [buy your license](https://getkirby.com/buy).
 
@@ -24,7 +26,7 @@ If you are familiar with Git, you can clone Kirby's Starterkit repository from G
 - **[Documentation](https://getkirby.com/docs/guide)** – Read the official guide, reference and cookbook recipes.
 - **[Issues](https://github.com/getkirby/kirby/issues)** – Report bugs and other problems.
 - **[Feedback](https://feedback.getkirby.com)** – You have an idea for Kirby? Share it.
-- **[Forum](https://forum.getkirby.com)** – The place for questions and support. Whenever you get stuck, don't hesitate to reach out.
+- **[Forum](https://forum.getkirby.com)** – Whenever you get stuck, don't hesitate to reach out for questions and support.
 - **[Discord](https://chat.getkirby.com)** – Hang out and meet the community.
 - **[Twitter](https://twitter.com/getkirby)** – Spread the word.
 - **[Instagram](https://www.instagram.com/getkirby/)** – Share your creations: #madewithkirby.
