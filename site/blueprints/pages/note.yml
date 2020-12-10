@@ -29,8 +29,7 @@ columns:
     # This columns only has a single field
     fields:
       text:
-        type: textarea
-        size: large
+        type: blocks
 
   - width: 1/3
     # This second column holds a fields section with multiple fields
@@ -48,13 +47,6 @@ columns:
           # Fields types can be added using the shortcut `fieldname: true`
           # (however, you can only use a fieldname once per page and this only makes sense for simple fields without configuration)
           tags: true
-          gallery:
-            type: pages
-            query: kirby.page("photography").children
-            multiple: false
-            info: "{{ page.images.count }} image(s)"
-            empty: "No gallery selected"
-            image:
-              cover: true
-            # Use the `help` property of fields and section to provide editors with helpful information
-            help: Place the \{\{ gallery }} tag anywhere in your text to add the selected gallery
+      files:
+        type: files
+        template: blocks/image

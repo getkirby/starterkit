@@ -3,31 +3,28 @@
   margin: 0 auto;
 }
 .note-header {
-  text-align: center;
+  padding-top: 3rem;
+  margin-bottom: 3rem;
+}
+.note-footer {
+  padding: 6rem 0;
 }
 .note-date {
-  margin-bottom: .5rem;
-  display: block;
+  color: var(--color-text-grey);
 }
-
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  grid-gap: 1.5rem;
+.note-tags {
+  display: flex;
   margin-bottom: 1.5rem;
-  padding: 3rem 0;
 }
-.gallery figure a {
-  border: 0;
+.note-tags li {
+  margin-right: .5rem;
 }
-.gallery figure {
-  margin: 0;
-  padding: 0;
+.note-tags a {
+  padding: .5rem 1rem;
+  display: block;
+  background: var(--color-light);
 }
-
-@media screen and (min-width: 45rem) {
-  .gallery {
-    margin-left: -3rem;
-    margin-right: -3rem;
-  }
+.note-tags a:hover {
+  background: var(--color-black);
+  color: var(--color-white);
 }

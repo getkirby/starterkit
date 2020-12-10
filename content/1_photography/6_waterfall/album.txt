@@ -1,19 +1,21 @@
-Cover: 
-
-- the-fall-is-lava.jpg
+Title: Waterfalls
 
 ----
 
-Headline: Water that falls
+Cover: - the-fall-is-lava.jpg
 
 ----
 
-Description: Don't go chasing waterfalls
+Headline: 
+
+----
+
+Subheadline: Water that falls
+
+----
+
+Text: <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Nulla vitae elit libero, a pharetra augue. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p><p>Cras mattis consectetur purus sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor.</p>
 
 ----
 
 Tags: water, falls, down
-
-----
-
-Title: Waterfall

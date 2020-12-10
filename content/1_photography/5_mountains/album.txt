@@ -1,19 +1,23 @@
-Cover: 
+Title: Mountains
+
+----
+
+Cover:
 
 - probably-photoshopped.jpg
 
 ----
 
-Headline: Mountains are pretty big
+Headline: Mountains
 
 ----
 
-Description: Mountains — where do they come from.
+Subheadline: Where do they come from?
+
+----
+
+Text: <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Nullam id dolor id nibh ultricies vehicula ut id elit. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p><p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla sed consectetur. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
 
 ----
 
 Tags: mountains, peak nature
-
-----
-
-Title: Mountains

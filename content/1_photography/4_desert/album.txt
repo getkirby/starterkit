@@ -1,19 +1,23 @@
-Cover: 
+Title: Desert
+
+----
+
+Cover:
 
 - indiana-jones.jpg
 
 ----
 
-Headline: The desert is pretty hot
+Headline: 
 
 ----
 
-Description: 
+Subheadline: It's pretty hot
+
+----
+
+Text: <p>Curabitur blandit tempus porttitor. Sed posuere consectetur est at lobortis. Maecenas faucibus mollis interdum. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p><p>Nullam quis risus eget urna mollis ornare vel eu leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Curabitur blandit tempus porttitor.</p>
 
 ----
 
 Tags: desert, sand, landscape
-
-----
-
-Title: Desert

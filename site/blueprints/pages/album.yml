@@ -17,9 +17,30 @@ status:
 # More about columns: https://getkirby.com/docs/guide/blueprints/layout#defining-columns
 
 columns:
+  - width: 1/3
+    # The first column contains a set of fields to store
+    # information about the album.
+    #
+    # List of all available field types:
+    # https://getkirby.com/docs/reference/panel/fields
+    fields:
+      cover:
+        type: files
+        multiple: false
+      headline:
+        type: text
+        placeholder: "{{ page.title }}"
+        help: Leave empty to use the title as headline
+      subheadline:
+        type: text
+      text:
+        type: writer
+      tags: true
+
   - width: 2/3
     sections:
-      ## The `images` files section shows all images of the current page that use the `image` template
+      # The `images` files section shows all images of
+      # the current page that use the `image` template
       images:
         type: files
         layout: cards
@@ -31,15 +52,3 @@ columns:
         min: 1
         size: small
 
-  - width: 1/3
-    # The second column contains a set of fields
-    # List of all available field types: https://getkirby.com/docs/reference/panel/fields
-    fields:
-      cover:
-        type: files
-        multiple: false
-      headline:
-        type: text
-      description:
-        type: textarea
-      tags: true
