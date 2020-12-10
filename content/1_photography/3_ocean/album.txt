@@ -1,4 +1,8 @@
-Cover: 
+Title: Ocean
+
+----
+
+Cover:
 
 - island-from-above.jpg
 
@@ -8,12 +12,12 @@ Headline: Oceans are quite nice
 
 ----
 
-Description: Blue with lots of fish
+Subheadline: Blue with lots of fish
+
+----
+
+Text: <p>Cras mattis consectetur purus sit amet fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed posuere consectetur est at lobortis. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor. Aenean lacinia bibendum nulla sed consectetur.</p><p>Donec sed odio dui. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
 
 ----
 
 Tags: ocean, water, blue
-
-----
-
-Title: Ocean

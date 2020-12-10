@@ -1,19 +1,21 @@
-Cover: 
-
-- monster-trees-in-the-fog.jpg
+Title: Trees
 
 ----
 
-Headline: Trees - our friends with leaves
+Cover: - monster-trees-in-the-fog.jpg
 
 ----
 
-Description: Hug them if you like. They might not appreciate it though.
+Headline: 
+
+----
+
+Subheadline: Our friends with leaves
+
+----
+
+Text: <p>Hug them if you like. They might not appreciate it though.</p><p>Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod semper. Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.</p>
 
 ----
 
 Tags: tree, forest
-
-----
-
-Title: Trees

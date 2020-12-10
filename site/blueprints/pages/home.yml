@@ -12,10 +12,17 @@ options:
 
 # Here we define an info section and a pages section (`photography`)
 sections:
-  info:
-    headline: Info
-    type: info
-    text: All content for the homepage is being pulled from the photography page.
+  content:
+    type: fields
+    fields:
+      headline:
+        type: text
+        width: 1/2
+      gap:
+        width: 1/2
+      subheadline:
+        type: text
+        width: 1/2
 
 # The photography section extends a pages section defined in the `/site/blueprints/section/album.yml` blueprint
 # More about reusing and extending sections: https://getkirby.com/docs/guide/blueprints/extending-blueprints#reusing-and-extending-sectionss
@@ -23,5 +30,7 @@ sections:
     headline: Photography
     extends: sections/albums
     status: listed
+    size: small
+    help: All projects for the homepage are being pulled from the photography page.
 
 

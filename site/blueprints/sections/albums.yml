@@ -5,7 +5,7 @@
 type: pages
 headline: Photography
 parent: kirby.page("photography")
-size: tiny
+size: small
 info: "{{ page.images.count }} image(s)"
 layout: cards
 template: album

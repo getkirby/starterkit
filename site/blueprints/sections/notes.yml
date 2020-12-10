@@ -5,7 +5,11 @@
 type: pages
 headline: Notes
 parent: kirby.page("notes")
-info: "{{ page.date.toDate('d.m.Y') }}"
+info: "{{ page.published }}"
 template: note
 empty: No notes yet
 sortBy: date desc
+image:
+  query: page.cover
+  cover: true
+  ratio: 3/2
