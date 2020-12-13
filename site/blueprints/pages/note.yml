@@ -38,6 +38,9 @@ columns:
       meta:
         type: fields
         fields:
+          # If you need the same field in multiple locations, you can define them once and reuse whereever needed.
+          # Here we use a files field defined in `/site/blueprints/field/cover.yml`
+          cover: fields/cover
           date:
             type: date
             time: true

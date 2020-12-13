@@ -24,12 +24,9 @@ columns:
     # List of all available field types:
     # https://getkirby.com/docs/reference/panel/fields
     fields:
-      cover:
-        type: files
-        multiple: false
-        query: page.images
-        uploads:
-          template: image  
+      # If you need the same field in multiple locations, you can define them once and reuse whereever needed.
+      # Here we use a files field defined in `/site/blueprints/field/cover.yml`
+      cover: fields/cover
       headline:
         type: text
         placeholder: "{{ page.title }}"
