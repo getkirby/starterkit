@@ -31,9 +31,9 @@
 
 <article class="note">
   <header class="note-header h1">
-    <h1 class="note-title"><?= $page->title() ?></h1>
+    <h1 class="note-title"><?= $page->title()->html() ?></h1>
     <?php if ($page->subheading()->isNotEmpty()): ?>
-    <p class="note-subheading"><small><?= $page->subheading() ?></small></p>
+    <p class="note-subheading"><small><?= $page->subheading()->html() ?></small></p>
     <?php endif ?>
   </header>
   <div class="note text">
@@ -44,7 +44,7 @@
     <ul class="note-tags">
       <?php foreach ($tags as $tag): ?>
       <li>
-        <a href="<?= $page->parent()->url(['params' => ['tag' => $tag]]) ?>"><?= $tag ?></a>
+        <a href="<?= $page->parent()->url(['params' => ['tag' => $tag]]) ?>"><?= html($tag) ?></a>
       </li>
       <?php endforeach ?>
     </ul>
