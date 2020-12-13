@@ -12,6 +12,12 @@
 return function ($page) {
 
     $tag   = urldecode(param('tag'));
+    /**
+     * We use the collection helper to fetch the notes collection defined in `/site/collections/notes.php`
+     * 
+     * More about collections:
+     * http://getkirby.test/docs/guide/templates/collections
+     */
     $notes = collection('notes');
 
     if (empty($tag) === false) {
