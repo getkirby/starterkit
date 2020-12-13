@@ -6,6 +6,10 @@ title: Image
 # In addition to the fields defined in this example blueprint, you can also set what type of file is acceptable
 # when this blueprint is used, which allows you to control what users can upload.
 # More about file blueprints: https://getkirby.com/docs/reference/panel/blueprints/file
+
+accept: 
+  type: image
+
 columns:
   - width: 1/2
     sections:
