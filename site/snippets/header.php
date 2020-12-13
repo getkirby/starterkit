@@ -60,7 +60,7 @@
     */
     ?>
     <a class="logo" href="<?= $site->url() ?>">
-      <?= $site->title() ?>
+      <?= $site->title()->html() ?>
     </a>
 
     <nav class="menu">
