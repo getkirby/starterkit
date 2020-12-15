@@ -28,6 +28,7 @@ If you are familiar with Git, you can clone Kirby's Starterkit repository from G
 - **[Feedback](https://feedback.getkirby.com)** – You have an idea for Kirby? Share it.
 - **[Forum](https://forum.getkirby.com)** – Whenever you get stuck, don't hesitate to reach out for questions and support.
 - **[Discord](https://chat.getkirby.com)** – Hang out and meet the community.
+- **[YouTube](https://youtube.com/kirbyCasts)** - Watch the latest video tutorials visually with Bastian.
 - **[Twitter](https://twitter.com/getkirby)** – Spread the word.
 - **[Instagram](https://www.instagram.com/getkirby/)** – Share your creations: #madewithkirby.
 
