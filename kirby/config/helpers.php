@@ -709,10 +709,6 @@ function svg($file)
     if (file_exists($file) === false) {
         $root = App::instance()->root();
         $file = realpath($root . '/' . $file);
-
-        if (file_exists($file) === false) {
-            return false;
-        }
     }
 
     return F::read($file);
@@ -762,10 +758,11 @@ function timestamp(string $date = null, $step = null): ?string
         return $date;
     }
 
+    // fallback for pre-3.5.0 usage
     if (is_int($step) === true) {
         $step = [
             'unit' => 'minute',
-            'size' => 1
+            'size' => $step
         ];
     }
 

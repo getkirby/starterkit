@@ -76,8 +76,12 @@ class Blocks extends Items
             return [];
         }
 
-        // no layouts
-        if (array_key_exists('columns', $input[0]) === false) {
+        if (
+            // no columns = no layout
+            array_key_exists('columns', $input[0]) === false ||
+            // checks if this is a block for the builder plugin
+            array_key_exists('_key', $input[0]) === true
+        ) {
             return $input;
         }
 
