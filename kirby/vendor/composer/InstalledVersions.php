@@ -14,8 +14,8 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '3.5.0',
-    'version' => '3.5.0.0',
+    'pretty_version' => '3.5.1',
+    'version' => '3.5.1.0',
     'aliases' => 
     array (
     ),
@@ -44,8 +44,8 @@ private static $installed = array (
     ),
     'getkirby/cms' => 
     array (
-      'pretty_version' => '3.5.0',
-      'version' => '3.5.0.0',
+      'pretty_version' => '3.5.1',
+      'version' => '3.5.1.0',
       'aliases' => 
       array (
       ),
@@ -53,12 +53,12 @@ private static $installed = array (
     ),
     'getkirby/composer-installer' => 
     array (
-      'pretty_version' => '1.2.0',
-      'version' => '1.2.0.0',
+      'pretty_version' => '1.2.1',
+      'version' => '1.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '240a8b2c275d61b66601feb58222b7d34bc6cf1e',
+      'reference' => 'c98ece30bfba45be7ce457e1102d1b169d922f3d',
     ),
     'laminas/laminas-escaper' => 
     array (
@@ -132,12 +132,12 @@ private static $installed = array (
     ),
     'symfony/polyfill-mbstring' => 
     array (
-      'pretty_version' => 'v1.20.0',
-      'version' => '1.20.0.0',
+      'pretty_version' => 'v1.22.0',
+      'version' => '1.22.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '39d483bdf39be819deabf04ec872eb0b2410b531',
+      'reference' => 'f377a3dd1fde44d37b9831d68dc8dea3ffd28e13',
     ),
     'true/punycode' => 
     array (

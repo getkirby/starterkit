@@ -11,6 +11,7 @@ class ComposerStaticInitc26333d865e0329b638bdc17afd29896
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '04c6c5c2f7095ccf6c481d3e53e1776f' => __DIR__ . '/..' . '/mustangostang/spyc/Spyc.php',
         'f864ae44e8154e5ff6f4eec32f46d37f' => __DIR__ . '/../..' . '/config/setup.php',
+        '87988fc7b1c1f093da22a1a3de972f3a' => __DIR__ . '/../..' . '/config/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -122,6 +123,7 @@ class ComposerStaticInitc26333d865e0329b638bdc17afd29896
         'Kirby\\Cms\\Auth' => __DIR__ . '/../..' . '/src/Cms/Auth.php',
         'Kirby\\Cms\\Auth\\Challenge' => __DIR__ . '/../..' . '/src/Cms/Auth/Challenge.php',
         'Kirby\\Cms\\Auth\\EmailChallenge' => __DIR__ . '/../..' . '/src/Cms/Auth/EmailChallenge.php',
+        'Kirby\\Cms\\Auth\\Status' => __DIR__ . '/../..' . '/src/Cms/Auth/Status.php',
         'Kirby\\Cms\\Block' => __DIR__ . '/../..' . '/src/Cms/Block.php',
         'Kirby\\Cms\\BlockConverter' => __DIR__ . '/../..' . '/src/Cms/BlockConverter.php',
         'Kirby\\Cms\\Blocks' => __DIR__ . '/../..' . '/src/Cms/Blocks.php',
@@ -219,10 +221,6 @@ class ComposerStaticInitc26333d865e0329b638bdc17afd29896
         'Kirby\\Cms\\UserRules' => __DIR__ . '/../..' . '/src/Cms/UserRules.php',
         'Kirby\\Cms\\Users' => __DIR__ . '/../..' . '/src/Cms/Users.php',
         'Kirby\\Cms\\Visitor' => __DIR__ . '/../..' . '/src/Cms/Visitor.php',
-        'Kirby\\ComposerInstaller\\CmsInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/CmsInstaller.php',
-        'Kirby\\ComposerInstaller\\Installer' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Installer.php',
-        'Kirby\\ComposerInstaller\\Plugin' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Plugin.php',
-        'Kirby\\ComposerInstaller\\PluginInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/PluginInstaller.php',
         'Kirby\\Data\\Data' => __DIR__ . '/../..' . '/src/Data/Data.php',
         'Kirby\\Data\\Handler' => __DIR__ . '/../..' . '/src/Data/Handler.php',
         'Kirby\\Data\\Json' => __DIR__ . '/../..' . '/src/Data/Json.php',
