@@ -21,9 +21,9 @@
 <?php snippet('header') ?>
 
 <article>
-  <h1 class="h1"><?= $page->title()->html() ?></h1>
+  <h1 class="h1"><?= $page->title()->escape() ?></h1>
   <div class="text">
-    <?= $page->text()->kt() ?>
+    <?= $page->text()->escape()->kt() ?>
   </div>
 </article>
 

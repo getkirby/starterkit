@@ -30,7 +30,7 @@
           <?= ($cover = $project->cover()) ? $cover->crop(400, 500) : null ?>
         </span>
         <figcaption class="img-caption">
-          <?= $project->title()->html() ?>
+          <?= $project->title()->escape() ?>
         </figcaption>
       </figure>
     </a>

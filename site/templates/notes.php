@@ -26,7 +26,7 @@
 <?php if (empty($tag) === false): ?>
 <header class="h1">
   <h1>
-    <small>Tag:</small> <?= html($tag) ?>
+    <small>Tag:</small> <?= esc($tag) ?>
     <a href="<?= $page->url() ?>">&times;</a>
   </h1>
 </header>
