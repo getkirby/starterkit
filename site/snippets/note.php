@@ -18,8 +18,8 @@
         <?php endif ?>
       </figure>
 
-      <h2 class="note-excerpt-title"><?= $note->title() ?></h2>
-      <time class="note-excerpt-date" datetime="<?= $note->published('c') ?>"><?= $note->published() ?></time>
+      <h2 class="note-excerpt-title"><?= $note->title()->escape() ?></h2>
+      <time class="note-excerpt-date" datetime="<?= esc($note->published('c'), 'attr') ?>"><?= esc($note->published()) ?></time>
     </header>
     <?php if (($excerpt ?? true) !== false): ?>
     <div class="note-excerpt-text">

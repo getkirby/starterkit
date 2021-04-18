@@ -23,7 +23,7 @@
         <h2>Pages</h2>
         <ul>
           <?php foreach ($site->children()->listed() as $example): ?>
-          <li><a href="<?= $example->url() ?>"><?= $example->title()->html() ?></a></li>
+          <li><a href="<?= $example->url() ?>"><?= $example->title()->escape() ?></a></li>
           <?php endforeach ?>
         </ul>
       </div>
