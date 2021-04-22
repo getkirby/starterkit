@@ -55,3 +55,8 @@ AddOutputFilterByType DEFLATE application/json
 AddOutputFilterByType DEFLATE application/javascript
 AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
+
+<IfModule mod_headers.c>
+# Opt-out of Google Chrome's FLoC per default
+Header always set Permissions-Policy: interest-cohort=()
+</IfModule>
