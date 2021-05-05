@@ -12,6 +12,8 @@ You can learn more about Kirby at [getkirby.com](https://getkirby.com).
 ### Try Kirby for free  
 You can try Kirby and the Starterkit on your local machine or on a test server as long as you need to make sure it is the right tool for your next project. … and when you’re convinced, [buy your license](https://getkirby.com/buy).
 
+The starterkit is a demo of basic Kirby features. It's not recommended to be used "as is" in production. Please, follow our documentation closely for more features and guides on how to build secure, high-quality websites with Kirby.
+
 ### Get going
 Read our guide on [how to get started with Kirby](https://getkirby.com/docs/guide/quickstart).
 
