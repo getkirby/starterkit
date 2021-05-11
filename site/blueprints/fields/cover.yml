@@ -1,4 +1,4 @@
-# Fields can be defined in there own field blueprints
+# Fields can be defined in their own field blueprints
 # and reused across multiple blueprints
 # This field is used in the album.yml and note.yml blueprints
 # See http://getkirby.com/docs/guide/blueprints/extending-blueprints#reusing-and-extending-single-fields
