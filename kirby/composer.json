@@ -8,7 +8,7 @@
     "core"
   ],
   "homepage": "https://getkirby.com",
-  "version": "3.6.1",
+  "version": "3.6.1.1",
   "license": "proprietary",
   "authors": [
     {
@@ -18,16 +18,16 @@
     }
   ],
   "require": {
-    "php": ">=7.4.0 <8.1.0",
+    "php": ">=7.4.0 <8.2.0",
     "ext-ctype": "*",
     "ext-mbstring": "*",
-    "claviska/simpleimage": "3.6.4",
+    "claviska/simpleimage": "3.6.5",
     "filp/whoops": "2.14.4",
     "getkirby/composer-installer": "^1.2.1",
     "laminas/laminas-escaper": "2.9.0",
     "michelf/php-smartypants": "1.8.1",
     "mustangostang/spyc": "0.6.3",
-    "phpmailer/phpmailer": "6.5.1",
+    "phpmailer/phpmailer": "6.5.3",
     "psr/log": "1.1.4",
     "symfony/polyfill-intl-idn": "1.23.0",
     "symfony/polyfill-mbstring": "1.23.1"
