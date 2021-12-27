@@ -28,17 +28,17 @@
   <h2 class="h1">Get in contact</h2>
   <div class="grid" style="--gutter: 1.5rem">
     <section class="column text" style="--columns: 4">
-      <h3>Address</h2>
+      <h3>Address</h3>
       <?= $page->address()->kt() ?>
     </section>
     <section class="column text" style="--columns: 4">
-      <h3>Email</h2>
+      <h3>Email</h3>
       <p><?= html::email($page->email()) ?></p>
-      <h3>Phone</h2>
+      <h3>Phone</h3>
       <p><?= html::tel($page->phone()) ?></p>
     </section>
     <section class="column text" style="--columns: 4">
-      <h3>On the web</h2>
+      <h3>On the web</h3>
       <ul>
         <?php foreach ($page->social()->toStructure() as $social): ?>
         <li><?= html::a($social->url(), $social->platform()) ?></li>
@@ -47,7 +47,5 @@
     </section>
   </div>
 </aside>
-
-</div>
 
 <?php snippet('footer') ?>
