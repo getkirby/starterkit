@@ -16,7 +16,7 @@ return function ($page) {
      * We use the collection helper to fetch the notes collection defined in `/site/collections/notes.php`
      * 
      * More about collections:
-     * http://getkirby.test/docs/guide/templates/collections
+     * https://getkirby.com/docs/guide/templates/collections
      */
     $notes = collection('notes');
 
