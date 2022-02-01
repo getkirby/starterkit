@@ -4,7 +4,7 @@
  * if you need to reuse the same set up pages, files or users in multiple places across your site.
  * 
  * More about collections:
- * http://getkirby.test/docs/guide/templates/collections
+ * https://getkirby.com/docs/guide/templates/collections
  */
 return function () {
     return page('notes')

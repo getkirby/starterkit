@@ -29,7 +29,7 @@ columns:
             label: Alternative Text
             type: text
           photographer:
-            label: Photogapher
+            label: Photographer
             type: text
             width: 2/3
           license:
