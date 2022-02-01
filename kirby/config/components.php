@@ -136,12 +136,17 @@ return [
      * @param \Kirby\Cms\App $kirby Kirby instance
      * @param string $text Text to parse
      * @param array $options Markdown options
-     * @param bool $inline Whether to wrap the text in `<p>` tags
+     * @param bool $inline Whether to wrap the text in `<p>` tags (deprecated: set via $options['inline'] instead)
      * @return string
+     * @todo add deprecation warning for $inline parameter in 3.7.0
+     * @todo remove $inline parameter in in 3.8.0
      */
     'markdown' => function (App $kirby, string $text = null, array $options = [], bool $inline = false): string {
         static $markdown;
         static $config;
+
+        // support for the deprecated fourth argument
+        $options['inline'] ??= $inline;
 
         // if the config options have changed or the component is called for the first time,
         // (re-)initialize the parser object
@@ -150,7 +155,7 @@ return [
             $config   = $options;
         }
 
-        return $markdown->parse($text, $inline);
+        return $markdown->parse($text, $options['inline']);
     },
 
     /**
@@ -343,7 +348,7 @@ return [
      * Modify all URLs
      *
      * @param \Kirby\Cms\App $kirby Kirby instance
-     * @param string $path URL path
+     * @param string|null $path URL path
      * @param array|string|null $options Array of options for the Uri class
      * @return string
      */
@@ -376,7 +381,10 @@ return [
         }
 
         // keep relative urls
-        if (substr($path, 0, 2) === './' || substr($path, 0, 3) === '../') {
+        if (
+            $path !== null &&
+            (substr($path, 0, 2) === './' || substr($path, 0, 3) === '../')
+        ) {
             return $path;
         }
 

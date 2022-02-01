@@ -8,6 +8,7 @@ use Kirby\Exception\InvalidArgumentException;
 use Kirby\Filesystem\Asset;
 use Kirby\Filesystem\F;
 use Kirby\Http\Router;
+use Kirby\Toolkit\Date;
 use Kirby\Toolkit\Escape;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Str;
@@ -114,11 +115,18 @@ function css($url, $options = null): ?string
         }
     }
 
+    // only valid value for 'rel' is 'alternate stylesheet', if 'title' is given as well
+    if (
+        ($options['rel'] ?? '') !== 'alternate stylesheet' ||
+        ($options['title'] ?? '') === ''
+    ) {
+        $options['rel'] = 'stylesheet';
+    }
+
     $url  = ($kirby->component('css'))($kirby, $url, $options);
     $url  = Url::to($url);
     $attr = array_merge((array)$options, [
-        'href' => $url,
-        'rel'  => 'stylesheet'
+        'href' => $url
     ]);
 
     return '<link ' . attr($attr) . '>';
@@ -527,11 +535,12 @@ function load(array $classmap, ?string $base = null)
  * `$kirby->markdown($text)`
  *
  * @param string|null $text
+ * @param array $options
  * @return string
  */
-function markdown(?string $text = null): string
+function markdown(?string $text = null, array $options = []): string
 {
-    return App::instance()->markdown($text);
+    return App::instance()->markdown($text, $options);
 }
 
 /**
@@ -785,60 +794,19 @@ function tc(string $key, int $count)
  */
 function timestamp(?string $date = null, $step = null): ?int
 {
-    if (V::date($date) === false) {
-        return null;
-    }
-
-    $date = strtotime($date);
-
-    if ($step === null) {
-        return $date;
-    }
-
-    // fallback for pre-3.5.0 usage
-    if (is_int($step) === true) {
-        $step = [
-            'unit' => 'minute',
-            'size' => $step
-        ];
-    }
-
-    if (is_array($step) === false) {
-        return $date;
-    }
-
-    $parts = [
-        'second' => date('s', $date),
-        'minute' => date('i', $date),
-        'hour'   => date('H', $date),
-        'day'    => date('d', $date),
-        'month'  => date('m', $date),
-        'year'   => date('Y', $date),
-    ];
-
-    $current = $parts[$step['unit']];
-    $nearest = round($current / $step['size']) * $step['size'];
-    $parts[$step['unit']] = $nearest;
-
-    foreach ($parts as $part => $value) {
-        if ($part === $step['unit']) {
-            break;
+    if ($date = Date::optional($date)) {
+        if ($step !== null) {
+            $step = Date::stepConfig($step, [
+                'unit' => 'minute',
+                'size' => 1
+            ]);
+            $date->round($step['unit'], $step['size']);
         }
 
-        $parts[$part] = 0;
+        return $date->timestamp();
     }
 
-    $timestamp = strtotime(
-        $parts['year'] . '-' .
-        str_pad($parts['month'], 2, 0, STR_PAD_LEFT) . '-' .
-        str_pad($parts['day'], 2, 0, STR_PAD_LEFT) . ' ' .
-        str_pad($parts['hour'], 2, 0, STR_PAD_LEFT) . ':' .
-        str_pad($parts['minute'], 2, 0, STR_PAD_LEFT) . ':' .
-        str_pad($parts['second'], 2, 0, STR_PAD_LEFT)
-    );
-
-    // on error, convert `false` into `null`
-    return $timestamp ?? null;
+    return null;
 }
 
 /**
