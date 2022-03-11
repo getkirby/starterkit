@@ -27,7 +27,7 @@
 <header class="h1">
   <h1>
     <small>Tag:</small> <?= html($tag) ?>
-    <a href="<?= $page->url() ?>">&times;</a>
+    <a href="<?= $page->url() ?>" aria-label="All Notes">&times;</a>
   </h1>
 </header>
 <?php else: ?>
