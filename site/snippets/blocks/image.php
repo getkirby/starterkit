@@ -25,7 +25,7 @@ $lightbox = $link->isEmpty();
 if ($block->location() == 'web') {
     $src = $block->src();
 } elseif ($image = $block->image()->toFile()) {
-    $alt = $alt ?? $image->alt();
+    $alt = $alt->or($image->alt());
     $src = $image->url();
 }
 
