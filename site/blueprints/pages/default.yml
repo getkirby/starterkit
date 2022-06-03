@@ -5,12 +5,6 @@ title: Simple Page
 # Each page can have an icon that is shown in page listings when no preview image is available.
 icon: 📝
 
-# Page presets are a quick way to set up a standard page layout
-# More about page presets:
-# - https://getkirby.com/docs/guide/blueprints/presets and
-# - https://getkirby.com/docs/reference/panel/presets/page
-preset: page
-
 # Custom descriptions of page statuses depending on use case
 # More about page statuses: https://getkirby.com/docs/reference/panel/blueprints/page#statuses
 status:
@@ -22,13 +16,27 @@ status:
     label: Menu Page
     text: The page is listed in the main menu
 
-# Limit subpage display to certain templates in a page preset
-pages:
-  template: default
+# Content area width 2 columns and 3 sections: fields, pages, and files
+# Columns: https://getkirby.com/docs/guide/blueprints/layout#defining-columns
+columns:
+  main:
+    width: 2/3
+    sections:
+      # Fields section: https://getkirby.com/docs/reference/panel/sections/fields
+      fields:
+        type: fields
+        fields:
+          text:
+            type: textarea
+            size: huge
+  sidebar:
+    width: 1/3
+    sections:
+      # Pages section: https://getkirby.com/docs/reference/panel/sections/pages
+      pages:
+        type: pages
+        template: default
+      # Files section: https://getkirby.com/docs/reference/panel/sections/files
+      files:
+        type: files
 
-# A page preset can have a freely defined set of fields
-# List of all available field types: https://getkirby.com/docs/reference/panel/fields
-fields:
-  text:
-    type: textarea
-    size: huge
