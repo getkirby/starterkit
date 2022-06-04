@@ -3,7 +3,7 @@
 # Sections can have different layouts and display additional information or a preview image
 # More about pages sections: https://getkirby.com/docs/reference/panel/sections/pages
 type: pages
-headline: Photography
+label: Photography
 parent: kirby.page("photography")
 size: small
 info: "{{ page.images.count }} image(s)"

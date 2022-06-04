@@ -14,12 +14,12 @@ columns:
     sections:
       drafts:
         extends: sections/notes
-        headline: Drafts
+        label: Drafts
         status: draft
 
       unlisted:
         extends: sections/notes
-        headline: In Review
+        label: In Review
         status: unlisted
 
   - width: 2/3
@@ -27,7 +27,7 @@ columns:
     sections:
       listed:
         extends: sections/notes
-        headline: Published
+        label: Published
         status: listed
         size: small
         layout: cards
