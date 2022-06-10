@@ -25,7 +25,7 @@
 
     <div class="column" style="--columns: 4">
       <div class="text">
-        <?= $page->text() ?>
+        <?= $page->text()->toBlocks() ?>
       </div>
     </div>
 
