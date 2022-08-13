@@ -7,7 +7,6 @@
     "cms",
     "starterkit"
   ],
-  "homepage": "https://getkirby.com",
   "authors": [
     {
       "name": "Bastian Allgeier",
@@ -15,6 +14,7 @@
       "homepage": "https://getkirby.com"
     }
   ],
+  "homepage": "https://getkirby.com",
   "support": {
     "email": "support@getkirby.com",
     "issues": "https://github.com/getkirby/starterkit/issues",
@@ -25,13 +25,16 @@
     "php": ">=7.4.0 <8.2.0",
     "getkirby/cms": "^3.6"
   },
+  "config": {
+    "allow-plugins": {
+      "getkirby/composer-installer": true
+    },
+    "optimize-autoloader": true
+  },
   "scripts": {
     "start": [
       "Composer\\Config::disableProcessTimeout",
       "@php -S localhost:8000 kirby/router.php"
     ]
-  },
-  "config": {
-    "optimize-autoloader": true
   }
 }
