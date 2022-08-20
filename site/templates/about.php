@@ -29,7 +29,7 @@
   <div class="grid" style="--gutter: 1.5rem">
     <section class="column text" style="--columns: 4">
       <h3>Address</h3>
-      <?= $page->address()->kt() ?>
+      <?= $page->address() ?>
     </section>
     <section class="column text" style="--columns: 4">
       <h3>Email</h3>
