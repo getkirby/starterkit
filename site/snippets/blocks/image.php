@@ -23,10 +23,11 @@ $src      = null;
 $lightbox = $link->isEmpty();
 
 if ($block->location() == 'web') {
-    $src = $block->src();
+    $src      = $block->src();
+    $srcValue = $src->escape('attr');
 } elseif ($image = $block->image()->toFile()) {
     $alt = $alt->or($image->alt());
-    $src = $image->url();
+    $src = $srcValue = $image->url();
 }
 
 if ($ratio !== 'auto') {
@@ -44,10 +45,10 @@ $attrs = attr([
 ]);
 
 ?>
-<?php if ($src): ?>
+<?php if ($srcValue): ?>
 <figure>
   <a <?= $attrs ?>>
-    <img src="<?= $src ?>" alt="<?= $alt ?>">
+    <img src="<?= $srcValue ?>" alt="<?= esc($alt, 'attr') ?>">
   </a>
 
   <?php if ($caption->isNotEmpty()): ?>

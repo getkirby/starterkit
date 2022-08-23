@@ -24,7 +24,7 @@
     site and the title of the current page
   */
   ?>
-  <title><?= $site->title() ?> | <?= $page->title() ?></title>
+  <title><?= $site->title()->esc() ?> | <?= $page->title()->esc() ?></title>
 
   <?php
   /*
@@ -60,7 +60,7 @@
     */
     ?>
     <a class="logo" href="<?= $site->url() ?>">
-      <?= $site->title()->html() ?>
+      <?= $site->title()->esc() ?>
     </a>
 
     <nav class="menu">
@@ -78,7 +78,7 @@
       */
       ?>
       <?php foreach ($site->children()->listed() as $item): ?>
-      <a <?php e($item->isOpen(), 'aria-current ') ?> href="<?= $item->url() ?>"><?= $item->title()->html() ?></a>
+      <a <?php e($item->isOpen(), 'aria-current ') ?> href="<?= $item->url() ?>"><?= $item->title()->esc() ?></a>
       <?php endforeach ?>
       <?php snippet('social') ?>
     </nav>

@@ -33,15 +33,15 @@
     </section>
     <section class="column text" style="--columns: 4">
       <h3>Email</h3>
-      <p><?= html::email($page->email()) ?></p>
+      <p><?= Html::email($page->email()) ?></p>
       <h3>Phone</h3>
-      <p><?= html::tel($page->phone()) ?></p>
+      <p><?= Html::tel($page->phone()) ?></p>
     </section>
     <section class="column text" style="--columns: 4">
       <h3>On the web</h3>
       <ul>
         <?php foreach ($page->social()->toStructure() as $social): ?>
-        <li><?= html::a($social->url(), $social->platform()) ?></li>
+        <li><?= Html::a($social->url(), $social->platform()) ?></li>
         <?php endforeach ?>
       </ul>
     </section>

@@ -48,7 +48,7 @@
           <?php endif ?>
           <figcaption>
             <span>
-              <span class="example-name"><?= $album->title()->html() ?></span>
+              <span class="example-name"><?= $album->title()->esc() ?></span>
             </span>
           </figcaption>
         </figure>

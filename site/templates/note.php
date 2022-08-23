@@ -31,9 +31,9 @@
 
 <article class="note">
   <header class="note-header h1">
-    <h1 class="note-title"><?= $page->title()->html() ?></h1>
+    <h1 class="note-title"><?= $page->title()->esc() ?></h1>
     <?php if ($page->subheading()->isNotEmpty()): ?>
-    <p class="note-subheading"><small><?= $page->subheading()->html() ?></small></p>
+    <p class="note-subheading"><small><?= $page->subheading()->esc() ?></small></p>
     <?php endif ?>
   </header>
   <div class="note text">
@@ -44,13 +44,13 @@
     <ul class="note-tags">
       <?php foreach ($tags as $tag): ?>
       <li>
-        <a href="<?= $page->parent()->url(['params' => ['tag' => $tag]]) ?>"><?= html($tag) ?></a>
+        <a href="<?= $page->parent()->url(['params' => ['tag' => $tag]]) ?>"><?= esc($tag) ?></a>
       </li>
       <?php endforeach ?>
     </ul>
     <?php endif ?>
 
-    <time class="note-date" datetime="<?= $page->date('c') ?>">Published on <?= $page->date() ?></time>
+    <time class="note-date" datetime="<?= $page->date()->toDate('c') ?>">Published on <?= $page->date()->esc() ?></time>
   </footer>
 
   <?php snippet('prevnext') ?>

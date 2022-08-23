@@ -18,7 +18,7 @@
         <?php endif ?>
       </figure>
 
-      <h2 class="note-excerpt-title"><?= $note->title() ?></h2>
+      <h2 class="note-excerpt-title"><?= $note->title()->esc() ?></h2>
       <time class="note-excerpt-date" datetime="<?= $note->published('c') ?>"><?= $note->published() ?></time>
     </header>
     <?php if (($excerpt ?? true) !== false): ?>
