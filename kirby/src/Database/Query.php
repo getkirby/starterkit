@@ -407,7 +407,7 @@ class Query
 		$mode = A::last($args);
 
 		// if there's a where clause mode attribute attached…
-		if (in_array($mode, ['AND', 'OR']) === true) {
+		if (in_array($mode, ['AND', 'OR'], true) === true) {
 			// remove that from the list of arguments
 			array_pop($args);
 		}
@@ -431,7 +431,7 @@ class Query
 		$mode = A::last($args);
 
 		// if there's a where clause mode attribute attached…
-		if (in_array($mode, ['AND', 'OR']) === true) {
+		if (in_array($mode, ['AND', 'OR'], true) === true) {
 			// remove that from the list of arguments
 			array_pop($args);
 		}
@@ -941,7 +941,7 @@ class Query
 		$result = '';
 
 		// if there's a where clause mode attribute attached…
-		if (in_array($mode, ['AND', 'OR'])) {
+		if (in_array($mode, ['AND', 'OR'], true) === true) {
 			// remove that from the list of arguments
 			array_pop($args);
 		} else {
@@ -956,14 +956,12 @@ class Query
 
 				// ->where('username like "myuser"');
 				} elseif (is_string($args[0]) === true) {
-
 					// simply add the entire string to the where clause
 					// escaping or using bindings has to be done before calling this method
 					$result = $args[0];
 
 				// ->where(['username' => 'myuser']);
 				} elseif (is_array($args[0]) === true) {
-
 					// simple array mode (AND operator)
 					$sql = $this->database->sql()->values($this->table, $args[0], ' AND ', true, true);
 
@@ -990,7 +988,6 @@ class Query
 
 				// ->where('username like :username', ['username' => 'myuser'])
 				if (is_string($args[0]) === true && is_array($args[1]) === true) {
-
 					// prepared where clause
 					$result = $args[0];
 
@@ -999,7 +996,6 @@ class Query
 
 				// ->where('username like ?', 'myuser')
 				} elseif (is_string($args[0]) === true && is_string($args[1]) === true) {
-
 					// prepared where clause
 					$result = $args[0];
 
@@ -1012,7 +1008,6 @@ class Query
 
 				// ->where('username', 'like', 'myuser');
 				if (is_string($args[0]) === true && is_string($args[1]) === true) {
-
 					// validate column
 					$sql = $this->database->sql();
 					$key = $sql->columnName($this->table, $args[0]);
@@ -1061,7 +1056,6 @@ class Query
 				}
 
 				break;
-
 		}
 
 		// attach the where clause
