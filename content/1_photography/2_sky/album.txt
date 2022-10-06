@@ -2,9 +2,7 @@ Title: Sky
 
 ----
 
-Cover:
-
-- dark-forest.jpg
+Cover: - dark-forest.jpg
 
 ----
 
@@ -21,3 +19,7 @@ Text: <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur 
 ----
 
 Tags: stars, universe, up there
+
+----
+
+Uuid: EWQEPJBB2Xyrrrj6

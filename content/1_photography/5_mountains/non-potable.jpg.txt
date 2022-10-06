@@ -23,3 +23,7 @@ Template: image
 ----
 
 Sort: 2
+
+----
+
+Uuid: VI8RHCHCnTx1ygYK

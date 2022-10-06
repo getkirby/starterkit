@@ -1,6 +1,8 @@
-Cover: 
+Title: Animals
 
-- peter-fox.jpg
+----
+
+Cover: - peter-fox.jpg
 
 ----
 
@@ -16,4 +18,4 @@ Tags: animals
 
 ----
 
-Title: Animals
+Uuid: WHgrILxhRV80ZFb2

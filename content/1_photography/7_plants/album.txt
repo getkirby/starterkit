@@ -2,9 +2,7 @@ Title: Plants
 
 ----
 
-Cover:
-
-- nice-colors-ugly-plant.jpg
+Cover: - nice-colors-ugly-plant.jpg
 
 ----
 
@@ -21,3 +19,7 @@ Text: <p>This was a very special project. Plants are nice and quite beautiful Nu
 ----
 
 Tags: plants
+
+----
+
+Uuid: wAgKEa9FhpZ5mTMG

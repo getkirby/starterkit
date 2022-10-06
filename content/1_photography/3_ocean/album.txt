@@ -2,9 +2,7 @@ Title: Ocean
 
 ----
 
-Cover:
-
-- island-from-above.jpg
+Cover: - island-from-above.jpg
 
 ----
 
@@ -21,3 +19,7 @@ Text: <p>Cras mattis consectetur purus sit amet fermentum. Lorem ipsum dolor sit
 ----
 
 Tags: ocean, water, blue
+
+----
+
+Uuid: D4DuOwcJk0fL0twA

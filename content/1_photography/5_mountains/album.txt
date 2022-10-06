@@ -2,9 +2,7 @@ Title: Mountains
 
 ----
 
-Cover:
-
-- probably-photoshopped.jpg
+Cover: - probably-photoshopped.jpg
 
 ----
 
@@ -21,3 +19,7 @@ Text: <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget l
 ----
 
 Tags: mountains, peak nature
+
+----
+
+Uuid: XqbutgSsL5ibgjxP

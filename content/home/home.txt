@@ -7,3 +7,7 @@ Headline: Welcome to Kirby's Starterkit
 ----
 
 Subheadline: A fully documented example project
+
+----
+
+Uuid: wljMYhm0m3e9QOwC

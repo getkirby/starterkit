@@ -6,9 +6,7 @@ Subheading:
 
 ----
 
-Cover:
-
-- sumatra.jpg
+Cover: - sumatra.jpg
 
 ----
 
@@ -25,3 +23,7 @@ Author:
 ----
 
 Tags: jungle, nature, travel, sumatra, forest
+
+----
+
+Uuid: I9MH5r3tV0EmRomG

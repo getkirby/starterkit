@@ -2,9 +2,7 @@ Title: Landscape
 
 ----
 
-Cover:
-
-- that-green-looks-fake.jpg
+Cover: - that-green-looks-fake.jpg
 
 ----
 
@@ -21,3 +19,7 @@ Text: <p>Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus
 ----
 
 Tags: landscape, nature
+
+----
+
+Uuid: PjvoKxwSNH1m9vjC

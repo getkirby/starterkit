@@ -2,9 +2,7 @@ Title: Desert
 
 ----
 
-Cover:
-
-- indiana-jones.jpg
+Cover: - indiana-jones.jpg
 
 ----
 
@@ -21,3 +19,7 @@ Text: <p>Curabitur blandit tempus porttitor. Sed posuere consectetur est at lobo
 ----
 
 Tags: desert, sand, landscape
+
+----
+
+Uuid: w8ymxqAzqTvYkHJ4
