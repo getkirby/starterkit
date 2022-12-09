@@ -1,4 +1,4 @@
-Template: blocks/image
+Template: image
 
 ----
 
