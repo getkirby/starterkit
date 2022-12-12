@@ -29,11 +29,11 @@ columns:
       website:
         label: Website
         type: url
-      twitter:
-        label: Twitter
-        type: text
-        icon: twitter
-        placeholder: @username
+      fediverse:
+        label: Fediverse URL
+        type: url
+        icon: mastodon
+        placeholder: https://example.com/@username
       instagram:
         label: Instagram
         type: text
