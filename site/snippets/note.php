@@ -14,7 +14,7 @@
     <header>
       <figure class="img" style="--w: 16; --h:9">
         <?php if ($cover = $note->cover()): ?>
-        <?= $cover->crop(320, 180) ?>
+          <img src="<?= $cover->crop(320, 180)->url() ?>" alt="<?= $cover->alt()->esc() ?>">
         <?php endif ?>
       </figure>
 

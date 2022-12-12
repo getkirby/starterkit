@@ -1,3 +1,23 @@
+Caption: 
+
+----
+
+Alt: A very clean white room with a small table and a chair in front of it. It's very minimalistic.
+
+----
+
+Photographer: 
+
+----
+
+License: 
+
+----
+
+Link: 
+
+----
+
 Template: blocks/image
 
 ----

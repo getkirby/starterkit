@@ -35,7 +35,7 @@
         <li>
           <a href="<?= $image->url() ?>" data-lightbox>
             <figure class="img" style="--w:<?= $image->width() ?>;--h:<?= $image->height() ?>">
-              <?= $image->resize(800) ?>
+              <img src="<?= $image->resize(800)->url() ?>" alt="<?= $image->alt()->esc() ?>">
             </figure>
           </a>
         </li>

@@ -44,7 +44,7 @@
           */
           ?>
           <?php if ($cover = $album->cover()): ?>
-          <?= $cover->resize(1024, 1024) ?>
+          <img src="<?= $cover->resize(1024, 1024)->url() ?>" alt="<?= $cover->alt()->esc() ?>">
           <?php endif ?>
           <figcaption>
             <span>

@@ -27,7 +27,9 @@
     <a href="<?= $project->url() ?>">
       <figure>
         <span class="img" style="--w:4;--h:5">
-          <?= ($cover = $project->cover()) ? $cover->crop(400, 500) : null ?>
+          <?php if ($cover = $project->cover()): ?>
+            <img src="<?= $cover->crop(400, 500)->url() ?>" alt="<?= $cover->alt()->esc() ?>">
+          <?php endif ?>
         </span>
         <figcaption class="img-caption">
           <?= $project->title()->esc() ?>

@@ -1,3 +1,23 @@
+Caption: 
+
+----
+
+Alt: Two tents in the forest and the sun is shining through the leaves.
+
+----
+
+Photographer: 
+
+----
+
+License: 
+
+----
+
+Link: 
+
+----
+
 Template: blocks/image
 
 ----

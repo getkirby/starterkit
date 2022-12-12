@@ -25,7 +25,7 @@
 
 <?php if ($cover = $page->cover()): ?>
 <a href="<?= $cover->url() ?>" data-lightbox class="img" style="--w:2; --h:1">
-  <?= $cover->crop(1200, 600) ?>
+  <img src="<?= $cover->crop(1200, 600)->url() ?>" alt="<?= $cover->alt()->esc() ?>">
 </a>
 <?php endif ?>
 
