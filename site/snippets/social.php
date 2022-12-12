@@ -12,13 +12,16 @@
 */
 ?>
 <span class="social">
-  <a href="https://twitter.com/getkirby">
-    <?= svg('assets/icons/twitter.svg') ?>
+  <a href="https://mastodon.social/@getkirby" aria-label="Follow us on Mastodon">
+    <?= svg('assets/icons/mastodon.svg') ?>
   </a>
-  <a href="https://chat.getkirby.com">
-    <?= svg('assets/icons/discord.svg') ?>
-  </a>
-  <a href="https://instagram.com/getkirby">
+  <a href="https://instagram.com/getkirby" aria-label="Follow us on Instagram">
     <?= svg('assets/icons/instagram.svg') ?>
+  </a>
+  <a href="https://youtube.com/kirbycasts" aria-label="Watch our videos on YouTube">
+    <?= svg('assets/icons/youtube.svg') ?>
+  </a>
+  <a href="https://chat.getkirby.com" aria-label="Chat with us on Discord">
+    <?= svg('assets/icons/discord.svg') ?>
   </a>
 </span>

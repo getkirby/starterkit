@@ -1,4 +1,4 @@
-Caption: 
+Caption:
 
 ----
 
@@ -6,19 +6,19 @@ Alt: The milky way above a foggy landscape with mountains in the background and 
 
 ----
 
-Photographer: 
+Photographer:
 
 ----
 
-License: 
+License:
 
 ----
 
-Link: 
+Link:
 
 ----
 
-Template: blocks/image
+Template: image
 
 ----
 
