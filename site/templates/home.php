@@ -17,6 +17,7 @@
 
   More about templates: https://getkirby.com/docs/guide/templates/basics
 */
+
 ?>
 <?php snippet('header') ?>
   <?php snippet('intro') ?>
