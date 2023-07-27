@@ -26,11 +26,25 @@ class Controller
 	public function arguments(array $data = []): array
 	{
 		$info = new ReflectionFunction($this->function);
+		$args = [];
 
-		return A::map(
-			$info->getParameters(),
-			fn ($parameter) => $data[$parameter->getName()] ?? null
-		);
+		foreach ($info->getParameters() as $param) {
+			$name = $param->getName();
+
+			if ($param->isVariadic() === true) {
+				// variadic ... argument collects all remaining values
+				$args += $data;
+			} elseif (isset($data[$name]) === true) {
+				// use provided argument value if available
+				$args[$name] = $data[$name];
+			} elseif ($param->isDefaultValueAvailable() === false) {
+				// use null for any other arguments that don't define
+				// a default value for themselves
+				$args[$name] = null;
+			}
+		}
+
+		return $args;
 	}
 
 	public function call($bind = null, $data = [])
