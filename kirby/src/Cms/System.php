@@ -32,6 +32,7 @@ use Throwable;
 class System
 {
 	// cache
+	protected array|bool|null $license = null;
 	protected UpdateStatus|null $updateStatus = null;
 
 	public function __construct(protected App $app)
@@ -79,7 +80,10 @@ class System
 
 		switch ($folder) {
 			case 'content':
-				return $url . '/' . basename($this->app->site()->contentFile());
+				return $url . '/' . basename($this->app->site()->storage()->contentFile(
+					'published',
+					'default'
+				));
 			case 'git':
 				return $url . '/config';
 			case 'kirby':
@@ -201,7 +205,25 @@ class System
 	}
 
 	/**
-	 * Check if the panel is installable.
+	 * Check if the Panel has 2FA activated
+	 */
+	public function is2FA(): bool
+	{
+		return ($this->loginMethods()['password']['2fa'] ?? null) === true;
+	}
+
+	/**
+	 * Check if the Panel has 2FA with TOTP activated
+	 */
+	public function is2FAWithTOTP(): bool
+	{
+		return
+			$this->is2FA() === true &&
+			in_array('totp', $this->app->auth()->enabledChallenges()) === true;
+	}
+
+	/**
+	 * Check if the Panel is installable.
 	 * On a public server the panel.install
 	 * option must be explicitly set to true
 	 * to get the installer up and running.
@@ -245,12 +267,16 @@ class System
 	 *                     permissions for access.settings, otherwise just a
 	 *                     boolean that tells whether a valid license is active
 	 */
-	public function license()
+	public function license(): string|bool
 	{
+		if ($this->license !== null) {
+			return $this->license;
+		}
+
 		try {
 			$license = Json::read($this->app->root('license'));
 		} catch (Throwable) {
-			return false;
+			return $this->license = false;
 		}
 
 		// check for all required fields for the validation
@@ -262,7 +288,7 @@ class System
 			$license['domain'],
 			$license['signature']
 		) !== true) {
-			return false;
+			return $this->license = false;
 		}
 
 		// build the license verification data
@@ -282,21 +308,21 @@ class System
 		$data      = json_encode($data);
 		$signature = hex2bin($license['signature']);
 		if (openssl_verify($data, $signature, $pubKey, 'RSA-SHA256') !== 1) {
-			return false;
+			return $this->license = false;
 		}
 
 		// verify the URL
 		if ($this->licenseUrl() !== $this->licenseUrl($license['domain'])) {
-			return false;
+			return $this->license = false;
 		}
 
 		// only return the actual license key if the
 		// current user has appropriate permissions
 		if ($this->app->user()?->isAdmin() === true) {
-			return $license['license'];
+			return $this->license = $license['license'];
 		}
 
-		return true;
+		return $this->license = true;
 	}
 
 	/**
@@ -417,8 +443,8 @@ class System
 	public function php(): bool
 	{
 		return
-			version_compare(PHP_VERSION, '8.0.0', '>=') === true &&
-			version_compare(PHP_VERSION, '8.3.0', '<')  === true;
+			version_compare(PHP_VERSION, '8.1.0', '>=') === true &&
+			version_compare(PHP_VERSION, '8.4.0', '<')  === true;
 	}
 
 	/**
@@ -473,6 +499,9 @@ class System
 
 		// save the license information
 		Json::write($file, $json);
+
+		// clear the license cache
+		$this->license = null;
 
 		if ($this->license() === false) {
 			throw new InvalidArgumentException([
@@ -607,6 +636,7 @@ class System
 
 	/**
 	 * Improved `var_dump` output
+	 * @codeCoverageIgnore
 	 */
 	public function __debugInfo(): array
 	{

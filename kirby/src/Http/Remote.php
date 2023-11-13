@@ -50,16 +50,7 @@ class Remote
 	public array $options = [];
 
 	/**
-	 * Magic getter for request info data
-	 */
-	public function __call(string $method, array $arguments = [])
-	{
-		$method = str_replace('-', '_', Str::kebab($method));
-		return $this->info[$method] ?? null;
-	}
-
-	/**
-	 * Constructor
+	 * @throws \Exception when the curl request failed
 	 */
 	public function __construct(string $url, array $options = [])
 	{
@@ -74,8 +65,7 @@ class Remote
 
 		// update the defaults with App config if set;
 		// request the App instance lazily
-		$app = App::instance(null, true);
-		if ($app !== null) {
+		if ($app = App::instance(null, true)) {
 			$defaults = array_merge($defaults, $app->option('remote', []));
 		}
 
@@ -89,8 +79,19 @@ class Remote
 		$this->fetch();
 	}
 
-	public static function __callStatic(string $method, array $arguments = []): static
+	/**
+	 * Magic getter for request info data
+	 */
+	public function __call(string $method, array $arguments = [])
 	{
+		$method = str_replace('-', '_', Str::kebab($method));
+		return $this->info[$method] ?? null;
+	}
+
+	public static function __callStatic(
+		string $method,
+		array $arguments = []
+	): static {
 		return new static(
 			url: $arguments[0],
 			options: array_merge(
@@ -120,6 +121,7 @@ class Remote
 	 * Sets up all curl options and sends the request
 	 *
 	 * @return $this
+	 * @throws \Exception when the curl request failed
 	 */
 	public function fetch(): static
 	{
@@ -258,6 +260,8 @@ class Remote
 
 	/**
 	 * Static method to send a GET request
+	 *
+	 * @throws \Exception when the curl request failed
 	 */
 	public static function get(string $url, array $params = []): static
 	{
@@ -339,6 +343,8 @@ class Remote
 
 	/**
 	 * Static method to init this class and send a request
+	 *
+	 * @throws \Exception when the curl request failed
 	 */
 	public static function request(string $url, array $params = []): static
 	{
