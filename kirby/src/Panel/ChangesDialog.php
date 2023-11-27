@@ -5,7 +5,7 @@ namespace Kirby\Panel;
 use Kirby\Cms\App;
 use Kirby\Cms\Find;
 use Kirby\Http\Uri;
-use Kirby\Toolkit\Str;
+use Kirby\Toolkit\Escape;
 use Throwable;
 
 class ChangesDialog
@@ -14,7 +14,6 @@ class ChangesDialog
 	{
 		$kirby     = App::instance();
 		$multilang = $kirby->multilang();
-		$ids       = Str::split($ids);
 		$changes   = [];
 
 		foreach ($ids as $id) {
@@ -37,6 +36,8 @@ class ChangesDialog
 					$item['text'] .= ' (' . $language->code() . ')';
 					$item['link'] .= '?language=' . $language->code();
 				}
+
+				$item['text'] = Escape::html($item['text']);
 
 				$changes[] = $item;
 			} catch (Throwable) {
