@@ -239,6 +239,16 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: .75rem;
   color: var(--color-text-grey);
 }
+.text figure ul {
+  line-height: 0;
+  display: grid;
+  gap: 1.5rem;
+  margin: 0;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+.text figure ul li {
+  list-style: none;
+}
 
 hr {
   border: 0;
