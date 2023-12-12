@@ -22,7 +22,7 @@
     "source": "https://github.com/getkirby/starterkit"
   },
   "require": {
-    "php": ">=8.0.0 <8.3.0",
+    "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
     "getkirby/cms": "^4.0"
   },
   "config": {
