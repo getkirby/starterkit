@@ -9,4 +9,5 @@
  */
 return [
     'debug' => true,
+    'yaml.handler' => 'symfony',
 ];
