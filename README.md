@@ -36,8 +36,7 @@ If you are familiar with Git, you can clone Kirby's Starterkit repository from G
 -   **[Discord](https://chat.getkirby.com)** – Hang out and meet the community.
 -   **[YouTube](https://youtube.com/kirbyCasts)** - Watch the latest video tutorials visually with Bastian.
 -   **[Mastodon](https://mastodon.social/@getkirby)** – Spread the word.
--   **[Instagram](https://www.instagram.com/getkirby/)** – Share your creations: #madewithkirby.
-
+-   **[Bluesky](https://bsky.app/profile/getkirby.com)** – Tell a friend.
 ---
 
 © 2009 Bastian Allgeier
