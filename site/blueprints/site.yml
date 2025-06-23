@@ -16,7 +16,9 @@ columns:
   - width: 1/2
     sections:
       # The `notes` section reuses the pages section defined in `/site/blueprints/sections/notes.yml`
-      notes: sections/notes
+      notes:
+        extends: sections/notes
+        status: listed
 
       # The `pages` pages section shows other main pages of the site
       # Using the `templates` option, we limit which types of pages are shown
