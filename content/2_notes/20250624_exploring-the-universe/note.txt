@@ -1,0 +1,29 @@
+Title: Exploring the universe
+
+----
+
+Text: [{"content":{"text":"<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by <strong>their</strong> place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</p>"},"id":"_MtYF6qOmq","isHidden":false,"type":"text"},{"content":{"location":"kirby","image":["file://MrWuC60zAdcIV4ok"],"src":"","alt":"Staring at stars","caption":"Staring at stars","link":"","ratio":"","crop":"false"},"id":"_200yrtaus","isHidden":false,"type":"image"},{"content":{"text":"<p><strong>The Big Oxmox</strong> advised her not to do so, because there were thousands of bad Commas, wild Question Marks and devious Semikoli, but the Little Blind Text didn’t listen. She packed her seven versalia, put her initial into the belt and made herself on the way. When she reached the first hills of the Italic <a href=\"https://getkirby.com\" rel=\"noopener noreferrer nofollow\">Mountains</a>, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she continued her way. On her way she met a copy.</p>"},"id":"_J5cUP6Q8A","isHidden":false,"type":"text"},{"content":{"text":"Time flies like an arrow; fruit flies like a banana","citation":"<a href=\"https://en.wikipedia.org/wiki/Anthony_Oettinger\" rel=\"noopener noreferrer nofollow\">Anthony Oettinger</a>"},"id":"_sxaa7bs0y","isHidden":false,"type":"quote"},{"content":{"level":"h2","text":"Let's put a heading here"},"id":"_mg1sjf8a6","isHidden":false,"type":"heading"},{"content":{"text":"<p>But nothing the <u>copy</u> said could convince her and so it didn’t take long until a few insidious Copy Writers ambushed her, made her drunk with Longe and Parole and dragged her into their agency, where they abused her for their <em>projects</em> again and again. And if she hasn’t been rewritten, then they are still using her. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>"},"id":"_1gcmahr5x","isHidden":false,"type":"text"},{"content":{"location":"","url":"https://vimeo.com/54400762","video":[],"poster":[],"caption":"I found this when searching for stars on Vimeo","autoplay":"false","muted":"true","loop":"false","controls":"true","preload":""},"id":"_d5m9sxprv","isHidden":false,"type":"video"},{"content":{"text":"## This is created by some good old markdown\n\nYou can mix it with the other blocks to get even more **flexibility**. Markdown can be <strong>mixed</strong> with HTML too, which is nice. And of course (link: https://getkirby.com text: Kirbytags) are cool too."},"id":"_mxb6p3yof","isHidden":false,"type":"markdown"},{"content":{"text":"<ul><li><p>Look, it's a list</p></li><li><p>With some nice bullet points</p></li><li><p>Here's another one</p><ol><li><p>This is a nested list</p></li><li><p>With even more list items</p></li><li><p>Mixed list types are possible as well</p></li></ol></li></ul>"},"id":"b664b628-4782-4fc5-8b97-8fe6bb57f7fc","isHidden":false,"type":"list"},{"content":{"level":"h2","text":"Stars stars stars"},"id":"_u6rqirt17","isHidden":false,"type":"heading"},{"content":{"text":"<p>Donec ullamcorper nulla non metus auctor fringilla. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna <code>mollis</code> euismod. Nulla vitae elit libero, a pharetra augue. Nullam quis risus eget urna mollis ornare vel eu leo. Aenean lacinia bibendum nulla sed consectetur. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>"},"id":"_35hdmhopv","isHidden":false,"type":"text"},{"content":{"code":"<?php foreach ($page->text()->toBlocks() as $block): ?>\n<div class=\"block block-type-<?= $block->type() ?>\"\n  <?= $block->type() ?>\n</div>\n<?php endforeach ?>","language":"php"},"id":"_l0ugjspzr","isHidden":false,"type":"code"},{"content":{"level":"h3","text":"Last heading – promised!"},"id":"_9ossz5bvo","isHidden":false,"type":"heading"},{"content":{"text":"<p>Aenean lacinia bibendum nulla sed consectetur. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Nullam id dolor id nibh ultricies vehicula ut id elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>"},"id":"_uxnakchw6","isHidden":false,"type":"text"}]
+
+----
+
+Cover: - 'file://hRM73pPgR7APXqfQ'
+
+----
+
+Date: 2025-06-24 00:00:00
+
+----
+
+Author: []
+
+----
+
+Tags: universe, sky
+
+----
+
+Subheading: Our quest to the edge of nowhere
+
+----
+
+Uuid: TB4YihCuVWuUjgTp

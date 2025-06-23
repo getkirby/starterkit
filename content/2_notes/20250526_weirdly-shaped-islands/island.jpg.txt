@@ -1,0 +1,25 @@
+Caption: <p>Looks like a fish or something</p>
+
+----
+
+Alt: An island from above
+
+----
+
+Photographer: Dave Hoefler
+
+----
+
+License: Unsplash
+
+----
+
+Link: https://unsplash.com/photos/zN7wRrxXjik
+
+----
+
+Template: blog-article-image
+
+----
+
+Uuid: MramIlt073AyiyTv
