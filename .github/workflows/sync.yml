@@ -1,0 +1,60 @@
+name: Sync Kirby
+on:
+  # Triggered by the getkirby/kirby release workflow
+  repository_dispatch:
+    types: [kirby-release]
+
+  # Allow manual runs for a specific version
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Kirby version/tag to install (e.g. 5.5.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: "Sync & tag"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION="${{ github.event.inputs.version || github.event.client_payload.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "No version provided" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Download & replace kirby folder
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          curl -fsSL "https://github.com/getkirby/kirby/archive/refs/tags/${VERSION}.zip" -o kirby.zip
+          rm -rf kirby
+          unzip -q kirby.zip
+          mv "kirby-${VERSION}" kirby
+          rm kirby.zip
+
+      - name: Commit & tag
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes — kirby already at ${VERSION}"
+            exit 0
+          fi
+
+          git add -A
+          git commit -m "Upgrade to ${VERSION}"
+          git tag "${VERSION}"
+          git push --follow-tags
