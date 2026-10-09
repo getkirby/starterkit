@@ -10,7 +10,7 @@
  * an image selected in the cover field or the first image in the folder.
  *
  * You can see the method in use in the `home.php` and `photography.php` templates
- * and in the `site/blueprints/sections/albums.yml` image query
+ * and in the `site/blueprints/fields/albums.yml` image query
  *
  * More about models: https://getkirby.com/docs/guide/templates/page-models
  */

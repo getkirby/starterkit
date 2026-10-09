@@ -4,32 +4,35 @@ title: Notes
 # Each page can have an icon that is shown in page listings when no preview image is available.
 icon: 📖
 
+# We reuse the `notes` pagelist field (defined in `/site/blueprints/fields/notes.yml`)
+# three times with different page status and label
+# More about pagelist fields: https://getkirby.com/docs/reference/panel/fields/pagelist
+fields:
+  drafts:
+    extends: fields/notes
+    label: Drafts
+    status: draft
+
+  unlisted:
+    extends: fields/notes
+    label: In Review
+    status: unlisted
+
+  listed:
+    extends: fields/notes
+    label: Published
+    status: listed
+    size: small
+    layout: cards
+
 # Define the form layout with two columns
 # More about columns: https://getkirby.com/docs/guide/blueprints/layout#defining-columns
-
 columns:
   - width: 1/3
-    # In the first column, we reuse the `notes` section
-    # (defined in `/site/blueprints/sections/notes.yml` twice with different page status and headline
-    sections:
-      drafts:
-        extends: sections/notes
-        label: Drafts
-        status: draft
-
-      unlisted:
-        extends: sections/notes
-        label: In Review
-        status: unlisted
+    fields:
+      - drafts
+      - unlisted
 
   - width: 2/3
-    # In the second column, we reuse the same section, this time for listed pages and with a different headline
-    sections:
-      listed:
-        extends: sections/notes
-        label: Published
-        status: listed
-        size: small
-        layout: cards
-
-# More about pages sections: https://getkirby.com/docs/reference/panel/sections/pages
+    fields:
+      - listed

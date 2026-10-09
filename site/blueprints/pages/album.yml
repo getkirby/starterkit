@@ -10,45 +10,52 @@ status:
   draft: true
   listed: true
 
+# All fields are defined once at the root level of the blueprint
+# and referenced by name in the columns below.
+#
+# List of all available field types:
+# https://getkirby.com/docs/reference/panel/fields
+fields:
+  # If you need the same field in multiple locations, you can define them once and reuse whereever needed.
+  # Here we use a filepicker field defined in `/site/blueprints/fields/cover.yml`
+  cover: fields/cover
+  headline:
+    type: text
+    placeholder: "{{ page.title }}"
+    help: Leave empty to use the title as headline
+  subheadline:
+    type: text
+  text:
+    type: writer
+  tags: true
+  # The `images` filelist field shows all images of
+  # the current page that use the `image` template
+  # More about filelist fields: https://getkirby.com/docs/reference/panel/fields/filelist
+  images:
+    type: filelist
+    layout: cards
+    template: image
+    info: "{{ file.dimensions }}"
+    image:
+      ratio: 5/4
+      cover: true
+    min: 1
+    size: small
+
 # Define the form layout with two columns
 # Columns are optional but help structure the form layout
-# The first column defines an files section, the second a set of fields
-# More about different types of sections: https://getkirby.com/docs/reference/panel/sections
+# The first column holds the fields with information about the album,
+# the second one the list of images
 # More about columns: https://getkirby.com/docs/guide/blueprints/layout#defining-columns
-
 columns:
   - width: 1/3
-    # The first column contains a set of fields to store
-    # information about the album.
-    #
-    # List of all available field types:
-    # https://getkirby.com/docs/reference/panel/fields
     fields:
-      # If you need the same field in multiple locations, you can define them once and reuse whereever needed.
-      # Here we use a files field defined in `/site/blueprints/field/cover.yml`
-      cover: fields/cover
-      headline:
-        type: text
-        placeholder: "{{ page.title }}"
-        help: Leave empty to use the title as headline
-      subheadline:
-        type: text
-      text:
-        type: writer
-      tags: true
+      - cover
+      - headline
+      - subheadline
+      - text
+      - tags
 
   - width: 2/3
-    sections:
-      # The `images` files section shows all images of
-      # the current page that use the `image` template
-      images:
-        type: files
-        layout: cards
-        template: image
-        info: "{{ file.dimensions }}"
-        image:
-          ratio: 5/4
-          cover: true
-        min: 1
-        size: small
-
+    fields:
+      - images
