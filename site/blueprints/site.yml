@@ -4,31 +4,37 @@
 # In this example blueprint, we also show subpages of the `photography` and `notes` pages.
 # More about the site blueprint: https://getkirby.com/docs/reference/panel/blueprints/site
 
+fields:
+  # The `albums` field lists the subpages of the `photography` page in card layout
+  # It reuses the pagelist field defined in `/site/blueprints/fields/albums.yml`
+  albums: fields/albums
+
+  # The `notes` field reuses the pagelist field defined in `/site/blueprints/fields/notes.yml`
+  notes:
+    extends: fields/notes
+    status: listed
+
+  # The `pages` pagelist field shows other main pages of the site
+  # Using the `templates` option, we limit which types of pages are shown
+  # Using the `create` option, we limit the type of page that can be created when a new page is created
+  # Note that the `sandbox` page and the `error` page that also exist in the content folder but use different blueprints thus do not show up in the list
+  # Since the error page's blueprint is set to `read: false`, it wouldn't show up here even if you added the error blueprint to the templates list
+  pages:
+    type: pagelist
+    create: default
+    templates:
+      - about
+      - home
+      - default
+
 # The layout of this form has two columns:
+# the first one for the albums, the second one for the notes and pages
 columns:
-  # The first column has one section for the subpages of the `photography` page in card layout
-  # It reuses the pages section defined in `/site/blueprints/sections/albums.yml`
   - width: 1/2
-    sections:
-      albums: sections/albums
+    fields:
+      - albums
 
-  # The second column has two sections, `notes` and `pages`
   - width: 1/2
-    sections:
-      # The `notes` section reuses the pages section defined in `/site/blueprints/sections/notes.yml`
-      notes:
-        extends: sections/notes
-        status: listed
-
-      # The `pages` pages section shows other main pages of the site
-      # Using the `templates` option, we limit which types of pages are shown
-      # Using the `create` option, we limit the type of page that can be created when a new page is created
-      # Note that the `sandbox` page and the `error` page that also exist in the content folder but use different blueprints thus do not show up in the list
-      # Since the error page's blueprint is set to `read: false`, it wouldn't show up here even if you added the error blueprint to the templates list
-      pages:
-        type: pages
-        create: default
-        templates:
-          - about
-          - home
-          - default
+    fields:
+      - notes
+      - pages
