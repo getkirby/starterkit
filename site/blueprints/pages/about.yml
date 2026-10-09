@@ -17,6 +17,44 @@ options:
   changeSlug: false
   delete: false
 
+# All fields are defined once at the root level of the blueprint
+# and can then be referenced by name anywhere in the tabs and columns below.
+# This keeps the layout definition short and easy to change.
+# Kirby has many different field types, from simple text fields to the more complex structure field that contains subfields
+# All available field types: https://getkirby.com/docs/reference/panel/fields
+fields:
+  layout:
+    label: Layout
+    type: layout
+    layouts:
+      - "1/1"
+      - "1/2, 1/2"
+      - "1/3, 1/3, 1/3"
+  address:
+    label: Address
+    type: writer
+    inline: true
+  email:
+    label: Email
+    type: email
+  phone:
+    label: Phone
+    type: tel
+  social:
+    label: On the web
+    type: structure
+    columns:
+      platform: true
+    fields:
+      platform:
+        label: Platform
+        type: text
+        width: 1/2
+      url:
+        label: URL
+        type: url
+        width: 1/2
+
 # We use tabs here to focus on the layout in one tab
 # and have the additional contact fields in a secondary
 # tab. Tabs can really help to clean up the interface
@@ -26,13 +64,7 @@ tabs:
     icon: text
     label: Content
     fields:
-      layout:
-        label: Layout
-        type: layout
-        layouts:
-          - "1/1"
-          - "1/2, 1/2"
-          - "1/3, 1/3, 1/3"
+      - layout
   # The contact tab pre-defines a set of address
   # fields for the contact box at the bottom of the about
   # page. Combining modular content from layouts with
@@ -40,7 +72,7 @@ tabs:
   # offer flexibility and yet keep certain constraints.
   #
   # The form layout is created with two columns,
-  # each column has a set of fields
+  # each column references a set of fields
   # More about columns:
   # https://getkirby.com/docs/guide/blueprints/layout#defining-columns
   contact:
@@ -48,32 +80,10 @@ tabs:
     label: Contact
     columns:
       - width: 1/2
-        # Kirby has many different field types, from simple text fields to the more complex structure field that contains subfields
-        # All available field types: https://getkirby.com/docs/reference/panel/fields
         fields:
-          address:
-            label: Address
-            type: writer
-            inline: true
-          email:
-            label: Email
-            type: email
-          phone:
-            label: Phone
-            type: tel
+          - address
+          - email
+          - phone
       - width: 1/2
         fields:
-          social:
-            label: On the web
-            type: structure
-            columns:
-              platform: true
-            fields:
-              platform:
-                label: Platform
-                type: text
-                width: 1/2
-              url:
-                label: URL
-                type: url
-                width: 1/2
+          - social

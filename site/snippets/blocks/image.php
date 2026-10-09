@@ -30,7 +30,7 @@ if ($block->location()->value() === 'web') {
     'alt'      => $alt,
     'contain'  => $block->crop()->isFalse(),
     'lightbox' => $block->link()->isEmpty(),
-    'href'     => $block->link()->or($src),
+    'href'     => $block->link()->isNotEmpty() ? $block->link()->toUrl() : $src,
     'src'      => $src,
     'ratio'    => $block->ratio()->or('auto')
   ]) ?>

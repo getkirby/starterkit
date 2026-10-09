@@ -16,27 +16,30 @@ status:
     label: Menu Page
     text: The page is listed in the main menu
 
-# Content area width 2 columns and 3 sections: fields, pages, and files
+# All fields are defined once at the root level of the blueprint
+# and referenced by name in the columns below
+fields:
+  text:
+    type: textarea
+    size: huge
+  # Pagelist field: https://getkirby.com/docs/reference/panel/fields/pagelist
+  pages:
+    type: pagelist
+    template: default
+  # Filelist field: https://getkirby.com/docs/reference/panel/fields/filelist
+  files:
+    type: filelist
+
+# Content area with 2 columns: a textarea in the main column,
+# subpages and files in the sidebar
 # Columns: https://getkirby.com/docs/guide/blueprints/layout#defining-columns
 columns:
   main:
     width: 2/3
-    sections:
-      # Fields section: https://getkirby.com/docs/reference/panel/sections/fields
-      fields:
-        type: fields
-        fields:
-          text:
-            type: textarea
-            size: huge
+    fields:
+      - text
   sidebar:
     width: 1/3
-    sections:
-      # Pages section: https://getkirby.com/docs/reference/panel/sections/pages
-      pages:
-        type: pages
-        template: default
-      # Files section: https://getkirby.com/docs/reference/panel/sections/files
-      files:
-        type: files
-
+    fields:
+      - pages
+      - files
