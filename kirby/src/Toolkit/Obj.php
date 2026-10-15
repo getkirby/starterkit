@@ -9,9 +9,6 @@ use stdClass;
  * Super simple stdClass extension with
  * magic getter methods for all properties
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -47,6 +44,14 @@ class Obj extends stdClass
 	public function __get(string $property)
 	{
 		return null;
+	}
+
+	/**
+	 * Magic property setter
+	 */
+	public function __set(string $property, mixed $value): void
+	{
+		$this->{$property} = $value;
 	}
 
 	/**
@@ -99,10 +104,19 @@ class Obj extends stdClass
 
 	/**
 	 * Converts the object to a json string
+	 *
+	 * @throws \JsonException for invalid JSON
 	 */
-	public function toJson(...$arguments): string
+	public function toJson(int $flags = 0, int $depth = 512): string
 	{
-		return json_encode($this->toArray(), ...$arguments);
+		/** @var string $json */
+		$json = json_encode(
+			$this->toArray(),
+			$flags | JSON_THROW_ON_ERROR,
+			$depth
+		);
+
+		return $json;
 	}
 
 	/**

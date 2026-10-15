@@ -18,9 +18,6 @@ use Kirby\Toolkit\Str;
  * a simple API to inspect incoming
  * requests.
  *
- * @package   Kirby Http
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -77,12 +74,12 @@ class Request
 	 *
 	 * `$request->query()->get('foo')`
 	 */
-	protected Query $query;
+	protected Query|null $query = null;
 
 	/**
 	 * Request URL object
 	 */
-	protected Uri $url;
+	protected Uri|null $url = null;
 
 	/**
 	 * Creates a new Request object
@@ -257,7 +254,7 @@ class Request
 	/**
 	 * Returns the domain
 	 */
-	public function domain(): string
+	public function domain(): string|null
 	{
 		return $this->url()->domain();
 	}

@@ -8,9 +8,6 @@ use Kirby\Toolkit\Str;
 /**
  * AppTranslations
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -23,7 +20,7 @@ trait AppTranslations
 	 * Returns the translation strings that Kirby itself defines for
 	 * the given code. Every shipped translation is generated from the
 	 * English one, so that is always the complete set, plus whatever
-	 * plugins register for English and for the code itself.
+	 * extensions register for English and for the code itself.
 	 * @since 5.6.0
 	 */
 	public function coreI18nStrings(string $code): array
@@ -32,9 +29,9 @@ trait AppTranslations
 			...Translation::load(
 				'en',
 				$this->root('i18n:translations') . '/en.json',
-				$this->extensions['translations']['en'] ?? []
+				$this->extensionI18nStrings('en')
 			)->data(),
-			...$this->extensions['translations'][$code] ?? []
+			...$this->extensionI18nStrings($code)
 		];
 	}
 
@@ -56,26 +53,43 @@ trait AppTranslations
 	}
 
 	/**
+	 * Returns the translation strings that plugins, the config
+	 * or the App props have registered for the given code
+	 *
+	 * @since 6.0.0
+	 */
+	protected function extensionI18nStrings(string $code): array
+	{
+		return $this->extension('translations', $code, []);
+	}
+
+	/**
 	 * Setup internationalization
 	 */
 	protected function i18n(): void
 	{
-		I18n::$load = fn ($locale): array =>
-			$this->translation($locale)->data();
+		// These closures are stored statically on `I18n` and therefore outlive
+		// the app that installed them. They must not capture `$this`.
+		I18n::$load = static fn ($locale): array =>
+			App::instance()->translation($locale)->data();
 
 		// the actual locale is set using $app->setCurrentTranslation()
-		I18n::$locale = function (): string {
-			if ($this->multilang() === true) {
-				return $this->defaultLanguage()->code();
+		I18n::$locale = static function (): string {
+			$kirby = App::instance();
+
+			if ($kirby->multilang() === true) {
+				return $kirby->defaultLanguage()->code();
 			}
 
 			return 'en';
 		};
 
-		I18n::$fallback = function (): array {
-			if ($this->multilang() === true) {
+		I18n::$fallback = static function (): array {
+			$kirby = App::instance();
+
+			if ($kirby->multilang() === true) {
 				// first try to fall back to the configured default language
-				$defaultCode = $this->defaultLanguage()->code();
+				$defaultCode = $kirby->defaultLanguage()->code();
 				$fallback    = [$defaultCode];
 
 				// if the default language is specified with a country code
@@ -157,8 +171,8 @@ trait AppTranslations
 			}
 		}
 
-		// get injected translation data from plugins etc.
-		$inject = $this->extensions['translations'][$locale] ?? [];
+		// get injected translation data from extensions
+		$inject = $this->extensionI18nStrings($locale);
 
 		// inject the strings of the current language's custom variables
 		if ($language = $this->language($locale)) {
@@ -185,18 +199,16 @@ trait AppTranslations
 		$translations = $this->extensions['translations'] ?? [];
 
 		// injects languages translations
-		if ($languages = $this->languages()) {
-			foreach ($languages as $language) {
-				$code    = $language->code();
-				$strings = $this->customI18nStrings($language);
+		foreach ($this->languages() as $language) {
+			$code    = $language->code();
+			$strings = $this->customI18nStrings($language);
 
-				// merges the custom variables with the extension translations
-				if ($strings !== []) {
-					$translations[$code] = [
-						...$translations[$code] ?? [],
-						...$strings
-					];
-				}
+			// merges the custom variables with the extension translations
+			if ($strings !== []) {
+				$translations[$code] = [
+					...$this->extensionI18nStrings($code),
+					...$strings
+				];
 			}
 		}
 

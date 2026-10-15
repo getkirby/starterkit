@@ -9,9 +9,6 @@ use Kirby\Toolkit\Str;
  * The `Cookie` class helps you to
  * handle cookies in your projects.
  *
- * @package   Kirby Http
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -59,7 +56,7 @@ class Cookie
 		$expires  = static::lifetime($options['lifetime'] ?? 0);
 		$path     = $options['path']     ?? '/';
 		$domain   = $options['domain']   ?? null;
-		$secure   = $options['secure']   ?? false;
+		$secure   = $options['secure']   ?? Url::scheme() === 'https';
 		$httponly = $options['httpOnly'] ?? true;
 		$samesite = $options['sameSite'] ?? 'Lax';
 
@@ -172,7 +169,7 @@ class Cookie
 		// or fall back to the fixed default set directly with the prop
 		$key = App::instance(lazy: true)?->option('cookie.key') ?: static::$key;
 
-		return hash_hmac('sha1', $value, $key);
+		return hash_hmac('sha256', $value, $key);
 	}
 
 	/**
@@ -221,7 +218,9 @@ class Cookie
 	{
 		if (isset($_COOKIE[$key]) === true) {
 			unset($_COOKIE[$key]);
-			return setcookie($key, '', 1, '/') && setcookie($key, false);
+			return
+				setcookie($key, '', 1, '/') &&
+				setcookie($key, false);
 		}
 
 		return false;

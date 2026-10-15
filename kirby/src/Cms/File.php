@@ -4,12 +4,16 @@ namespace Kirby\Cms;
 
 use Exception;
 use IntlDateFormatter;
+use Kirby\Blueprint\FileBlueprint;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Filesystem\F;
+use Kirby\Filesystem\File as BaseFile;
 use Kirby\Filesystem\IsFile;
+use Kirby\Guards\FileGuards;
 use Kirby\Panel\File as Panel;
 use Kirby\Toolkit\BlockCollectionAccess;
 use Kirby\Toolkit\Str;
+use Kirby\Uuid\FileUuid;
 
 /**
  * The `$file` object provides a set
@@ -25,14 +29,11 @@ use Kirby\Toolkit\Str;
  * In addition the File class handles
  * meta data via `Kirby\Cms\Content`.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  *
- * @use \Kirby\Cms\HasSiblings<\Kirby\Cms\Files>
- * @method \Kirby\Uuid\FileUuid uuid()
+ * @use HasSiblings<Files>
+ * @method FileUuid uuid()
  */
 class File extends ModelWithContent
 {
@@ -42,13 +43,7 @@ class File extends ModelWithContent
 	use HasSiblings;
 	use IsFile;
 
-	public const CLASS_ALIAS = 'file';
-
-	/**
-	 * All registered file methods
-	 * @todo Remove when support for PHP 8.2 is dropped
-	 */
-	public static array $methods = [];
+	public const string CLASS_ALIAS = 'file';
 
 	/**
 	 * Cache for the initialized blueprint object
@@ -57,7 +52,7 @@ class File extends ModelWithContent
 
 	protected string $filename;
 
-	protected string $id;
+	protected string|null $id = null;
 
 	/**
 	 * The parent object
@@ -157,29 +152,30 @@ class File extends ModelWithContent
 	 */
 	public function blueprint(): FileBlueprint
 	{
+		/** @var FileBlueprint */
 		return $this->blueprint ??= FileBlueprint::factory(
+			$this,
 			'files/' . $this->template(),
-			'files/default',
-			$this
+			'files/default'
 		);
 	}
 
 	/**
 	 * Returns an array with all blueprints that are available for the file
-	 * by comparing files sections and files fields of the parent model
+	 * by comparing the file list fields of the parent model
 	 */
-	public function blueprints(string|null $inSection = null): array
+	public function blueprints(string|null $inField = null): array
 	{
 		// get cached results for the current file model
-		// (except when collecting for a specific section)
-		if ($inSection === null && $this->blueprints !== null) {
+		// (except when collecting for a specific field)
+		if ($inField === null && $this->blueprints !== null) {
 			return $this->blueprints; // @codeCoverageIgnore
 		}
 
 		// always include the current template as option
 		$templates = [
 			$this->template() ?? 'default',
-			...$this->parent()->blueprint()->acceptedFileTemplates($inSection)
+			...$this->parent()->blueprint()->acceptedFileTemplates($inField)
 		];
 
 		// make sure every template is only included once
@@ -199,7 +195,7 @@ class File extends ModelWithContent
 				continue;
 			}
 
-			if ($blueprint = FileBlueprint::factory('files/' . $template, null, $this)) {
+			if ($blueprint = FileBlueprint::factory($this, 'files/' . $template)) {
 				try {
 					// ensure that file matches `accept` option,
 					// if not remove template from available list
@@ -225,8 +221,8 @@ class File extends ModelWithContent
 			default => strnatcmp($a['title'], $b['title'])
 		});
 
-		// no caching for when collecting for specific section
-		if ($inSection !== null) {
+		// no caching for when collecting for a specific field
+		if ($inField !== null) {
 			return $blueprints; // @codeCoverageIgnore
 		}
 
@@ -291,6 +287,14 @@ class File extends ModelWithContent
 	}
 
 	/**
+	 * Returns the guards object for this file
+	 */
+	public function guards(): FileGuards
+	{
+		return FileGuards::for($this);
+	}
+
+	/**
 	 * Converts the file to html
 	 */
 	public function html(array $attr = []): string
@@ -335,7 +339,28 @@ class File extends ModelWithContent
 			return false;
 		}
 
-		return FilePermissions::canFromCache($this, 'access');
+		return $this->guards()->isAvailable('access');
+	}
+
+	/**
+	 * Checks if the given file is the exact same file as the
+	 * one that already exists under the same name, template
+	 * included
+	 */
+	public function isIdentical(BaseFile $file): bool
+	{
+		if ($this->exists() === false) {
+			return false;
+		}
+
+		// the model is based on the props of the new file,
+		// to compare templates, we need to get the props of
+		// the already existing file from meta content file
+		$existing = $this->parent()->file($this->filename());
+
+		return
+			$this->sha1() === $file->sha1() &&
+			$this->template() === $existing->template();
 	}
 
 	/**
@@ -344,17 +369,13 @@ class File extends ModelWithContent
 	 */
 	public function isListable(): bool
 	{
-		// TODO: remove this check when `read` option deprecated in v6
-		if ($this->isReadable() === false) {
-			return false;
-		}
-
 		// not accessible also means not listable
+		// (which covers the `read` check as well)
 		if ($this->isAccessible() === false) {
 			return false;
 		}
 
-		return FilePermissions::canFromCache($this, 'list');
+		return $this->guards()->isAvailable('list');
 	}
 
 	/**
@@ -364,12 +385,7 @@ class File extends ModelWithContent
 	 */
 	public function isReadable(): bool
 	{
-		static $readable   = [];
-		$role              = $this->kirby()->role()?->id() ?? '__none__';
-		$template          = $this->template() ?? '__none__';
-		$readable[$role] ??= [];
-
-		return $readable[$role][$template] ??= $this->permissions()->can('read');
+		return $this->guards()->isAvailable('read');
 	}
 
 	/**
@@ -460,7 +476,7 @@ class File extends ModelWithContent
 	 */
 	protected function modifiedFile(): int
 	{
-		return F::modified($this->root());
+		return F::modified($this->root()) ?: 0;
 	}
 
 	/**
@@ -468,8 +484,10 @@ class File extends ModelWithContent
 	 */
 	public function page(): Page|null
 	{
-		if ($this->parent() instanceof Page) {
-			return $this->parent();
+		$parent = $this->parent();
+
+		if ($parent instanceof Page) {
+			return $parent;
 		}
 
 		return null;
@@ -494,7 +512,7 @@ class File extends ModelWithContent
 	/**
 	 * Returns the parent id if a parent exists
 	 */
-	public function parentId(): string
+	public function parentId(): string|null
 	{
 		return $this->parent()->id();
 	}
@@ -543,6 +561,8 @@ class File extends ModelWithContent
 	/**
 	 * Returns the FileRules class to
 	 * validate any important action.
+	 *
+	 * @deprecated 6.0.0 Use `$file->guards()` instead
 	 */
 	protected function rules(): FileRules
 	{
@@ -577,8 +597,10 @@ class File extends ModelWithContent
 	 */
 	public function site(): Site
 	{
-		if ($this->parent() instanceof Site) {
-			return $this->parent();
+		$parent = $this->parent();
+
+		if ($parent instanceof Site) {
+			return $parent;
 		}
 
 		return $this->kirby()->site();

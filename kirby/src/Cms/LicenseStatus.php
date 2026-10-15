@@ -2,12 +2,10 @@
 
 namespace Kirby\Cms;
 
+use Kirby\Toolkit\HtmlString;
 use Kirby\Toolkit\I18n;
 
 /**
- * @package   Kirby Cms
- * @author    Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  *
@@ -104,11 +102,15 @@ enum LicenseStatus: string
 
 	/**
 	 * The info text is shown in the license dialog
-	 * in the status row.
+	 * in the status row. The core translations carry
+	 * authored markup.
 	 */
-	public function info(string|null $end = null): string
+	public function info(string|null $end = null): HtmlString
 	{
-		return I18n::template('license.status.' . $this->value . '.info', ['date' => $end]);
+		return HtmlString::translate(
+			'license.status.' . $this->value . '.info',
+			['date' => $end]
+		);
 	}
 
 	/**

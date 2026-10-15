@@ -19,10 +19,6 @@ use Kirby\Toolkit\Obj;
  * pages, files, users or structures to create
  * options out of them.
  *
- * @package   Kirby Option
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- * 			  Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -191,7 +187,7 @@ class OptionsQuery extends OptionsProvider
 
 			// text is only a raw string when using {< >}
 			// or when the safe mode is explicitly disabled (select field)
-			$safeMethod = $safeMode === true ? 'toSafeString' : 'toString';
+			$safeMethod = $safeMode === true ? 'toSafeHtmlString' : 'toString';
 			$text = $model->$safeMethod($this->text ?? $text, $data);
 
 			// additional data

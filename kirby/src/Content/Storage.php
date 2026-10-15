@@ -6,6 +6,8 @@ use Generator;
 use Kirby\Cms\Language;
 use Kirby\Cms\Languages;
 use Kirby\Cms\ModelWithContent;
+use Kirby\Exception\Exception;
+use Kirby\Exception\NotFoundException;
 use Kirby\Toolkit\A;
 
 /**
@@ -14,12 +16,10 @@ use Kirby\Toolkit\A;
  * handlers because the CMS core relies on the filesystem
  * and cannot fully benefit from this abstraction yet
  *
- * @package   Kirby Content
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  * @since     4.0.0
+ *
  * @unstable
  */
 abstract class Storage
@@ -31,7 +31,7 @@ abstract class Storage
 	/**
 	 * Returns generator for all existing version-language combinations
 	 *
-	 * @return Generator<\Kirby\Content\VersionId, \Kirby\Cms\Language>
+	 * @return Generator<VersionId, Language>
 	 */
 	public function all(): Generator
 	{
@@ -254,7 +254,7 @@ abstract class Storage
 	/**
 	 * Searches and replaces one or multiple strings
 	 *
-	 * @throws \Kirby\Exception\NotFoundException If the version does not exist
+	 * @throws NotFoundException If the version does not exist
 	 */
 	public function replaceStrings(
 		VersionId $versionId,
@@ -284,7 +284,7 @@ abstract class Storage
 	/**
 	 * Updates the modification timestamp of an existing version
 	 *
-	 * @throws \Kirby\Exception\NotFoundException If the version does not exist
+	 * @throws NotFoundException If the version does not exist
 	 */
 	abstract public function touch(VersionId $versionId, Language $language): void;
 
@@ -307,7 +307,7 @@ abstract class Storage
 	 *
 	 * @param array<string, string> $fields Content fields
 	 *
-	 * @throws \Kirby\Exception\Exception If the file cannot be written
+	 * @throws Exception If the file cannot be written
 	 */
 	public function update(VersionId $versionId, Language $language, array $fields): void
 	{
@@ -319,7 +319,7 @@ abstract class Storage
 	 *
 	 * @param array<string, string> $fields Content fields
 	 *
-	 * @throws \Kirby\Exception\Exception If the content cannot be written
+	 * @throws Exception If the content cannot be written
 	 */
 	abstract protected function write(VersionId $versionId, Language $language, array $fields): void;
 }

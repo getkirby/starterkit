@@ -15,10 +15,6 @@ use Kirby\Query\Query;
  * Options fetched from any REST API
  * or local file with valid JSON data.
  *
- * @package   Kirby Option
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- * 			  Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -66,9 +62,13 @@ class OptionsApi extends OptionsProvider
 		// resolve query templates in $this->url string
 		$url = $model->toSafeString($this->url);
 
-		// URL, request via cURL
+		// URL, request via cURL; the host in the blueprint is
+		// trusted (it may well be a local or intranet host), but a
+		// host that was injected by a query template is not
 		if (Url::isAbsolute($url) === true) {
-			return Remote::get($url)->json();
+			$safe = Url::sameHost($url, $this->url) === false;
+
+			return Remote::get($url, ['safe' => $safe])->json();
 		}
 
 		// local file
@@ -129,6 +129,10 @@ class OptionsApi extends OptionsProvider
 		$data    = Query::factory($this->query)->resolve($data);
 		$options = [];
 
+		// text is only a raw string when using {< >}
+		// or when the safe mode is explicitly disabled (select field)
+		$safeMethod = $safeMode === true ? 'toSafeHtmlString' : 'toString';
+
 		// create options by resolving text and value query strings
 		// for each item from the data
 		foreach ($data as $key => $item) {
@@ -136,8 +140,6 @@ class OptionsApi extends OptionsProvider
 			if (is_string($item) === true) {
 				$item = new Field(null, $key, $item);
 			}
-
-			$safeMethod = $safeMode === true ? 'toSafeString' : 'toString';
 
 			$options[] = [
 				// value is always a raw string

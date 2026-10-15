@@ -8,11 +8,10 @@ use Kirby\Toolkit\BlockCollectionAccess;
 /**
  * SiteActions
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ *
+ * @mixin Site
  */
 trait SiteActions
 {
@@ -55,16 +54,24 @@ trait SiteActions
 			'language'     => $language
 		];
 
-		return $this->commit('changeTitle', $arguments, function ($site, $title, $languageCode, $language) {
+		return $this->commit(
+			action:    'changeTitle',
+			arguments: $arguments,
+			callback:  function (
+				Site $site,
+				string $title,
+				string|null $languageCode,
+				Language $language
+			): Site {
+				// make sure to update the title in the changes version as well
+				// otherwise the new title would be lost as soon as the changes are saved
+				if ($site->version('changes')->exists($language) === true) {
+					$site->version('changes')->update(['title' => $title], $language);
+				}
 
-			// make sure to update the title in the changes version as well
-			// otherwise the new title would be lost as soon as the changes are saved
-			if ($site->version('changes')->exists($language) === true) {
-				$site->version('changes')->update(['title' => $title], $language);
+				return $site->save(['title' => $title], $language->code());
 			}
-
-			return $site->save(['title' => $title], $language->code());
-		});
+		);
 	}
 
 	/**

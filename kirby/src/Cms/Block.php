@@ -14,22 +14,19 @@ use Throwable;
  * Represents a single block
  * which can be inspected further or
  * converted to HTML
- * @since 3.5.0
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ * @since     3.5.0
  *
- * @extends \Kirby\Cms\Item<\Kirby\Cms\Blocks>
+ * @extends Item<Blocks>
  */
 class Block extends Item implements Stringable
 {
 	use HasMethods;
 	use HasModels;
 
-	public const ITEMS_CLASS = Blocks::class;
+	public const string ITEMS_CLASS = Blocks::class;
 
 	protected Content $content;
 	protected bool $isHidden;
@@ -51,7 +48,7 @@ class Block extends Item implements Stringable
 	/**
 	 * Creates a new block object
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function __construct(array $params)
 	{
@@ -129,7 +126,7 @@ class Block extends Item implements Stringable
 	/**
 	 * Constructs a block object with registering blocks models
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public static function factory(array $params): static
 	{
@@ -141,7 +138,7 @@ class Block extends Item implements Stringable
 	 */
 	public function isEmpty(): bool
 	{
-		return empty($this->content()->toArray());
+		return $this->content()->toArray() === [];
 	}
 
 	/**

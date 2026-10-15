@@ -11,9 +11,6 @@ use Kirby\Exception\Exception;
  * the `before` and `after` hooks and updating the state
  * of the given model.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -218,13 +215,24 @@ class ModelCommit
 		// is modified by the return value from the hook (if any returned)
 		$appliedTo = array_key_first($arguments);
 
-		// run the hook and modify the first argument
-		$arguments[$appliedTo] = $this->kirby->apply(
-			// e.g. page.create:before
-			$this->prefix . '.' . $this->action . ':' . $hook,
-			$arguments,
-			$appliedTo
-		);
+		$auth = $this->kirby->auth();
+		$user = $auth->currentUserFromImpersonation();
+
+		try {
+			// run the hook and modify the first argument
+			$arguments[$appliedTo] = $this->kirby->apply(
+				// e.g. page.create:before
+				$this->prefix . '.' . $this->action . ':' . $hook,
+				$arguments,
+				$appliedTo
+			);
+		} finally {
+			// don't leak an impersonation from the hook
+			// into the rest of the model action
+			if ($auth->currentUserFromImpersonation() !== $user) {
+				$auth->impersonate($user?->id());
+			}
+		}
 
 		return [
 			'arguments' => $arguments,
@@ -233,21 +241,26 @@ class ModelCommit
 	}
 
 	/**
-	 * Checks the model rules for the given action
-	 * if there's a matching rule method.
+	 * Runs the guards of the model for the given action
 	 */
 	public function validate(array $arguments): void
 	{
-		$rules = match (true) {
-			$this->model instanceof File => FileRules::class,
-			$this->model instanceof Page => PageRules::class,
-			$this->model instanceof Site => SiteRules::class,
-			$this->model instanceof User => UserRules::class,
+		// the model is always the first argument. It is taken from
+		// the arguments and not from this class, because the `before`
+		// hook might have replaced it with a modified model.
+		$model = array_shift($arguments);
+
+		$guards = match (true) {
+			$model instanceof File,
+			$model instanceof Page,
+			$model instanceof Site,
+			$model instanceof User => $model->guards(),
 			default => throw new Exception('Invalid model class') // @codeCoverageIgnore
 		};
 
-		if (method_exists($rules, $this->action) === true) {
-			$rules::{$this->action}(...array_values($arguments));
-		}
+		$guards->ensureExecutable(
+			$this->action,
+			...array_values($arguments)
+		);
 	}
 }

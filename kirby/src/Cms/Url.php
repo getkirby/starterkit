@@ -15,9 +15,6 @@ use Kirby\Toolkit\Str;
  * the correct base URL and a template asset
  * URL builder.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -30,6 +27,7 @@ class Url extends BaseUrl
 	 */
 	public static function home(): string
 	{
+		/** @var string */
 		return App::instance()->url();
 	}
 

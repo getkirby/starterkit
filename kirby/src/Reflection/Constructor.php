@@ -9,15 +9,14 @@ use ReflectionParameter;
  * Specialized Reflection Method class to
  * inspect a class constructor
  *
- * @package   Kirby Reflection
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  * @since     5.2.0
  */
 class Constructor extends ReflectionMethod
 {
+	protected static array $names = [];
+
 	public function __construct(object|string $objectOrClass)
 	{
 		parent::__construct($objectOrClass, '__construct');
@@ -56,6 +55,32 @@ class Constructor extends ReflectionMethod
 	}
 
 	/**
+	 * Get all parameters, including parameters from all parent constructors
+	 * when a variadic parameter is used (...)
+	 */
+	public function getAllParameters(): array
+	{
+		$parameters = [];
+
+		foreach ($this->getParameters() as $parameter) {
+			if ($parameter->isVariadic() === true) {
+				// the variadic parameter stands in for all parameters of the
+				// parent constructor. Own parameters win, because they can
+				// refine the type of an inherited parameter.
+				foreach ($this->getParentParameters() as $inherited) {
+					$parameters[$inherited->name] ??= $inherited;
+				}
+
+				continue;
+			}
+
+			$parameters[$parameter->name] = $parameter;
+		}
+
+		return array_values($parameters);
+	}
+
+	/**
 	 * Returns all arguments that are not defined as constructor parameters
 	 */
 	public function getIgnoredArguments(array $arguments): array
@@ -64,10 +89,27 @@ class Constructor extends ReflectionMethod
 	}
 
 	/**
-	 * Returns an array of all parameter names
+	 * Returns an array of all parameter names in this constructor
 	 */
 	public function getParameterNames(): array
 	{
-		return array_values(array_map(fn (ReflectionParameter $param) => $param->name, $this->getParameters()));
+		return static::$names[$this->class] ??= array_values(array_map(
+			fn (ReflectionParameter $param) => $param->name,
+			$this->getAllParameters()
+		));
+	}
+
+	/**
+	 * Get all parameters from the parent constructor. This will go recursively
+	 * through all parent classes, if they use a variadic parameter (...)
+	 */
+	public function getParentParameters(): array
+	{
+		if ($parentClass = $this->getDeclaringClass()->getParentClass()) {
+			$parentConstructor = new static($parentClass->getName());
+			return $parentConstructor->getAllParameters();
+		}
+
+		return [];
 	}
 }

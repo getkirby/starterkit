@@ -5,17 +5,13 @@ namespace Kirby\Cache;
 /**
  * Dummy Cache Driver (does not do any caching)
  *
- * @package   Kirby Cache
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
 class NullCache extends Cache
 {
 	/**
-	 * Returns whether the cache is ready to
-	 * store values
+	 * Returns whether the cache is ready to store values
 	 */
 	public function enabled(): bool
 	{

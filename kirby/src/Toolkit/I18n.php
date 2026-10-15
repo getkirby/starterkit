@@ -8,9 +8,6 @@ use NumberFormatter;
 /**
  * Localization class, roughly inspired by VueI18n
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -265,10 +262,11 @@ class I18n
 
 		// otherwise the first array element of the input
 		// or the first array element of the fallback
-		if (is_array($key) === true) {
+		if (is_array($key) === true && $key !== []) {
 			return reset($key);
 		}
-		if (is_array($fallback) === true) {
+
+		if (is_array($fallback) === true && $fallback !== []) {
 			return reset($fallback);
 		}
 

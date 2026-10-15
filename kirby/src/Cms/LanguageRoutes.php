@@ -3,7 +3,14 @@
 namespace Kirby\Cms;
 
 use Kirby\Filesystem\F;
+use Kirby\Http\Route;
 
+/**
+ * Generates multi-language routes for the Kirby router
+ *
+ * @copyright Bastian Allgeier
+ * @license   https://getkirby.com/license
+ */
 class LanguageRoutes
 {
 	/**
@@ -54,7 +61,7 @@ class LanguageRoutes
 
 					// jump through to the fallback if nothing
 					// can be found for this language
-					/** @var \Kirby\Http\Route $this */
+					/** @var Route $this */
 					$this->next();
 				}
 			];
@@ -82,7 +89,7 @@ class LanguageRoutes
 
 				// try to redirect prefixed pages
 				if (
-					empty($extension) === true &&
+					$extension === '' &&
 					$page = $kirby->page($path)
 				) {
 					$url = $kirby->request()->url([

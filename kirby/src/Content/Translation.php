@@ -13,9 +13,6 @@ use Kirby\Toolkit\BlockCollectionAccess;
  * translated versions of their content,
  * represented by this class
  *
- * @package   Kirby Content
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */

@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'getkirby/cms',
-        'pretty_version' => '5.6.1',
-        'version' => '5.6.1.0',
+        'pretty_version' => '6.0.0-beta.1',
+        'version' => '6.0.0.0-beta1',
         'reference' => null,
         'type' => 'kirby-cms',
         'install_path' => __DIR__ . '/../../',
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'christian-riesen/base32' => array(
-            'pretty_version' => '1.6.0',
-            'version' => '1.6.0.0',
-            'reference' => '2e82dab3baa008e24a505649b0d583c31d31e894',
+            'pretty_version' => '2.0.1',
+            'version' => '2.0.1.0',
+            'reference' => 'be07b4a4a2d6056975934d71e111c64e7d8babf9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../christian-riesen/base32',
             'aliases' => array(),
@@ -65,8 +65,8 @@
             'dev_requirement' => false,
         ),
         'getkirby/cms' => array(
-            'pretty_version' => '5.6.1',
-            'version' => '5.6.1.0',
+            'pretty_version' => '6.0.0-beta.1',
+            'version' => '6.0.0.0-beta1',
             'reference' => null,
             'type' => 'kirby-cms',
             'install_path' => __DIR__ . '/../../',
@@ -88,6 +88,15 @@
             'reference' => '06f211dfffff18d91844c1f55250d5d13c007e18',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-escaper',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'lbuchs/webauthn' => array(
+            'pretty_version' => 'v2.2.0',
+            'version' => '2.2.0.0',
+            'reference' => '20adb4a240c3997bd8cac7dc4dde38ab0bea0ed1',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../lbuchs/webauthn',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -178,16 +187,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'symfony/polyfill-php72' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '*',
-            ),
-        ),
         'symfony/yaml' => array(
-            'pretty_version' => 'v7.4.20',
-            'version' => '7.4.20.0',
-            'reference' => '0222bf4dfaa1e3ceb8fff579635d655f2950d5a7',
+            'pretty_version' => 'v7.4.21',
+            'version' => '7.4.21.0',
+            'reference' => '044907929c7999814378be22da34722c7a86bad4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/yaml',
             'aliases' => array(),

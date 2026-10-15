@@ -12,9 +12,6 @@ use Kirby\Template\Template;
  * and sending emails, like email templates, file
  * attachments, etc.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -67,7 +64,7 @@ class Email
 	 * prop arrays in case a preset is not needed
 	 *
 	 * @param string|array $preset Preset name or simple prop array
-	 * @throws \Kirby\Exception\NotFoundException
+	 * @throws NotFoundException
 	 */
 	protected function preset(string|array $preset): array
 	{
@@ -91,7 +88,7 @@ class Email
 	 * Renders the email template(s) and sets the body props
 	 * to the result
 	 *
-	 * @throws \Kirby\Exception\NotFoundException
+	 * @throws NotFoundException
 	 */
 	protected function template(): void
 	{

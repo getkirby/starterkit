@@ -9,9 +9,6 @@ use Kirby\Toolkit\BlockCollectionAccess;
 /**
  * HasMethods
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -26,7 +23,7 @@ trait HasMethods
 	 * Calls a registered method class with the
 	 * passed arguments
 	 *
-	 * @throws \Kirby\Exception\BadMethodCallException
+	 * @throws BadMethodCallException
 	 */
 	#[BlockCollectionAccess]
 	protected function callMethod(string $method, array $args = []): mixed

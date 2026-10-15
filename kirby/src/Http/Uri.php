@@ -11,9 +11,6 @@ use Throwable;
 /**
  * Uri builder class
  *
- * @package   Kirby Http
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -27,7 +24,7 @@ class Uri implements Stringable
 	/**
 	 * The fragment after the hash
 	 */
-	protected string|false|null $fragment;
+	protected string|null $fragment;
 
 	/**
 	 * The host address
@@ -93,10 +90,10 @@ class Uri implements Stringable
 			// colon in the string but the string is a relative URL
 			if (Url::isAbsolute($props) === false) {
 				$props = 'https://getkirby.com/' . $props;
-				$props = parse_url($props);
+				$props = parse_url($props) ?: [];
 				unset($props['scheme'], $props['host']);
 			} else {
-				$props = parse_url($props);
+				$props = parse_url($props) ?: [];
 			}
 
 			$props['username'] = $props['user'] ?? null;
@@ -214,7 +211,7 @@ class Uri implements Stringable
 			return static::$current;
 		}
 
-		if ($app = App::instance(null, true)) {
+		if ($app = App::instance(lazy: true)) {
 			$environment = $app->environment();
 		}
 
@@ -294,7 +291,7 @@ class Uri implements Stringable
 	 */
 	public static function index(array $props = []): static
 	{
-		if ($app = App::instance(null, true)) {
+		if ($app = App::instance(lazy: true)) {
 			$url = $app->url('index');
 		}
 
@@ -339,6 +336,15 @@ class Uri implements Stringable
 	public function fragment(): string|null
 	{
 		return $this->fragment;
+	}
+
+	/**
+	 * Returns the Uri's query object
+	 * @since 6.0.0
+	 */
+	public function query(): Query
+	{
+		return $this->query;
 	}
 
 	/**
@@ -483,9 +489,16 @@ class Uri implements Stringable
 		return $array;
 	}
 
-	public function toJson(...$arguments): string
+	public function toJson(int $flags = 0, int $depth = 512): string
 	{
-		return json_encode($this->toArray(), ...$arguments);
+		/** @var string $json */
+		$json = json_encode(
+			$this->toArray(),
+			$flags | JSON_THROW_ON_ERROR,
+			$depth
+		);
+
+		return $json;
 	}
 
 	/**

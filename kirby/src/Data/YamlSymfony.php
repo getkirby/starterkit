@@ -9,9 +9,6 @@ use Symfony\Component\Yaml\Yaml as Symfony;
 /**
  * Simple Wrapper around the Symfony YAML class
  *
- * @package   Kirby Data
- * @author    Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -22,7 +19,7 @@ class YamlSymfony
 	 */
 	public static function encode($data): string
 	{
-		$kirby  = App::instance(null, true);
+		$kirby  = App::instance(lazy: true);
 
 		return Symfony::dump(
 			$data,

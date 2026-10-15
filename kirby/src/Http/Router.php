@@ -8,9 +8,6 @@ use InvalidArgumentException;
 use Kirby\Toolkit\A;
 
 /**
- * @package   Kirby Http
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -54,7 +51,7 @@ class Router
 	 * Creates a new router object and
 	 * registers all the given routes
 	 *
-	 * @param array<string, \Closure> $hooks Optional `beforeEach` and `afterEach` hooks
+	 * @param array<string, Closure> $hooks Optional `beforeEach` and `afterEach` hooks
 	 */
 	public function __construct(array $routes = [], array $hooks = [])
 	{
@@ -71,7 +68,7 @@ class Router
 			$patterns = A::wrap($props['pattern']);
 			$methods  = A::map(
 				explode('|', strtoupper($props['method'] ?? 'GET')),
-				'trim'
+				trim(...)
 			);
 
 			if ($methods === ['ALL']) {

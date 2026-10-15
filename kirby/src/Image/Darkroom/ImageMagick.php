@@ -10,9 +10,6 @@ use Kirby\Image\Focus;
 /**
  * Legacy ImageMagick driver using the convert CLI
  *
- * @package   Kirby Image
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  *
@@ -113,7 +110,7 @@ class ImageMagick extends Darkroom
 	 * Creates and runs the full imagemagick command
 	 * to process the image
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function process(string $file, array $options = []): array
 	{

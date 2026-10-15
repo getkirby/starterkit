@@ -7,21 +7,18 @@ use Kirby\Exception\NotFoundException;
 use Kirby\Http\Router;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\Str;
-use Kirby\Uuid\Uuid;
+use Kirby\Uuid\Permalink;
 
 /**
  * The language router is used internally
  * to handle language-specific (scoped) routes
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
 class LanguageRouter
 {
-	protected Router $router;
+	protected Router|null $router = null;
 
 	/**
 	 * Creates a new language router instance
@@ -36,7 +33,7 @@ class LanguageRouter
 	 * Fetches all scoped routes for the
 	 * current language from the Kirby instance
 	 *
-	 * @throws \Kirby\Exception\NotFoundException
+	 * @throws NotFoundException
 	 */
 	public function routes(): array
 	{
@@ -93,17 +90,16 @@ class LanguageRouter
 			'method'  => 'ALL',
 			'env'     => 'site',
 			'action'  => function (string $languageCode, string $type, string $id) use ($kirby, $language) {
+				$permalink = Permalink::for($type . '://' . $id);
+
 				// try to resolve to model, but only from UUID cache;
 				// this ensures that only existing UUIDs can be queried
 				// and attackers can't force Kirby to go through the whole
 				// site index with a non-existing UUID
-				if ($model = Uuid::for($type . '://' . $id)?->model(true)) {
-					return $kirby
-						->response()
-						->redirect($model->url($language->code()));
+				if ($url = $permalink?->model(true)?->url($language->code())) {
+					return $kirby->response()->redirect($url);
 				}
 
-				// render the error page
 				return false;
 			}
 		];

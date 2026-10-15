@@ -8,9 +8,6 @@ use Kirby\Exception\Exception;
 /**
  * Basic pagination handling
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -47,14 +44,11 @@ class Pagination
 		$this->setPage($props['page'] ?? null);
 		$this->setTotal($props['total'] ?? 0);
 
-		// ensure that page is set to something, otherwise
-		// generate "default page" based on other params
-		$this->page ??= $this->firstPage();
-
 		// allow a page value of 1 even if there are no pages;
 		// otherwise the exception will get thrown for this pretty common case
 		$min = $this->firstPage();
 		$max = $this->pages();
+
 		if ($this->page === 1 && $max === 0) {
 			$this->page = 0;
 		}
@@ -283,6 +277,7 @@ class Pagination
 
 	/**
 	 * Creates a range of page numbers for Google-like pagination
+	 * @return non-empty-list<int>
 	 */
 	public function range(int $range = 5): array
 	{
@@ -292,11 +287,12 @@ class Pagination
 		$end   = $pages;
 
 		if ($pages <= $range) {
+			/** @var non-empty-list<int> */
 			return range($start, $end);
 		}
 
 		$middle = (int)floor($range / 2);
-		$start  = $page - $middle + ($range % 2 === 0);
+		$start  = $page - $middle + ($range % 2 === 0 ? 1 : 0);
 		$end    = $start + $range - 1;
 
 		if ($start <= 0) {
@@ -309,6 +305,7 @@ class Pagination
 			$end   = $pages;
 		}
 
+		/** @var non-empty-list<int> */
 		return range($start, $end);
 	}
 
@@ -372,7 +369,6 @@ class Pagination
 	 */
 	protected function setPage(int|string|null $page = null): static
 	{
-		// if $page is null, it is set to a default in the setProperties() method
 		if ($page !== null) {
 			if (is_numeric($page) !== true || $page < 0) {
 				throw new Exception(

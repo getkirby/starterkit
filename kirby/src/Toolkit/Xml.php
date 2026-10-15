@@ -7,9 +7,6 @@ use SimpleXMLElement;
 /**
  * XML parser and creator class
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -278,7 +275,7 @@ class Xml
 	 */
 	public static function entities(): array
 	{
-		return self::$entities;
+		return self::$entities ?? [];
 	}
 
 	/**
@@ -302,6 +299,7 @@ class Xml
 	 * structure of arrays and strings
 	 *
 	 * @param bool $collectName Whether the element name should be collected (for the root element)
+	 * @return ($collectName is true ? array : array|string)
 	 */
 	public static function simplify(
 		SimpleXMLElement $element,
@@ -333,6 +331,7 @@ class Xml
 			}
 		}
 
+		/** @psalm-suppress RedundantCondition */
 		if ($attributeArray !== []) {
 			$array['@attributes'] = $attributeArray;
 		}

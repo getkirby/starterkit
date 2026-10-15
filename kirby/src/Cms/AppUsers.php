@@ -3,14 +3,12 @@
 namespace Kirby\Cms;
 
 use Closure;
+use Kirby\Auth\Auth;
 use Throwable;
 
 /**
  * AppUsers
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -40,7 +38,7 @@ trait AppUsers
 	 *                               impersonation will be reset afterwards
 	 * @return mixed If called without callback: User that was impersonated;
 	 *               if called with callback: Return value from the callback
-	 * @throws \Throwable
+	 * @throws Throwable
 	 */
 	public function impersonate(
 		string|null $who = null,
@@ -134,7 +132,10 @@ trait AppUsers
 			return $this->users()->find($id);
 		}
 
-		if ($allowImpersonation === true && is_string($this->user) === true) {
+		if (
+			$allowImpersonation === true &&
+			is_string($this->user) === true
+		) {
 			return $this->auth()->impersonate($this->user);
 		}
 

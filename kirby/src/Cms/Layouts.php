@@ -8,19 +8,16 @@ use Throwable;
 
 /**
  * A collection of layouts
- * @since 3.5.0
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ * @since     3.5.0
  *
- * @extends \Kirby\Cms\Items<\Kirby\Cms\Layout>
+ * @extends Items<Layout>
  */
 class Layouts extends Items
 {
-	public const ITEM_CLASS = Layout::class;
+	public const string ITEM_CLASS = Layout::class;
 
 	/**
 	 * All registered layouts methods
@@ -81,7 +78,7 @@ class Layouts extends Items
 			is_array($input) === false
 		) {
 			try {
-				$input = Json::decode((string)$input);
+				$input = Json::decode($input);
 			} catch (Throwable) {
 				return [];
 			}

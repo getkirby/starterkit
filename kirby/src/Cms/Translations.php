@@ -11,13 +11,10 @@ use Kirby\Filesystem\F;
  * to a collection of Translation objects and load
  * method to load all translations from disk
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  *
- * @extends \Kirby\Cms\Collection<\Kirby\Cms\Translation>
+ * @extends Collection<Translation>
  */
 class Translations extends Collection
 {

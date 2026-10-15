@@ -4,6 +4,7 @@ namespace Kirby\Api;
 
 use Closure;
 use Exception;
+use Kirby\Exception\NotFoundException;
 use Kirby\Toolkit\Str;
 
 /**
@@ -14,9 +15,6 @@ use Kirby\Toolkit\Str;
  * by GraphQLs architecture and makes it possible to load
  * only the model data that is needed for the current API call.
  *
- * @package   Kirby Api
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -29,7 +27,7 @@ class Model
 	/**
 	 * Model constructor
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function __construct(
 		protected Api $api,
@@ -69,7 +67,7 @@ class Model
 
 	/**
 	 * @return $this
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function select($keys = null): static
 	{
@@ -90,7 +88,7 @@ class Model
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function selection(): array
 	{
@@ -132,8 +130,8 @@ class Model
 	}
 
 	/**
-	 * @throws \Kirby\Exception\NotFoundException
-	 * @throws \Exception
+	 * @throws NotFoundException
+	 * @throws Exception
 	 */
 	public function toArray(): array
 	{
@@ -180,8 +178,8 @@ class Model
 	}
 
 	/**
-	 * @throws \Kirby\Exception\NotFoundException
-	 * @throws \Exception
+	 * @throws NotFoundException
+	 * @throws Exception
 	 */
 	public function toResponse(): array
 	{
@@ -205,7 +203,7 @@ class Model
 
 	/**
 	 * @return $this
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function view(string $name): static
 	{

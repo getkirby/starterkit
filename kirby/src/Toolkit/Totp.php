@@ -3,6 +3,7 @@
 namespace Kirby\Toolkit;
 
 use Base32\Base32;
+use InvalidArgumentException as GlobalInvalidArgumentException;
 use Kirby\Exception\InvalidArgumentException;
 use SensitiveParameter;
 
@@ -10,13 +11,10 @@ use SensitiveParameter;
  * The TOTP class handles the generation and verification
  * of time-based one-time passwords according to RFC6238
  * with the SHA1 algorithm, 30 second intervals and 6 digits
- * @since 4.0.0
  *
- * @package   Kirby Toolkit
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
+ * @since     4.0.0
  */
 class Totp
 {
@@ -39,14 +37,24 @@ class Totp
 		string|null $secret = null,
 		bool $force = false
 	) {
-		// if provided, decode the existing secret into binary
+		// if provided, decode the existing secret into binary;
+		// otherwise generate a new one (20 bytes = length of the SHA1 HMAC)
 		if ($secret !== null) {
-			$this->secret = Base32::decode($secret);
-		}
+			// the decoder is strict, so normalize case, spaces and padding
+			$secret = strtoupper(preg_replace('/\s+/', '', $secret));
+			$secret = str_pad($secret, (int)ceil(strlen($secret) / 8) * 8, '=');
 
-		// otherwise generate a new one;
-		// 20 bytes are the length of the SHA1 HMAC
-		$this->secret ??= random_bytes(20);
+			try {
+				$this->secret = Base32::decode($secret);
+			} catch (GlobalInvalidArgumentException $e) {
+				throw new InvalidArgumentException(
+					message: 'TOTP secrets should be 32 Base32 digits (= 20 bytes)',
+					previous: $e
+				);
+			}
+		} else {
+			$this->secret = random_bytes(20);
+		}
 
 		// safety check to avoid accidental insecure secrets
 		if ($force === false && strlen($this->secret) !== 20) {

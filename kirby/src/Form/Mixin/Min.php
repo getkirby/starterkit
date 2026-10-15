@@ -2,12 +2,21 @@
 
 namespace Kirby\Form\Mixin;
 
+use Kirby\Reflection\Attributes\Prop;
+
+/**
+ * Provides the `min` prop for the minimum number of required items
+ *
+ * @copyright Bastian Allgeier
+ * @license   https://getkirby.com/license
+ */
 trait Min
 {
 	/**
 	 * Sets the minimum number of required items in the field
 	 */
-	protected int|null $min;
+	#[Prop]
+	protected int|null $min = null;
 
 	public function min(): int|null
 	{
@@ -19,11 +28,6 @@ trait Min
 		return $this->min;
 	}
 
-	protected function setMin(int|null $min = null)
-	{
-		$this->min = $min;
-	}
-
 	public function isRequired(): bool
 	{
 		// set required to true if min is set
@@ -31,6 +35,6 @@ trait Min
 			return true;
 		}
 
-		return $this->required;
+		return $this->required();
 	}
 }

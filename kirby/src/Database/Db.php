@@ -8,9 +8,6 @@ use Kirby\Toolkit\Config;
 /**
  * Database shortcuts
  *
- * @package   Kirby Database
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -97,7 +94,7 @@ class Db
 	 * redirected to either a predefined query or
 	 * the respective method of the Database object
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public static function __callStatic(string $method, $arguments)
 	{

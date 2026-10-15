@@ -7,21 +7,18 @@ use Kirby\Content\Content;
 /**
  * Represents a single Layout with
  * multiple columns
- * @since 3.5.0
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ * @since     3.5.0
  *
- * @extends \Kirby\Cms\Item<\Kirby\Cms\Layouts>
+ * @extends Item<Layouts>
  */
 class Layout extends Item
 {
 	use HasMethods;
 
-	public const ITEMS_CLASS = Layouts::class;
+	public const string ITEMS_CLASS = Layouts::class;
 
 	protected Content $attrs;
 	protected LayoutColumns $columns;

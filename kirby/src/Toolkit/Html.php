@@ -9,9 +9,6 @@ use Kirby\Http\Url;
 /**
  * HTML builder for the most common elements
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -36,28 +33,40 @@ class Html extends Xml
 
 	/**
 	 * List of HTML tags that can be used inline
+	 * (text-level semantics as defined by the WHATWG HTML standard,
+	 * plus `img`: https://html.spec.whatwg.org/multipage/text-level-semantics.html)
 	 */
 	public static array $inlineList = [
-		'b',
-		'i',
-		'small',
-		'abbr',
-		'cite',
-		'code',
-		'dfn',
-		'em',
-		'kbd',
-		'strong',
-		'samp',
-		'var',
 		'a',
+		'abbr',
+		'b',
+		'bdi',
 		'bdo',
 		'br',
+		'cite',
+		'code',
+		'data',
+		'dfn',
+		'em',
+		'i',
 		'img',
+		'kbd',
+		'mark',
 		'q',
+		'rp',
+		'rt',
+		'ruby',
+		's',
+		'samp',
+		'small',
 		'span',
+		'strong',
 		'sub',
-		'sup'
+		'sup',
+		'time',
+		'u',
+		'var',
+		'wbr'
 	];
 
 	/**
@@ -72,21 +81,20 @@ class Html extends Xml
 
 	/**
 	 * List of HTML tags that are considered to be self-closing
+	 * (void elements as defined by the WHATWG HTML standard:
+	 * https://html.spec.whatwg.org/multipage/syntax.html#void-elements)
 	 */
 	public static array $voidList = [
 		'area',
 		'base',
 		'br',
 		'col',
-		'command',
 		'embed',
 		'hr',
 		'img',
 		'input',
-		'keygen',
 		'link',
 		'meta',
-		'param',
 		'source',
 		'track',
 		'wbr'
@@ -96,8 +104,8 @@ class Html extends Xml
 	 * Generic HTML tag generator
 	 * Can be called like `Html::p('A paragraph', ['class' => 'text'])`
 	 *
-	 * @param string $tag Tag name
-	 * @param array $arguments Further arguments for the Html::tag() method
+	 * @param $tag Tag name
+	 * @param $arguments Further arguments for the Html::tag() method
 	 */
 	public static function __callStatic(
 		string $tag,
@@ -113,10 +121,9 @@ class Html extends Xml
 	/**
 	 * Generates an `<a>` tag; automatically supports mailto: and tel: links
 	 *
-	 * @param string $href The URL for the `<a>` tag
+	 * @param $href The URL for the `<a>` tag
 	 * @param string|array|null $text The optional text; if `null`, the URL will be used as text
-	 * @param array $attr Additional attributes for the tag
-	 * @return string The generated HTML
+	 * @param $attr Additional attributes for the tag
 	 */
 	public static function a(
 		string $href,
@@ -137,13 +144,12 @@ class Html extends Xml
 	/**
 	 * Generates a single attribute or a list of attributes
 	 *
-	 * @param string|array $name String: A single attribute with that name will be generated.
-	 *                           Key-value array: A list of attributes will be generated. Don't pass a second argument in that case.
-	 * @param mixed $value If used with a `$name` string, pass the value of the attribute here.
-	 *                     If used with a `$name` array, this can be set to `false` to disable attribute sorting.
-	 * @param string|null $before An optional string that will be prepended if the result is not empty
-	 * @param string|null $after An optional string that will be appended if the result is not empty
-	 * @return string|null The generated HTML attributes string
+	 * @param $name String: A single attribute with that name will be generated.
+	 *             Key-value array: A list of attributes will be generated. Don't pass a second argument in that case.
+	 * @param $value If used with a `$name` string, pass the value of the attribute here.
+	 *              If used with a `$name` array, this can be set to `false` to disable attribute sorting.
+	 * @param $before An optional string that will be prepended if the result is not empty
+	 * @param $after An optional string that will be appended if the result is not empty
 	 */
 	public static function attr(
 		string|array $name,
@@ -203,10 +209,9 @@ class Html extends Xml
 	/**
 	 * Generates an `<a>` tag with `mailto:`
 	 *
-	 * @param string $email The email address
-	 * @param string|array|null $text The optional text; if `null`, the email address will be used as text
-	 * @param array $attr Additional attributes for the tag
-	 * @return string The generated HTML
+	 * @param $email The email address
+	 * @param $text The optional text; if `null`, the email address will be used as text
+	 * @param $attr Additional attributes for the tag
 	 */
 	public static function email(
 		string $email,
@@ -248,8 +253,7 @@ class Html extends Xml
 	/**
 	 * Converts a string to an HTML-safe string
 	 *
-	 * @param bool $keepTags If true, existing tags won't be escaped
-	 * @return string The HTML string
+	 * @param $keepTags If true, existing tags won't be escaped
 	 *
 	 * @psalm-suppress ParamNameMismatch
 	 */
@@ -291,10 +295,9 @@ class Html extends Xml
 	/**
 	 * Creates a `<figure>` tag with optional caption
 	 *
-	 * @param string|array $content Contents of the `<figure>` tag
-	 * @param string|array $caption Optional `<figcaption>` text to use
-	 * @param array $attr Additional attributes for the `<figure>` tag
-	 * @return string The generated HTML
+	 * @param $content Contents of the `<figure>` tag
+	 * @param $caption Optional `<figcaption>` text to use
+	 * @param $attr Additional attributes for the `<figure>` tag
 	 */
 	public static function figure(
 		string|array $content,
@@ -317,10 +320,9 @@ class Html extends Xml
 	/**
 	 * Embeds a GitHub Gist
 	 *
-	 * @param string $url Gist URL
-	 * @param string|null $file Optional specific file to embed
-	 * @param array $attr Additional attributes for the `<script>` tag
-	 * @return string The generated HTML
+	 * @param $url Gist URL
+	 * @param $file Optional specific file to embed
+	 * @param $attr Additional attributes for the `<script>` tag
 	 */
 	public static function gist(
 		string $url,
@@ -345,8 +347,7 @@ class Html extends Xml
 	/**
 	 * Creates an `<iframe>`
 	 *
-	 * @param array $attr Additional attributes for the `<iframe>` tag
-	 * @return string The generated HTML
+	 * @param $attr Additional attributes for the `<iframe>` tag
 	 */
 	public static function iframe(string $src, array $attr = []): string
 	{
@@ -356,9 +357,8 @@ class Html extends Xml
 	/**
 	 * Generates an `<img>` tag
 	 *
-	 * @param string $src The URL of the image
-	 * @param array $attr Additional attributes for the `<img>` tag
-	 * @return string The generated HTML
+	 * @param $src The URL of the image
+	 * @param $attr Additional attributes for the `<img>` tag
 	 */
 	public static function img(string $src, array $attr = []): string
 	{
@@ -380,10 +380,9 @@ class Html extends Xml
 	/**
 	 * Generates an `<a>` link tag (without automatic email: and tel: detection)
 	 *
-	 * @param string $href The URL for the `<a>` tag
-	 * @param string|array|null $text The optional text; if `null`, the URL will be used as text
-	 * @param array $attr Additional attributes for the tag
-	 * @return string The generated HTML
+	 * @param $href The URL for the `<a>` tag
+	 * @param $text The optional text; if `null`, the URL will be used as text
+	 * @param $attr Additional attributes for the tag
 	 */
 	public static function link(
 		string $href,
@@ -419,9 +418,8 @@ class Html extends Xml
 	 * Adds `noreferrer` (which also implies `noopener`) when no
 	 * explicit `rel` is set. Pass an explicit `rel` to opt out.
 	 *
-	 * @param string|null $rel Current `rel` value
-	 * @param string|null $target Current `target` value
-	 * @return string|null New `rel` value or `null` if not needed
+	 * @param $rel Current `rel` value
+	 * @param $target Current `target` value
 	 */
 	public static function rel(
 		string|null $rel = null,
@@ -439,13 +437,12 @@ class Html extends Xml
 	/**
 	 * Builds an HTML tag
 	 *
-	 * @param string $name Tag name
-	 * @param array|string $content Scalar value or array with multiple lines of content; self-closing
-	 *                              tags are generated automatically based on the `Html::isVoid()` list
-	 * @param array $attr An associative array with additional attributes for the tag
-	 * @param string|null $indent Indentation string, defaults to two spaces or `null` for output on one line
-	 * @param int $level Indentation level
-	 * @return string The generated HTML
+	 * @param $name Tag name
+	 * @param $content Scalar value or array with multiple lines of content; self-closing
+	 *                tags are generated automatically based on the `Html::isVoid()` list
+	 * @param $attr An associative array with additional attributes for the tag
+	 * @param $indent Indentation string, defaults to two spaces or `null` for output on one line
+	 * @param $level Indentation level
 	 */
 	public static function tag(
 		string $name,
@@ -469,10 +466,9 @@ class Html extends Xml
 	/**
 	 * Generates an `<a>` tag for a phone number
 	 *
-	 * @param string $tel The phone number
-	 * @param string|array|null $text The optional text; if `null`, the phone number will be used as text
-	 * @param array $attr Additional attributes for the tag
-	 * @return string The generated HTML
+	 * @param $tel The phone number
+	 * @param $text The optional text; if `null`, the phone number will be used as text
+	 * @param $attr Additional attributes for the tag
 	 */
 	public static function tel(
 		string $tel,
@@ -517,11 +513,10 @@ class Html extends Xml
 	 * videos; the embed URLs are automatically detected from
 	 * the given URL
 	 *
-	 * @param string $url Video URL
-	 * @param array $options Additional `vimeo` and `youtube` options
-	 *                       (will be used as query params in the embed URL)
-	 * @param array $attr Additional attributes for the `<iframe>` tag
-	 * @return string|null The generated HTML
+	 * @param $url Video URL
+	 * @param $options Additional `vimeo` and `youtube` options
+	 *                (will be used as query params in the embed URL)
+	 * @param $attr Additional attributes for the `<iframe>` tag
 	 */
 	public static function video(
 		string $url,
@@ -578,10 +573,9 @@ class Html extends Xml
 	/**
 	 * Embeds a Vimeo video by URL in an `<iframe>`
 	 *
-	 * @param string $url Vimeo video URL
-	 * @param array $options Query params for the embed URL
-	 * @param array $attr Additional attributes for the `<iframe>` tag
-	 * @return string|null The generated HTML
+	 * @param $url Vimeo video URL
+	 * @param $options Query params for the embed URL
+	 * @param $attr Additional attributes for the `<iframe>` tag
 	 */
 	public static function vimeo(
 		string $url,
@@ -619,10 +613,9 @@ class Html extends Xml
 	/**
 	 * Embeds a YouTube video by URL in an `<iframe>`
 	 *
-	 * @param string $url YouTube video URL
-	 * @param array $options Query params for the embed URL
-	 * @param array $attr Additional attributes for the `<iframe>` tag
-	 * @return string|null The generated HTML
+	 * @param $url YouTube video URL
+	 * @param $options Query params for the embed URL
+	 * @param $attr Additional attributes for the `<iframe>` tag
 	 */
 	public static function youtube(
 		string $url,

@@ -17,12 +17,10 @@ use Kirby\Filesystem\F;
  * Content storage handler using plain text files
  * stored in the content folder
  *
- * @package   Kirby Content
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  * @since     4.0.0
+ *
  * @unstable
  */
 class PlainTextStorage extends Storage
@@ -162,7 +160,7 @@ class PlainTextStorage extends Storage
 	/**
 	 * Helper to delete empty _changes directories
 	 *
-	 * @throws \Kirby\Exception\Exception if the directory cannot be deleted
+	 * @throws Exception if the directory cannot be deleted
 	 */
 	protected function deleteEmptyDirectory(string $directory): void
 	{
@@ -294,7 +292,6 @@ class PlainTextStorage extends Storage
 
 		if (
 			$currentPage !== null &&
-			$currentPage->root() !== null &&
 			$currentPage->root() !== $staleRoot
 		) {
 			throw new LogicException(
@@ -326,7 +323,7 @@ class PlainTextStorage extends Storage
 	/**
 	 * Updates the modification timestamp of an existing version
 	 *
-	 * @throws \Kirby\Exception\Exception If the file cannot be touched
+	 * @throws Exception If the file cannot be touched
 	 */
 	public function touch(VersionId $versionId, Language $language): void
 	{
@@ -346,7 +343,7 @@ class PlainTextStorage extends Storage
 	 *
 	 * @param array<string, string> $fields Content fields
 	 *
-	 * @throws \Kirby\Exception\Exception If the content cannot be written
+	 * @throws Exception If the content cannot be written
 	 */
 	protected function write(VersionId $versionId, Language $language, array $fields): void
 	{

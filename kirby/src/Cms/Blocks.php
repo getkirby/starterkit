@@ -13,19 +13,16 @@ use Throwable;
 
 /**
  * A collection of blocks
- * @since 3.5.0
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ * @since     3.5.0
  *
- * @extends \Kirby\Cms\Items<\Kirby\Cms\Block>
+ * @extends Items<Block>
  */
 class Blocks extends Items
 {
-	public const ITEM_CLASS = Block::class;
+	public const string ITEM_CLASS = Block::class;
 
 	/**
 	 * All registered blocks methods
@@ -121,13 +118,13 @@ class Blocks extends Items
 			is_array($input) === false
 		) {
 			try {
-				$input = Json::decode((string)$input);
+				$input = Json::decode($input);
 			} catch (Throwable) {
 				// @deprecated try to import the old YAML format
 				// @todo block.converter remove eventually
 				// @codeCoverageIgnoreStart
 				try {
-					$yaml  = Yaml::decode((string)$input);
+					$yaml  = Yaml::decode($input);
 					$first = A::first($yaml);
 
 					// check for valid yaml
@@ -145,7 +142,7 @@ class Blocks extends Items
 				} catch (Throwable) {
 					// the next 2 lines remain after removing block.converter
 					// @codeCoverageIgnoreEnd
-					$parser = new Parsley((string)$input, new BlockSchema());
+					$parser = new Parsley($input, new BlockSchema());
 					$input  = $parser->blocks();
 					// @codeCoverageIgnoreStart
 				}

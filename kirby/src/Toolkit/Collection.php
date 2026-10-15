@@ -15,14 +15,11 @@ use Stringable;
  * interface around arrays of arrays or objects,
  * with advanced filters, sorting, navigation and more.
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  *
  * @template TValue
- * @extends \Kirby\Toolkit\Iterator<string, TValue>
+ * @extends Iterator<string, TValue>
  */
 class Collection extends Iterator implements Stringable
 {
@@ -41,7 +38,7 @@ class Collection extends Iterator implements Stringable
 	protected bool $caseSensitive = false;
 
 	/**
-	 * @var \Kirby\Toolkit\Pagination|null
+	 * @var Pagination|null
 	 */
 	protected $pagination;
 
@@ -150,12 +147,11 @@ class Collection extends Iterator implements Stringable
 	}
 
 	/**
-	 * Creates chunks of the same size.
-	 * The last chunk may be smaller
+	 * Splits the collection into chunks of the same size.
+	 * Returns a new collection with an element for each chunk
+	 * and a sub collection in each chunk. The last chunk may be smaller.
 	 *
-	 * @param int $size Number of elements per chunk
-	 * @return static A new collection with an element for each chunk and
-	 *                a sub collection in each chunk
+	 * @param $size Number of elements per chunk
 	 */
 	public function chunk(int $size): static
 	{
@@ -358,7 +354,7 @@ class Collection extends Iterator implements Stringable
 	/**
 	 * Find one or multiple elements by id
 	 *
-	 * @param string ...$keys
+	 * @param string|list<string> ...$keys One or more keys, or a single array of keys
 	 * @return TValue|static
 	 */
 	public function find(...$keys)
@@ -384,6 +380,7 @@ class Collection extends Iterator implements Stringable
 		}
 
 		$collection = clone $this;
+		/** @var array<string, TValue> $result */
 		$collection->data = $result;
 		return $collection;
 	}
@@ -536,13 +533,12 @@ class Collection extends Iterator implements Stringable
 	}
 
 	/**
-	 * Groups the elements by a given field or callback function
+	 * Groups the elements by a given field or callback function.
+	 * Returns a new collection with an element for each group
+	 * and a subcollection in each group
 	 *
-	 * @param string|\Closure $field
-	 * @return self A new collection with an element for
-	 *              each group and a subcollection in
-	 *              each group
-	 * @throws \Exception if $field is not a string nor a callback function
+	 * @param string|Closure $field
+	 * @throws Exception if $field is not a string nor a callback function
 	 */
 	public function group(
 		$field,
@@ -629,7 +625,8 @@ class Collection extends Iterator implements Stringable
 	}
 
 	/**
-	 * Checks if there is an intersection between the given collection and this collection
+	 * Checks if there is an intersection between
+	 * the given collection and this collection
 	 * @since 3.3.0
 	 */
 	public function intersects(Collection $other): bool
@@ -701,7 +698,7 @@ class Collection extends Iterator implements Stringable
 	/**
 	 * Returns a new object with a limited number of elements
 	 *
-	 * @param int $limit The number of elements to return
+	 * @param $limit The number of elements to return
 	 */
 	public function limit(int $limit): static
 	{
@@ -732,7 +729,7 @@ class Collection extends Iterator implements Stringable
 	/**
 	 * Returns a Collection without the given element(s)
 	 *
-	 * @param string ...$keys any number of keys, passed as individual arguments
+	 * @param ...$keys any number of keys, passed as individual arguments
 	 */
 	public function not(string ...$keys): static
 	{
@@ -748,9 +745,8 @@ class Collection extends Iterator implements Stringable
 	/**
 	 * Returns a new object starting from the given offset
 	 *
-	 * @param int $offset The index to start from
+	 * @param $offset The index to start from
 	 * @return static|$this
-	 * @psalm-return ($offset is 0 ? $this : static)
 	 */
 	public function offset(int $offset): static
 	{
@@ -782,8 +778,8 @@ class Collection extends Iterator implements Stringable
 	}
 
 	/**
-	 * Extracts all values for a single field into
-	 * a new array
+	 * Extracts all values for a single field
+	 * into a new array
 	 */
 	public function pluck(
 		string $field,
@@ -910,7 +906,7 @@ class Collection extends Iterator implements Stringable
 	/**
 	 * Removes an element from the array by key
 	 *
-	 * @param string $key the name of the key
+	 * @param $key the name of the key
 	 * @return $this
 	 */
 	public function remove(string $key): static
@@ -960,10 +956,9 @@ class Collection extends Iterator implements Stringable
 	/**
 	 * Returns a slice of the object
 	 *
-	 * @param int $offset The optional index to start the slice from
-	 * @param int|null $limit The optional number of elements to return
+	 * @param $offset The optional index to start the slice from
+	 * @param $limit The optional number of elements to return
 	 * @return $this|static
-	 * @psalm-return ($offset is 0 && $limit is null ? $this : static)
 	 */
 	public function slice(
 		int $offset = 0,
@@ -1161,10 +1156,12 @@ class Collection extends Iterator implements Stringable
 
 	/**
 	 * Converts the object into a JSON string
+	 *
+	 * @throws \JsonException for invalid JSON
 	 */
 	public function toJson(): string
 	{
-		return json_encode($this->toArray());
+		return json_encode($this->toArray(), JSON_THROW_ON_ERROR);
 	}
 
 	/**

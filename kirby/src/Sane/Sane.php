@@ -2,6 +2,8 @@
 
 namespace Kirby\Sane;
 
+use Kirby\Exception\Exception;
+use Kirby\Exception\InvalidArgumentException;
 use Kirby\Exception\LogicException;
 use Kirby\Exception\NotFoundException;
 use Kirby\Filesystem\F;
@@ -12,13 +14,10 @@ use Kirby\Toolkit\A;
  * don't contain potentially harmful contents.
  * The class comes with handlers for `svg`, `svgz` and `xml`
  * files for now, but can be extended and customized.
- * @since 3.5.4
  *
- * @package   Kirby Sane
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
+ * @since     3.5.4
  */
 class Sane
 {
@@ -48,7 +47,7 @@ class Sane
 	 *
 	 * @param bool $lazy If set to `true`, `null` is returned for undefined handlers
 	 *
-	 * @throws \Kirby\Exception\NotFoundException If no handler was found and `$lazy` was set to `false`
+	 * @throws NotFoundException If no handler was found and `$lazy` was set to `false`
 	 */
 	public static function handler(
 		string $type,
@@ -64,7 +63,7 @@ class Sane
 			$handler ??= static::$handlers[$alias] ?? null;
 		}
 
-		if (empty($handler) === false && class_exists($handler) === true) {
+		if ($handler !== null && class_exists($handler) === true) {
 			return new $handler();
 		}
 
@@ -103,10 +102,10 @@ class Sane
 	 *                              `true` for lazy autodetection or
 	 *                              `false` for normal autodetection
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file didn't pass validation
-	 * @throws \Kirby\Exception\LogicException If more than one handler applies
-	 * @throws \Kirby\Exception\NotFoundException If the handler was not found
-	 * @throws \Kirby\Exception\Exception On other errors
+	 * @throws InvalidArgumentException If the file didn't pass validation
+	 * @throws LogicException If more than one handler applies
+	 * @throws NotFoundException If the handler was not found
+	 * @throws Exception On other errors
 	 */
 	public static function sanitizeFile(
 		string $file,
@@ -159,9 +158,9 @@ class Sane
 	 * @param bool $isExternal Whether the string is from an external file
 	 *                         that may be accessed directly
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file didn't pass validation
-	 * @throws \Kirby\Exception\NotFoundException If the handler was not found
-	 * @throws \Kirby\Exception\Exception On other errors
+	 * @throws InvalidArgumentException If the file didn't pass validation
+	 * @throws NotFoundException If the handler was not found
+	 * @throws Exception On other errors
 	 */
 	public static function validate(string $string, string $type, bool $isExternal = false): void
 	{
@@ -177,9 +176,9 @@ class Sane
 	 *                              `true` for lazy autodetection or
 	 *                              `false` for normal autodetection
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file didn't pass validation
-	 * @throws \Kirby\Exception\NotFoundException If the handler was not found
-	 * @throws \Kirby\Exception\Exception On other errors
+	 * @throws InvalidArgumentException If the file didn't pass validation
+	 * @throws NotFoundException If the handler was not found
+	 * @throws Exception On other errors
 	 */
 	public static function validateFile(
 		string $file,
@@ -202,7 +201,7 @@ class Sane
 	 * file extension and MIME type
 	 *
 	 * @param bool $lazy If set to `true`, undefined handlers are skipped
-	 * @return array<\Kirby\Sane\Handler>
+	 * @return array<Handler>
 	 */
 	protected static function handlersForFile(
 		string $file,

@@ -5,9 +5,6 @@ namespace Kirby\Cache;
 /**
  * Memory Cache Driver (cache in memory for current request only)
  *
- * @package   Kirby Cache
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -19,8 +16,7 @@ class MemoryCache extends Cache
 	protected array $store = [];
 
 	/**
-	 * Returns whether the cache is ready to
-	 * store values
+	 * Returns whether the cache is ready to store values
 	 */
 	public function enabled(): bool
 	{
