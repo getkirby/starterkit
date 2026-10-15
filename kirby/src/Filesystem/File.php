@@ -6,6 +6,8 @@ use IntlDateFormatter;
 use Kirby\Cms\App;
 use Kirby\Exception\Exception;
 use Kirby\Exception\InvalidArgumentException;
+use Kirby\Exception\LogicException;
+use Kirby\Exception\NotFoundException;
 use Kirby\Http\Response;
 use Kirby\Sane\Sane;
 use Kirby\Toolkit\Escape;
@@ -17,13 +19,9 @@ use Stringable;
  * Flexible File object with a set of helpful
  * methods to inspect and work with files.
  *
- * @since 3.6.0
- *
- * @package   Kirby Filesystem
- * @author    Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ * @since     3.6.0
  */
 class File implements Stringable
 {
@@ -57,7 +55,7 @@ class File implements Stringable
 	 * @param array|string|null $props Properties or deprecated `$root` string
 	 * @param string|null $url Deprecated argument, use `$props['url']` instead
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException When the model does not use the `Kirby\Filesystem\IsFile` trait
+	 * @throws InvalidArgumentException When the model does not use the `Kirby\Filesystem\IsFile` trait
 	 */
 	public function __construct(
 		array|string|null $props = null,
@@ -78,10 +76,10 @@ class File implements Stringable
 
 		if (
 			$this->model !== null &&
-			method_exists($this->model, 'hasIsFileTrait') !== true
+			defined($this->model::class . '::IS_FILE_TRAIT') === false
 		) {
 			throw new InvalidArgumentException(
-				message: 'The model object must use the "Kirby\Filesystem\IsFile" trait'
+				message: 'The model object must use the "' . IsFile::class . '" trait'
 			);
 		}
 	}
@@ -270,14 +268,14 @@ class File implements Stringable
 	 */
 	public function kirby(): App|null
 	{
-		return App::instance(null, true);
+		return App::instance(lazy: true);
 	}
 
 	/**
 	 * Runs a set of validations on the file object
 	 * (mainly for images).
 	 *
-	 * @throws \Kirby\Exception\Exception
+	 * @throws Exception
 	 */
 	public function match(array $rules): bool
 	{
@@ -371,6 +369,7 @@ class File implements Stringable
 	 *
 	 * @param 'date'|'intl'|'strftime'|null $handler Custom date handler or `null`
 	 *                                               for the globally configured one
+	 * @return ($format is null ? int|false : string|false)
 	 */
 	public function modified(
 		string|IntlDateFormatter|null $format = null,
@@ -427,8 +426,9 @@ class File implements Stringable
 
 	/**
 	 * Returns the absolute path to the file
+	 * or `false` if the file does not exist
 	 */
-	public function realpath(): string
+	public function realpath(): string|false
 	{
 		return realpath($this->root());
 	}
@@ -480,10 +480,10 @@ class File implements Stringable
 	 *                              `true` for lazy autodetection or
 	 *                              `false` for normal autodetection
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file didn't pass validation
-	 * @throws \Kirby\Exception\LogicException If more than one handler applies
-	 * @throws \Kirby\Exception\NotFoundException If the handler was not found
-	 * @throws \Kirby\Exception\Exception On other errors
+	 * @throws InvalidArgumentException If the file didn't pass validation
+	 * @throws LogicException If more than one handler applies
+	 * @throws NotFoundException If the handler was not found
+	 * @throws Exception On other errors
 	 */
 	public function sanitizeContents(string|bool $typeLazy = false): void
 	{
@@ -493,10 +493,30 @@ class File implements Stringable
 	/**
 	 * Returns the sha1 hash of the file
 	 * @since 3.6.0
+	 *
+	 * @throws Exception If the file cannot be read
 	 */
 	public function sha1(): string
 	{
-		return sha1_file($this->root());
+		if (is_file($this->root()) === false) {
+			throw new Exception(
+				message: 'The file "' . $this->root() . '" could not be hashed'
+			);
+		}
+
+		$hash = sha1_file($this->root());
+
+		// @codeCoverageIgnoreStart
+		// `sha1_file` failure after `is_file === true` would require
+		// a filesystem race condition between the two calls
+		if ($hash === false) {
+			throw new Exception(
+				message: 'The file "' . $this->root() . '" could not be hashed'
+			);
+		}
+		// @codeCoverageIgnoreEnd
+
+		return $hash;
 	}
 
 	/**
@@ -538,7 +558,7 @@ class File implements Stringable
 	 */
 	public function toJson(): string
 	{
-		return json_encode($this->toArray());
+		return json_encode($this->toArray(), JSON_THROW_ON_ERROR);
 	}
 
 	/**
@@ -556,9 +576,9 @@ class File implements Stringable
 	 *                              `true` for lazy autodetection or
 	 *                              `false` for normal autodetection
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file didn't pass validation
-	 * @throws \Kirby\Exception\NotFoundException If the handler was not found
-	 * @throws \Kirby\Exception\Exception On other errors
+	 * @throws InvalidArgumentException If the file didn't pass validation
+	 * @throws NotFoundException If the handler was not found
+	 * @throws Exception On other errors
 	 */
 	public function validateContents(string|bool $typeLazy = false): void
 	{

@@ -5,19 +5,15 @@ namespace Kirby\Sane;
 use DOMAttr;
 use DOMDocumentType;
 use DOMElement;
+use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\Dom;
 
 /**
  * Base class for Sane handlers with DOM file types
- * @since 3.5.8
  *
- * @package   Kirby Sane
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
- *
- * @SuppressWarnings(PHPMD.LongVariable)
+ * @since     3.5.8
  */
 class DomHandler extends Handler
 {
@@ -67,7 +63,7 @@ class DomHandler extends Handler
 	 * @param bool $isExternal Whether the string is from an external file
 	 *                         that may be accessed directly
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file couldn't be parsed
+	 * @throws InvalidArgumentException If the file couldn't be parsed
 	 */
 	public static function sanitize(
 		string $string,
@@ -84,8 +80,8 @@ class DomHandler extends Handler
 	 * @param bool $isExternal Whether the string is from an external file
 	 *                         that may be accessed directly
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file couldn't be parsed
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file didn't pass validation
+	 * @throws InvalidArgumentException If the file couldn't be parsed
+	 * @throws InvalidArgumentException If the file didn't pass validation
 	 */
 	public static function validate(
 		string $string,
@@ -171,7 +167,7 @@ class DomHandler extends Handler
 	/**
 	 * Parses the given string into a `Toolkit\Dom` object
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file couldn't be parsed
+	 * @throws InvalidArgumentException If the file couldn't be parsed
 	 */
 	protected static function parse(string $string): Dom
 	{

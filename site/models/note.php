@@ -10,7 +10,7 @@
  * an image selected in the cover field or the first image in the folder.
  *
  * You can see the method in use in the `note.php` snippet.
- * and in the `site/blueprints/sections/notes.yml` image query
+ * and in the `site/blueprints/fields/notes.yml` image query
  *
  * We also define a custom date handler here, which keeps date formatting
  * for the published date consistent in templates, snippets and blueprints.

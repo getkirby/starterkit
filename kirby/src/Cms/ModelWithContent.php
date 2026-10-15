@@ -3,6 +3,7 @@
 namespace Kirby\Cms;
 
 use Closure;
+use Kirby\Blueprint\Blueprint;
 use Kirby\Content\Content;
 use Kirby\Content\ImmutableMemoryStorage;
 use Kirby\Content\Lock;
@@ -15,27 +16,26 @@ use Kirby\Content\Version;
 use Kirby\Content\VersionId;
 use Kirby\Content\Versions;
 use Kirby\Exception\InvalidArgumentException;
+use Kirby\Exception\NotFoundException;
 use Kirby\Form\Fields;
 use Kirby\Form\Form;
-use Kirby\Panel\Model;
+use Kirby\Form\Interface\ProvidesAcceptedBlueprints;
+use Kirby\Panel\Model as PanelModel;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\BlockCollectionAccess;
+use Kirby\Toolkit\HtmlString;
 use Kirby\Toolkit\Str;
 use Kirby\Uuid\Identifiable;
 use Kirby\Uuid\Uuid;
-use Stringable;
 use Throwable;
 
 /**
  * ModelWithContent
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
-abstract class ModelWithContent implements Identifiable, Stringable
+abstract class ModelWithContent extends Model implements Identifiable
 {
 	/**
 	 * Each model must define a CLASS_ALIAS
@@ -43,7 +43,7 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	 * The CLASS_ALIAS is a short human-readable
 	 * version of the class name, i.e. page.
 	 */
-	public const CLASS_ALIAS = null;
+	public const string|null CLASS_ALIAS = null;
 
 	/**
 	 * Cached array of valid blueprints
@@ -51,9 +51,9 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	 */
 	public array|null $blueprints = null;
 
-	public static App $kirby;
+	public static App|null $kirby = null;
 	protected Site|null $site;
-	protected Storage $storage;
+	protected Storage|null $storage = null;
 
 	/**
 	 * Store values used to initilaize object
@@ -71,6 +71,11 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	}
 
 	/**
+	 * Returns the url to the api endpoint
+	 */
+	abstract public function apiUrl(bool $relative = false): string;
+
+	/**
 	 * Returns the blueprint of the model
 	 */
 	abstract public function blueprint(): Blueprint;
@@ -78,33 +83,31 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	/**
 	 * Returns an array with all blueprints that are available
 	 */
-	public function blueprints(string|null $inSection = null): array
+	public function blueprints(string|null $inField = null): array
 	{
 		// helper function
-		$toBlueprints = static function (array $sections): array {
+		$toBlueprints = static function (iterable $fields): array {
 			$blueprints = [];
 
-			foreach ($sections as $section) {
-				if ($section === null) {
-					continue;
-				}
-
-				foreach ((array)$section->blueprints() as $blueprint) {
-					$blueprints[$blueprint['name']] = $blueprint;
+			foreach ($fields as $field) {
+				if ($field instanceof ProvidesAcceptedBlueprints) {
+					foreach ($field->blueprints() as $blueprint) {
+						$blueprints[$blueprint['name']] = $blueprint;
+					}
 				}
 			}
 
 			return array_values($blueprints);
 		};
 
-		$blueprint = $this->blueprint();
+		$fields = Fields::for($this);
 
-		// no caching for when collecting for specific section
-		if ($inSection !== null) {
-			return $toBlueprints([$blueprint->section($inSection)]);
+		// no caching for when collecting for a specific field
+		if ($inField !== null) {
+			return $toBlueprints([$fields->get($inField)]);
 		}
 
-		return $this->blueprints ??= $toBlueprints($blueprint->sections());
+		return $this->blueprints ??= $toBlueprints($fields);
 	}
 
 	/**
@@ -169,7 +172,7 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	/**
 	 * Returns the content
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the language for the given code does not exist
+	 * @throws InvalidArgumentException If the language for the given code does not exist
 	 */
 	public function content(string|null $languageCode = null): Content
 	{
@@ -392,13 +395,7 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	 */
 	public function errors(): array
 	{
-		$errors = [];
-
-		foreach ($this->blueprint()->sections() as $section) {
-			$errors = [...$errors, ...$section->errors()];
-		}
-
-		return $errors;
+		return Form::for($this)->errors();
 	}
 
 	/**
@@ -482,7 +479,7 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	 * Returns the panel info of the model
 	 * @since 3.6.0
 	 */
-	abstract public function panel(): Model;
+	abstract public function panel(): PanelModel;
 
 	/**
 	 * Must return the permissions object for the model
@@ -673,6 +670,27 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	}
 
 	/**
+	 * String template builder with automatic HTML escaping,
+	 * marking the result as trusted HTML for the Panel.
+	 * Use this over `toSafeString()` whenever the result is
+	 * rendered as HTML rather than used as plain text.
+	 * @since 6.0.0
+	 *
+	 * @param $template Template string or `null` to use the model ID
+	 * @param $fallback Fallback for tokens in the template that cannot be replaced
+	 *                 (`null` to keep the original token)
+	 */
+	public function toSafeHtmlString(
+		string|null $template = null,
+		array $data = [],
+		string|null $fallback = ''
+	): HtmlString {
+		return new HtmlString(
+			$this->toSafeString($template, $data, $fallback)
+		);
+	}
+
+	/**
 	 * String template builder with automatic HTML escaping
 	 * @since 3.6.0
 	 *
@@ -733,7 +751,7 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	 * Returns a single translation by language code
 	 * If no code is specified the current translation is returned
 	 *
-	 * @throws \Kirby\Exception\NotFoundException If the language does not exist
+	 * @throws NotFoundException If the language does not exist
 	 */
 	public function translation(
 		string|null $languageCode = null
@@ -761,7 +779,7 @@ abstract class ModelWithContent implements Identifiable, Stringable
 	/**
 	 * Updates the model data
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the input array contains invalid values
+	 * @throws InvalidArgumentException If the input array contains invalid values
 	 */
 	#[BlockCollectionAccess]
 	public function update(

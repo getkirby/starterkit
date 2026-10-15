@@ -10,25 +10,17 @@ use Closure;
  * foundation for other cache drivers
  * by extending it
  *
- * @package   Kirby Cache
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
 abstract class Cache
 {
 	/**
-	 * Stores all options for the driver
-	 */
-	protected array $options = [];
-
-	/**
 	 * Sets all parameters which are needed to connect to the cache storage
 	 */
-	public function __construct(array $options = [])
-	{
-		$this->options = $options;
+	public function __construct(
+		protected array $options = []
+	) {
 	}
 
 	/**

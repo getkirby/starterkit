@@ -4,6 +4,8 @@ namespace Kirby\Toolkit;
 
 use Closure;
 use DOMAttr;
+use DOMCdataSection;
+use DOMComment;
 use DOMDocument;
 use DOMDocumentType;
 use DOMElement;
@@ -18,14 +20,10 @@ use Kirby\Http\Url;
 
 /**
  * Helper class for DOM handling using the DOMDocument class
- * @since 3.5.8
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- *            Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
+ * @since     3.5.8
  */
 class Dom
 {
@@ -68,10 +66,8 @@ class Dom
 	protected DOMDocument $doc;
 
 	/**
-	 * Class constructor
-	 *
-	 * @param string $code XML or HTML original input code
-	 * @param string $type Document type (`'HTML'` or `'XML'`)
+	 * @param $code XML or HTML original input code
+	 * @param $type Document type (`'HTML'` or `'XML'`)
 	 */
 	public function __construct(
 		protected string $code,
@@ -117,10 +113,9 @@ class Dom
 
 				if (
 					// Case 1: libxml preserved it as a processing instruction
-					($node->nodeType === XML_PI_NODE && $node->data === $xml) ||
+					($node instanceof DOMProcessingInstruction && $node->data === $xml) ||
 					// Case 2: libxml converted it into a comment node
-					// (<!--?xml encoding="UTF-8" id="..."-->)
-					($node->nodeType === XML_COMMENT_NODE && strpos($node->data, $xml) !== false)
+					($node instanceof DOMComment && strpos($node->data, $xml) !== false)
 				) {
 					static::remove($node);
 					break;
@@ -200,7 +195,9 @@ class Dom
 					$code = 0xFFFD;
 				}
 
-				return mb_chr($code);
+				$char = mb_chr($code, 'UTF-8');
+
+				return $char === false ? "\u{FFFD}" : $char;
 			},
 			$value
 		);
@@ -239,9 +236,8 @@ class Dom
 	}
 
 	/**
-	 * Checks for allowed attributes according to the allowlist
-	 *
-	 * @return true|string If not allowed, an error message is returned
+	 * Checks for allowed attributes according to the allowlist.
+	 * If not allowed, an error message is returned.
 	 */
 	public static function isAllowedAttr(
 		DOMAttr $attr,
@@ -294,10 +290,9 @@ class Dom
 	}
 
 	/**
-	 * Checks for allowed attributes according to the global allowlist
+	 * Checks for allowed attributes according to the global allowlist.
+	 * If not allowed, an error message is returned.
 	 * @internal
-	 *
-	 * @return true|string If not allowed, an error message is returned
 	 */
 	public static function isAllowedGlobalAttr(
 		DOMAttr $attr,
@@ -333,9 +328,8 @@ class Dom
 	}
 
 	/**
-	 * Checks if the URL is acceptable for URL attributes
-	 *
-	 * @return true|string If not allowed, an error message is returned
+	 * Checks if the URL is acceptable for URL attributes.
+	 * If not allowed, an error message is returned.
 	 */
 	public static function isAllowedUrl(
 		string $url,
@@ -345,7 +339,7 @@ class Dom
 		$url     = Str::lower(Url::normalize($url));
 
 		// allow empty URL values
-		if (empty($url) === true) {
+		if ($url === '') {
 			return true;
 		}
 
@@ -367,7 +361,7 @@ class Dom
 		) {
 			// if a CMS instance is active, only allow the URL
 			// if it doesn't point outside of the index URL
-			if ($kirby = App::instance(null, true)) {
+			if ($kirby = App::instance(lazy: true)) {
 				$indexUrl = $kirby->url('index', true)->path()->toString(true);
 
 				// only the path is relevant for the comparison, as the
@@ -452,7 +446,10 @@ class Dom
 		if (Str::startsWith($url, 'mailto:') === true) {
 			$address = Str::after($url, 'mailto:');
 
-			if (empty($address) === true || V::email($address) === true) {
+			if (
+				$address === '' ||
+				V::email($address) === true
+			) {
 				return true;
 			}
 
@@ -464,7 +461,7 @@ class Dom
 			$address = Str::after($url, 'tel:');
 
 			if (
-				empty($address) === true ||
+				$address === '' ||
 				preg_match('!^[+]?[0-9]+$!', $address) === 1
 			) {
 				return true;
@@ -508,8 +505,8 @@ class Dom
 	 * considering the allowed namespaces
 	 * @internal
 	 *
-	 * @param array $options See `Dom::sanitize()`
-	 * @param \Closure|null Comparison callback that returns whether the expected and real name match
+	 * @param $options See `Dom::sanitize()`
+	 * @param $compare Callback that returns whether the expected and real name match
 	 * @return string|false Matched name in the list or `false`
 	 */
 	public static function listContainsName(
@@ -596,58 +593,67 @@ class Dom
 	/**
 	 * Executes an XPath query in the document
 	 *
-	 * @param \DOMNode|null $node Optional context node for relative queries
+	 * @param $node Optional context node for relative queries
+	 * @throws InvalidArgumentException for invalid XPath queries
 	 */
 	public function query(
 		string $query,
 		DOMNode|null $node = null
-	): DOMNodeList|false {
-		return (new DOMXPath($this->doc))->query($query, $node);
+	): DOMNodeList {
+		$path   = new DOMXPath($this->doc);
+		$result = @$path->query($query, $node);
+
+		if ($result === false) {
+			throw new InvalidArgumentException(
+				message: 'Invalid XPath query: ' . $query
+			);
+		}
+
+		return $result;
 	}
 
 	/**
 	 * Sanitizes the DOM according to the provided configuration
 	 *
-	 * @param array $options Array with the following options:
-	 *                       - `allowedAttrPrefixes`: Global list of allowed attribute prefixes
-	 *                       like `data-` and `aria-`
-	 *                       - `allowedAttrs`: Global list of allowed attrs or `true` to allow
-	 *                       any attribute
-	 *                       - `allowedDataUris`: List of all MIME types that may be used in
-	 *                       data URIs (only checked in `urlAttrs` and inside `url()` wrappers)
-	 *                       or `true` for any
-	 *                       - `allowedDomains`: Allowed hostnames for HTTP(S) URLs in `urlAttrs`
-	 *                       and inside `url()` wrappers or `true` for any
-	 *                       - `allowHostRelativeUrls`: Whether URLs that begin with `/` should be
-	 *                       allowed even if the site index URL is in a subfolder (useful when using
-	 *                       the HTML `<base>` element where the sanitized code will be rendered)
-	 *                       - `allowedNamespaces`: Associative array of all allowed namespace URIs;
-	 *                       the array keys are reference names that can be referred to from the
-	 *                       `allowedAttrPrefixes`, `allowedAttrs`, `allowedTags`, `disallowedTags`
-	 *                       and `urlAttrs` lists; the namespace names as used in the document are *not*
-	 *                       validated; setting the whole option to `true` will allow any namespace
-	 *                       - `allowedPIs`: Names of allowed XML processing instructions or
-	 *                       `true` for any
-	 *                       - `allowedTags`: Associative array of all allowed tag names with the
-	 *                       value of either an array with the list of all allowed attributes for
-	 *                       this tag, `true` to allow any attribute from the `allowedAttrs` list
-	 *                       or `false` to allow the tag without any attributes;
-	 *                       not listed tags will be unwrapped (removed, but children are kept);
-	 *                       setting the whole option to `true` will allow any tag
-	 *                       - `attrCallback`: Closure that will receive each `DOMAttr` and may
-	 *                       modify it; the callback must return an array with exception
-	 *                       objects for each modification
-	 *                       - `disallowedTags`: Array of explicitly disallowed tags, which will
-	 *                       be removed completely including their children (matched case-insensitively)
-	 *                       - `doctypeCallback`: Closure that will receive the `DOMDocumentType`
-	 *                       and may throw exceptions on validation errors
-	 *                       - `elementCallback`: Closure that will receive each `DOMElement` and
-	 *                       may modify it; the callback must return an array with exception
-	 *                       objects for each modification
-	 *                       - `urlAttrs`: List of attributes that may contain URLs
-	 * @return array List of validation errors during sanitization
+	 * @param $options Array with the following options:
+	 *                - `allowedAttrPrefixes`: Global list of allowed attribute prefixes
+	 *                like `data-` and `aria-`
+	 *                - `allowedAttrs`: Global list of allowed attrs or `true` to allow
+	 *                any attribute
+	 *                - `allowedDataUris`: List of all MIME types that may be used in
+	 *                data URIs (only checked in `urlAttrs` and inside `url()` wrappers)
+	 *                or `true` for any
+	 *                - `allowedDomains`: Allowed hostnames for HTTP(S) URLs in `urlAttrs`
+	 *                and inside `url()` wrappers or `true` for any
+	 *                - `allowHostRelativeUrls`: Whether URLs that begin with `/` should be
+	 *                allowed even if the site index URL is in a subfolder (useful when using
+	 *                the HTML `<base>` element where the sanitized code will be rendered)
+	 *                - `allowedNamespaces`: Associative array of all allowed namespace URIs;
+	 *                the array keys are reference names that can be referred to from the
+	 *                `allowedAttrPrefixes`, `allowedAttrs`, `allowedTags`, `disallowedTags`
+	 *                and `urlAttrs` lists; the namespace names as used in the document are *not*
+	 *                validated; setting the whole option to `true` will allow any namespace
+	 *                - `allowedPIs`: Names of allowed XML processing instructions or
+	 *                `true` for any
+	 *                - `allowedTags`: Associative array of all allowed tag names with the
+	 *                value of either an array with the list of all allowed attributes for
+	 *                this tag, `true` to allow any attribute from the `allowedAttrs` list
+	 *                or `false` to allow the tag without any attributes;
+	 *                not listed tags will be unwrapped (removed, but children are kept);
+	 *                setting the whole option to `true` will allow any tag
+	 *                - `attrCallback`: Closure that will receive each `DOMAttr` and may
+	 *                modify it; the callback must return an array with exception
+	 *                objects for each modification
+	 *                - `disallowedTags`: Array of explicitly disallowed tags, which will
+	 *                be removed completely including their children (matched case-insensitively)
+	 *                - `doctypeCallback`: Closure that will receive the `DOMDocumentType`
+	 *                and may throw exceptions on validation errors
+	 *                - `elementCallback`: Closure that will receive each `DOMElement` and
+	 *                may modify it; the callback must return an array with exception
+	 *                objects for each modification
+	 *                - `urlAttrs`: List of attributes that may contain URLs
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the doctype is not valid
+	 * @throws InvalidArgumentException If the doctype is not valid
 	 */
 	public function sanitize(array $options): array
 	{
@@ -691,10 +697,10 @@ class Dom
 	/**
 	 * Returns the document markup as string
 	 *
-	 * @param bool $normalize If set to `true`, the document
-	 *                        is exported with an XML declaration/
-	 *                        full HTML markup even if the input
-	 *                        didn't have them
+	 * @param $normalize If set to `true`, the document
+	 *                  is exported with an XML declaration/
+	 *                  full HTML markup even if the input
+	 *                  didn't have them
 	 */
 	public function toString(bool $normalize = false): string
 	{
@@ -753,9 +759,9 @@ class Dom
 	/**
 	 * Returns the document markup as HTML string
 	 *
-	 * @param bool $normalize If set to `true`, the document
-	 *                        is exported with full HTML markup
-	 *                        even if the input didn't have it
+	 * @param $normalize If set to `true`, the document
+	 *                  is exported with full HTML markup
+	 *                  even if the input didn't have it
 	 */
 	protected function exportHtml(bool $normalize = false): string
 	{
@@ -803,9 +809,9 @@ class Dom
 	/**
 	 * Returns the document markup as XML string
 	 *
-	 * @param bool $normalize If set to `true`, the document
-	 *                        is exported with an XML declaration
-	 *                        even if the input didn't have it
+	 * @param $normalize If set to `true`, the document
+	 *                  is exported with an XML declaration
+	 *                  even if the input didn't have it
 	 */
 	protected function exportXml(bool $normalize = false): string
 	{
@@ -998,8 +1004,8 @@ class Dom
 	/**
 	 * Sanitizes an attribute
 	 *
-	 * @param array $options See `Dom::sanitize()`
-	 * @param array $errors Array to store additional errors in by reference
+	 * @param $options See `Dom::sanitize()`
+	 * @param $errors Array to store additional errors in by reference
 	 */
 	protected function sanitizeAttr(
 		DOMAttr $attr,
@@ -1054,16 +1060,17 @@ class Dom
 		DOMNode $node,
 		array &$errors
 	): void {
-		$isComment = $node->nodeType === XML_COMMENT_NODE;
-		$isCdata   = $node->nodeType === XML_CDATA_SECTION_NODE;
-
 		// only comments and CDATA sections are serialized verbatim;
 		// regular text nodes are entity-escaped on export and stay safe
-		if ($isComment === false && $isCdata === false) {
+		if (
+			$node instanceof DOMComment === false &&
+			$node instanceof DOMCdataSection === false
+		) {
 			return;
 		}
 
-		$data = $node->data;
+		$isComment = $node instanceof DOMComment;
+		$data      = $node->data;
 
 		// an HTML parser judges the node by the element it sits in: inside
 		// foreign content `<![CDATA[` stays a CDATA section, while raw text
@@ -1124,8 +1131,8 @@ class Dom
 	/**
 	 * Sanitizes the doctype
 	 *
-	 * @param array $options See `Dom::sanitize()`
-	 * @param array $errors Array to store additional errors in by reference
+	 * @param $options See `Dom::sanitize()`
+	 * @param $errors Array to store additional errors in by reference
 	 */
 	protected function sanitizeDoctype(
 		DOMDocumentType $doctype,
@@ -1143,8 +1150,8 @@ class Dom
 	/**
 	 * Sanitizes a single DOM element and its attribute
 	 *
-	 * @param array $options See `Dom::sanitize()`
-	 * @param array $errors Array to store additional errors in by reference
+	 * @param $options See `Dom::sanitize()`
+	 * @param $errors Array to store additional errors in by reference
 	 */
 	protected function sanitizeElement(
 		DOMElement $element,
@@ -1212,28 +1219,24 @@ class Dom
 
 				// custom check (if the attribute is still in the document)
 				if ($attr->ownerElement !== null && $options['attrCallback']) {
-					$errors = [
-						...$errors,
-						...$options['attrCallback']($attr, $options) ?? []
-					];
+					$attrErrors = (array)($options['attrCallback']($attr, $options) ?? []);
+					array_push($errors, ...array_values($attrErrors));
 				}
 			}
 		}
 
 		// custom check
 		if ($options['elementCallback']) {
-			$errors = [
-				...$errors,
-				...$options['elementCallback']($element, $options) ?? []
-			];
+			$elementErrors = (array)($options['elementCallback']($element, $options) ?? []);
+			array_push($errors, ...array_values($elementErrors));
 		}
 	}
 
 	/**
 	 * Sanitizes a single XML processing instruction
 	 *
-	 * @param array $options See `Dom::sanitize()`
-	 * @param array $errors Array to store additional errors in by reference
+	 * @param $options See `Dom::sanitize()`
+	 * @param $errors Array to store additional errors in by reference
 	 */
 	protected function sanitizePI(
 		DOMProcessingInstruction $pi,
@@ -1269,9 +1272,9 @@ class Dom
 	/**
 	 * Validates the document type
 	 *
-	 * @param array $options See `Dom::sanitize()`
+	 * @param $options See `Dom::sanitize()`
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the doctype is not valid
+	 * @throws InvalidArgumentException If the doctype is not valid
 	 */
 	protected function validateDoctype(
 		DOMDocumentType $doctype,

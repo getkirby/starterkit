@@ -9,9 +9,6 @@ use Kirby\Toolkit\A;
  * Manages request-dependent headers that must not be
  * persisted in cached responses
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  * @since     5.3.0
@@ -25,18 +22,23 @@ class VolatileHeaders
 
 	/**
 	 * Adds (parts of) a header to the volatile list
+	 *
+	 * @param array<string, list<string>|null> $target
 	 */
 	protected function append(
 		string $name,
 		array|null $values = null,
-		array|null &$target = null
+		array &$target = []
 	): void {
 		if ($values === null) {
 			$target[$name] = null;
 			return;
 		}
 
-		if (array_key_exists($name, $target) === true && $target[$name] === null) {
+		if (
+			array_key_exists($name, $target) === true &&
+			$target[$name] === null
+		) {
 			return;
 		}
 
@@ -65,7 +67,7 @@ class VolatileHeaders
 
 		foreach ($corsHeaders as $name => $value) {
 			if ($name === 'Vary') {
-				$corsVaryValues = array_map('trim', explode(',', $value));
+				$corsVaryValues = array_map(trim(...), explode(',', $value));
 				$this->append($name, $corsVaryValues, $volatile);
 				continue;
 			}
@@ -90,7 +92,7 @@ class VolatileHeaders
 	 */
 	protected function normalizeVaryValues(string $value): array
 	{
-		$values = A::map(explode(',', $value), 'trim');
+		$values = A::map(explode(',', $value), trim(...));
 		$values = A::filter($values, static fn ($entry) => $entry !== '');
 
 		return array_values(array_unique($values));
@@ -101,7 +103,7 @@ class VolatileHeaders
 	 */
 	protected function removeVaryValues(array $values, array $remove): array
 	{
-		$removeLower = A::map($remove, 'strtolower');
+		$removeLower = A::map($remove, strtolower(...));
 
 		return array_values(A::filter(
 			$values,

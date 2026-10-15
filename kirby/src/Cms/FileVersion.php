@@ -8,9 +8,6 @@ use Kirby\Filesystem\IsFile;
 /**
  * FileVersion
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -53,6 +50,8 @@ class FileVersion
 		if ($this->original() instanceof File) {
 			return $this->original()->content()->get($method);
 		}
+
+		return null;
 	}
 
 	/**

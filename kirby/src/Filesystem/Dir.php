@@ -21,9 +21,6 @@ use Throwable;
  * and converting the results into
  * children, files and other page stuff.
  *
- * @package   Kirby Filesystem
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -102,10 +99,10 @@ class Dir
 		bool $absolute = false
 	): array {
 		$scan   = static::read($dir, $ignore, true);
-		$result = array_values(array_filter($scan, 'is_dir'));
+		$result = array_values(array_filter($scan, is_dir(...)));
 
 		if ($absolute !== true) {
-			$result = array_map('basename', $result);
+			$result = array_map(basename(...), $result);
 		}
 
 		return $result;
@@ -133,10 +130,10 @@ class Dir
 		bool $absolute = false
 	): array {
 		$scan   = static::read($dir, $ignore, true);
-		$result = array_values(array_filter($scan, 'is_file'));
+		$result = array_values(array_filter($scan, is_file(...)));
 
 		if ($absolute !== true) {
-			$result = array_map('basename', $result);
+			$result = array_map(basename(...), $result);
 		}
 
 		return $result;
@@ -263,11 +260,13 @@ class Dir
 	 * @param string $dir The path for the new directory
 	 * @param bool $recursive Create all parent directories, which don't exist
 	 * @return bool True: the dir has been created, false: creating failed
-	 * @throws \Exception If a file with the provided path already exists or the parent directory is not writable
+	 * @throws Exception If a file with the provided path already exists or the parent directory is not writable
 	 */
-	public static function make(string $dir, bool $recursive = true): bool
-	{
-		if (empty($dir) === true) {
+	public static function make(
+		string $dir,
+		bool $recursive = true
+	): bool {
+		if ($dir === '') {
 			return false;
 		}
 
@@ -305,12 +304,13 @@ class Dir
 	 * @param string $dir The path of the directory
 	 * @param 'date'|'intl'|'strftime'|null $handler Custom date handler or `null`
 	 *                                               for the globally configured one
+	 * @return ($format is null ? int : string|false)
 	 */
 	public static function modified(
 		string $dir,
 		string|null $format = null,
 		string|null $handler = null
-	): int|string {
+	): int|string|false {
 		$modified = filemtime($dir);
 		$items    = static::read($dir);
 
@@ -390,7 +390,7 @@ class Dir
 		$ignore   = [...$ignore, '.', '..'];
 
 		// scan for all files and dirs
-		$result = array_values((array)array_diff(scandir($dir), $ignore));
+		$result = array_values(array_diff(scandir($dir), $ignore));
 
 		// add absolute paths
 		if ($absolute === true) {
@@ -422,14 +422,11 @@ class Dir
 			// require a path separator boundary so that
 			// a sibling directory sharing the same name prefix
 			// (e.g. `/site2` for the parent `/site`)
-			// cannot pass the containment check
+			// cannot pass the containment check; the parent
+			// directory itself is not considered to be within itself
 			$parent = rtrim($parent, '/\\');
 
-			// TODO: Tighten to only allow **inside** $parent in v6
-			if (
-				$realpath !== $parent &&
-				str_starts_with($realpath, $parent . DIRECTORY_SEPARATOR) === false
-			) {
+			if (str_starts_with($realpath, $parent . DIRECTORY_SEPARATOR) === false) {
 				throw new Exception('The directory is not within the parent directory');
 			}
 		}

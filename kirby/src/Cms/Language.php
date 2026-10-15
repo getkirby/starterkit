@@ -7,10 +7,10 @@ use Kirby\Exception\Exception;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Exception\NotFoundException;
 use Kirby\Filesystem\F;
+use Kirby\Guards\LanguageGuards;
 use Kirby\Toolkit\BlockCollectionAccess;
 use Kirby\Toolkit\Locale;
 use Kirby\Toolkit\Str;
-use Stringable;
 
 /**
  * The `$language` object represents
@@ -22,22 +22,19 @@ use Stringable;
  * get translation strings and many
  * more things.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  *
- * @use \Kirby\Cms\HasSiblings<\Kirby\Cms\Languages>
+ * @use HasSiblings<Languages>
  */
-class Language implements Stringable
+class Language extends Model
 {
 	use HasSiblings;
 
 	/**
 	 * Short human-readable version used in template queries
 	 */
-	public const CLASS_ALIAS = 'language';
+	public const string CLASS_ALIAS = 'language';
 
 	/**
 	 * The parent Kirby instance
@@ -108,6 +105,7 @@ class Language implements Stringable
 	 */
 	public function baseUrl(): string
 	{
+		/** @var string $kirbyUrl */
 		$kirbyUrl    = $this->kirby()->url();
 		$languageUrl = $this->url();
 
@@ -169,7 +167,7 @@ class Language implements Stringable
 		$language = new static($props);
 
 		// validate the new language
-		LanguageRules::create($language);
+		$language->guards()->ensureExecutable('create');
 
 		// apply before hook
 		$language = $kirby->apply(
@@ -182,7 +180,7 @@ class Language implements Stringable
 		);
 
 		// re-validate the language after before hook was applied
-		LanguageRules::create($language);
+		$language->guards()->ensureExecutable('create');
 
 		$language->save();
 
@@ -216,7 +214,7 @@ class Language implements Stringable
 	 * Delete the current language and
 	 * all its translation files
 	 *
-	 * @throws \Kirby\Exception\Exception
+	 * @throws Exception
 	 */
 	#[BlockCollectionAccess]
 	public function delete(): bool
@@ -225,7 +223,7 @@ class Language implements Stringable
 		$code  = $this->code();
 
 		// validate the language rules
-		LanguageRules::delete($this);
+		$this->guards()->ensureExecutable('delete');
 
 		// apply before hook
 		$language = $kirby->apply(
@@ -234,7 +232,7 @@ class Language implements Stringable
 		);
 
 		// re-validate the language rules after before hook was applied
-		LanguageRules::delete($language);
+		$language->guards()->ensureExecutable('delete');
 
 		if (F::remove($language->root()) !== true) {
 			throw new Exception(message: 'The language could not be deleted');
@@ -242,7 +240,7 @@ class Language implements Stringable
 
 		// if needed, convert content storage to single lang
 		foreach ($kirby->models() as $model) {
-			if ($language->isLast() === true) {
+			if ($language->isLastLanguage() === true) {
 				$model->storage()->moveLanguage($this, Language::single());
 			} else {
 				$model->storage()->deleteLanguage($this);
@@ -271,7 +269,7 @@ class Language implements Stringable
 	/**
 	 * Converts a "user-facing" language code to a `Language` object
 	 *
-	 * @throws \Kirby\Exception\NotFoundException If the language does not exist
+	 * @throws NotFoundException If the language does not exist
 	 * @unstable
 	 */
 	public static function ensure(self|string|null $code = null): static
@@ -302,6 +300,14 @@ class Language implements Stringable
 	public function exists(): bool
 	{
 		return file_exists($this->root());
+	}
+
+	/**
+	 * Returns the guards object for this language
+	 */
+	public function guards(): LanguageGuards
+	{
+		return LanguageGuards::for($this);
 	}
 
 	/**
@@ -336,23 +342,14 @@ class Language implements Stringable
 	 */
 	public function isDeletable(): bool
 	{
-		// a single-language object cannot be deleted
-		if ($this->isSingle() === true) {
-			return false;
-		}
-
-		// the default language can only be deleted if it's the last
-		if ($this->isDefault() === true && $this->isLast() === false) {
-			return false;
-		}
-
-		return true;
+		return $this->guards()->abilities()->may('delete');
 	}
 
 	/**
 	 * Checks if this is the last language
+	 * @since 6.0.0
 	 */
-	public function isLast(): bool
+	public function isLastLanguage(): bool
 	{
 		return App::instance()->languages()->count() === 1;
 	}
@@ -441,7 +438,7 @@ class Language implements Stringable
 	{
 		$path = $this->path();
 
-		if (empty($path) === true) {
+		if ($path === '') {
 			return '(:all)';
 		}
 
@@ -620,7 +617,7 @@ class Language implements Stringable
 		}
 
 		// validate the language rules after before hook was applied
-		LanguageRules::update($language, $this);
+		$language->guards()->ensureExecutable('update', $this);
 
 		// if language just got promoted to be the new default language…
 		if ($this->isDefault() === false && $language->isDefault() === true) {

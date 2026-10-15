@@ -16,9 +16,6 @@ use Throwable;
  * of handy methods for string
  * handling and manipulation.
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -340,36 +337,35 @@ class Str
 	 *
 	 * @param 'date'|'intl'|'strftime'|null $handler Custom date handler or `null`
 	 *                                               for the globally configured one
+	 * @return ($format is null ? int : string|false)
 	 */
 	public static function date(
 		int|null $time,
 		string|IntlDateFormatter|null $format = null,
 		string|null $handler = null
 	): string|int|false {
+		$time ??= time();
+
 		if (is_null($format) === true) {
 			return $time;
 		}
 
 		// $format is an IntlDateFormatter instance
 		if ($format instanceof IntlDateFormatter) {
-			return $format->format($time ?? time());
+			return $format->format($time);
 		}
 
 		// automatically determine the handler from global configuration
 		// if an app instance is already running; otherwise fall back to
 		// `date` for backwards-compatibility
 		if ($handler === null) {
-			$handler = App::instance(null, true)?->option('date.handler') ?? 'date';
+			$handler = App::instance(lazy: true)?->option('date.handler') ?? 'date';
 		}
 
 		// `intl` handler
 		if ($handler === 'intl') {
 			$datetime = new DateTime();
-
-			if ($time !== null) {
-				$datetime->setTimestamp($time);
-			}
-
+			$datetime->setTimestamp($time);
 			return IntlDateFormatter::formatObject($datetime, $format);
 		}
 
@@ -388,6 +384,8 @@ class Str
 
 	/**
 	 * Converts a string to a different encoding
+	 *
+	 * @throws InvalidArgumentException when conversion failed
 	 */
 	public static function convert(
 		string $string,
@@ -402,7 +400,15 @@ class Str
 			return $string;
 		}
 
-		return iconv($sourceEncoding, $targetEncoding, $string);
+		$result = @iconv($sourceEncoding, $targetEncoding, $string);
+
+		if ($result === false) {
+			throw new InvalidArgumentException(
+				message: 'Could not convert string "' . $string . '" from "' . $sourceEncoding . '" to "' . $targetEncoding . '"'
+			);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -434,7 +440,7 @@ class Str
 			$string,
 			'UTF-8, ISO-8859-1, windows-1251',
 			true
-		);
+		) ?: 'UTF-8';
 	}
 
 	/**
@@ -539,20 +545,21 @@ class Str
 	 * Convert the value to a float with a decimal
 	 * point, no matter what the locale setting is
 	 */
-	public static function float(string|int|float|null $value): string
+	public static function float(string|int|float|null $value): string|null
 	{
 		// make sure $value is not null
 		$value ??= '';
+		$value   = str_replace(',', '.', (string)$value);
 
-		// turn the value into a string
-		$value = (string)$value;
+		if (is_numeric($value) === false) {
+			return null;
+		}
 
 		// Convert exponential to decimal, 1e-8 as 0.00000001
 		if (str_contains(strtolower($value), 'e') === true) {
 			$value = rtrim(sprintf('%.16f', (float)$value), '0');
 		}
 
-		$value   = str_replace(',', '.', $value);
 		$decimal = strrchr($value, '.');
 		$decimal = match ($decimal) {
 			false   => 0,
@@ -751,6 +758,8 @@ class Str
 
 	/**
 	 * Get a character pool with various possible combinations
+	 *
+	 * @return ($array is true ? list<int|string> : string)
 	 */
 	public static function pool(
 		string|array $type,
@@ -782,7 +791,7 @@ class Str
 	 * Returns the position of a needle in a string
 	 * if it can be found
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException for empty $needle
+	 * @throws InvalidArgumentException for empty $needle
 	 */
 	public static function position(
 		string|null $string,
@@ -827,6 +836,7 @@ class Str
 
 		// catch invalid pools
 		if (!$pool) {
+			// TODO: throw here to make problem and return type clearer
 			return false;
 		}
 
@@ -835,13 +845,15 @@ class Str
 		$regex = '/[^' . $pool . ']/';
 
 		// collect characters until we have our required length
-		$result = '';
+		$result    = '';
+		$remaining = $length;
 
-		while (($currentLength = strlen($result)) < $length) {
-			$missing = $length - $currentLength;
-			$bytes   = random_bytes($missing);
-			$allowed = preg_replace($regex, '', base64_encode($bytes));
-			$result .= substr($allowed, 0, $missing);
+		while ($remaining > 0) {
+			$bytes      = random_bytes($remaining);
+			$allowed    = preg_replace($regex, '', base64_encode($bytes));
+			$chunk      = substr($allowed, 0, $remaining);
+			$result    .= $chunk;
+			$remaining -= strlen($chunk);
 		}
 
 		return $result;
@@ -1053,7 +1065,8 @@ class Str
 	 *                    Supports query syntax.
 	 * @param array $options An options array that contains:
 	 *                       - fallback: if a token does not have any matches
-	 *                       - callback: to be able to handle each matching result (escaping is applied after the callback)
+	 *                       - callback: to be able to handle each matching result (escaping is applied after the callback);
+	 *                       receives the result as a string, the query, the data and the raw result
 	 *
 	 * @return string The filled-in and partially escaped string
 	 */
@@ -1069,13 +1082,16 @@ class Str
 			$callback = null;
 		}
 
+		// whether the string contains any unescaped placeholders
+		$hasUnescaped = str_contains($string ?? '', '{<');
+
 		// replace and escape
 		$string = static::template($string, $data, [
 			'start'    => '{{',
 			'end'      => '}}',
-			'callback' => function ($result, $query, $data) use ($callback) {
+			'callback' => function ($result, $query, $data, $value) use ($callback) {
 				if ($callback !== null) {
-					$result = $callback($result, $query, $data);
+					$result = $callback($result, $query, $data, $value);
 				}
 
 				return Escape::html($result);
@@ -1084,12 +1100,14 @@ class Str
 		]);
 
 		// replace unescaped (specifically marked placeholders)
-		$string = static::template($string, $data, [
-			'start'    => '{<',
-			'end'      => '>}',
-			'callback' => $callback,
-			'fallback' => $fallback
-		]);
+		if ($hasUnescaped === true) {
+			$string = static::template($string, $data, [
+				'start'    => '{<',
+				'end'      => '>}',
+				'callback' => $callback,
+				'fallback' => $fallback
+			]);
+		}
 
 		return $string;
 	}
@@ -1253,11 +1271,11 @@ class Str
 	/**
 	 * Convert a string to a safe version to be used in a URL
 	 *
-	 * @param string $string The unsafe string
-	 * @param string $separator To be used instead of space and
-	 *                          other non-word characters.
-	 * @param string $allowed List of all allowed characters (regex)
-	 * @param int $maxlength The maximum length of the slug
+	 * @param string|null $string The unsafe string
+	 * @param string|null $separator To be used instead of space and
+	 *                               other non-word characters.
+	 * @param string|null $allowed List of all allowed characters (regex)
+	 * @param int|false $maxlength The maximum length of the slug
 	 * @return string The safe string
 	 */
 	public static function slug(
@@ -1329,6 +1347,7 @@ class Str
 	 * @param string $separator The string to split by
 	 * @param int $length The min length of values.
 	 * @return array An array of found values
+	 * @psalm-return ($string is array ? array : list<string>)
 	 */
 	public static function split(
 		string|array|null $string,
@@ -1339,10 +1358,7 @@ class Str
 			return $string;
 		}
 
-		// make sure $string is string
-		$string ??= '';
-
-		$parts = explode($separator, $string);
+		$parts = explode($separator, (string)$string);
 		$out   = [];
 
 		foreach ($parts as $p) {
@@ -1418,7 +1434,8 @@ class Str
 	 *                    Supports query syntax.
 	 * @param array $options An options array that contains:
 	 *                       - fallback: if a token does not have any matches
-	 *                       - callback: to be able to handle each matching result
+	 *                       - callback: to be able to handle each matching result;
+	 *                       receives the result as a string, the query, the data and the raw result
 	 *                       - start: start placeholder
 	 *                       - end: end placeholder
 	 * @return string The filled-in string
@@ -1445,6 +1462,11 @@ class Str
 			function (array $match) use ($data, $fallback, $callback) {
 				$query = trim($match[1]);
 
+				// empty placeholders like `{}` are no queries
+				if ($query === '') {
+					return $match[0];
+				}
+
 				try {
 					$result = Query::factory($query)->resolve($data);
 				} catch (Throwable) {
@@ -1454,9 +1476,11 @@ class Str
 				// if we don't have a result, use the fallback if given
 				$result ??= $fallback;
 
-				// callback on result if given
+				// callback on result if given, with the raw result
+				// on top, so that values that look the same once
+				// cast to a string can still be told apart
 				if ($callback !== null) {
-					$callback = $callback((string)$result, $query, $data);
+					$callback = $callback((string)$result, $query, $data, $result);
 
 					if ($result !== null || $callback !== '') {
 						// the empty string came just from string casting,

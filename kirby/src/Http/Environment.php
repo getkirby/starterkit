@@ -14,9 +14,6 @@ use Kirby\Toolkit\Str;
  * well as loading the dedicated
  * environment options.
  *
- * @package   Kirby Http
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  * @since     3.7.0
@@ -681,7 +678,7 @@ class Environment
 		$default = null
 	) {
 		// first try the global `Environment` object if the CMS is running
-		if ($app = App::instance(null, true)) {
+		if ($app = App::instance(lazy: true)) {
 			return $app->environment()->get($key, $default);
 		}
 

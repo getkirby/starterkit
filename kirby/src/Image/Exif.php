@@ -2,15 +2,11 @@
 
 namespace Kirby\Image;
 
-use Kirby\Toolkit\A;
 use Kirby\Toolkit\V;
 
 /**
  * Reads exif data from a given image object
  *
- * @package   Kirby Image
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -95,12 +91,8 @@ class Exif
 	/**
 	 * Returns the iso value
 	 */
-	public function iso(): string|null
+	public function iso(): string|array|null
 	{
-		if (is_array($this->iso) === true) {
-			return A::first($this->iso);
-		}
-
 		return $this->iso;
 	}
 
@@ -162,7 +154,7 @@ class Exif
 	/**
 	 * Return the timestamp when the picture has been taken
 	 */
-	protected function parseTimestamp(): string
+	protected function parseTimestamp(): string|null
 	{
 		if (isset($this->data['DateTimeOriginal']) === true) {
 			if ($time = strtotime($this->data['DateTimeOriginal'])) {
@@ -170,7 +162,12 @@ class Exif
 			}
 		}
 
-		return $this->data['FileDateTime'] ?? $this->image->modified();
+		if (isset($this->data['FileDateTime']) === true) {
+			return (string)$this->data['FileDateTime'];
+		}
+
+		$modified = $this->image->modified();
+		return $modified === false ? null : (string)$modified;
 	}
 
 	/**

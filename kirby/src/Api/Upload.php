@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use Kirby\Cms\App;
 use Kirby\Cms\File;
-use Kirby\Cms\FileRules;
 use Kirby\Cms\Page;
 use Kirby\Data\Json;
 use Kirby\Exception\DuplicateException;
@@ -22,12 +21,10 @@ use Kirby\Toolkit\Str;
  * context of the API. It adds support for chunked
  * uploads.
  *
- * @package   Kirby Api
- * @author    Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  * @since     5.0.0
+ *
  * @unstable
  */
 readonly class Upload
@@ -44,7 +41,7 @@ readonly class Upload
 	/**
 	 * Ensures a clean chunk ID by stripping forbidden characters
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException Too short ID string
+	 * @throws InvalidArgumentException Too short ID string
 	 */
 	public static function chunkId(string $id): string
 	{
@@ -106,7 +103,7 @@ readonly class Upload
 	/**
 	 * Throws an exception with the appropriate translated error message
 	 *
-	 * @throws \Exception Any upload error
+	 * @throws Exception Any upload error
 	 */
 	public static function error(int $error): never
 	{
@@ -138,7 +135,7 @@ readonly class Upload
 		// try to detect the correct mime and add the extension
 		// accordingly. This will avoid .tmp filenames
 		if (
-			empty($extension) === true ||
+			$extension === '' ||
 			in_array($extension, ['tmp', 'temp'], true) === true
 		) {
 			$mime      = F::mime($upload['tmp_name']);
@@ -153,7 +150,7 @@ readonly class Upload
 	/**
 	 * Upload the files and call closure for each file
 	 *
-	 * @throws \Exception Any upload error
+	 * @throws Exception Any upload error
 	 */
 	public function process(Closure $callback): array
 	{
@@ -228,10 +225,10 @@ readonly class Upload
 	 * in the tmp directory and only returning the new
 	 * $source path to the tmp file once complete
 	 *
-	 * @throws \Kirby\Exception\DuplicateException Duplicate first chunk (same filename and id)
+	 * @throws DuplicateException Duplicate first chunk (same filename and id)
 	 * @throws \Kirby\Exception\Exception Chunk offset does not match existing tmp file
-	 * @throws \Kirby\Exception\InvalidArgumentException Too short ID string
-	 * @throws \Kirby\Exception\NotFoundException Subsequent chunk has no  existing tmp file
+	 * @throws InvalidArgumentException Too short ID string
+	 * @throws NotFoundException Subsequent chunk has no  existing tmp file
 	 */
 	public function processChunk(
 		string $source,
@@ -382,11 +379,11 @@ readonly class Upload
 	/**
 	 * Ensures the sent chunk is valid
 	 *
-	 * @throws \Kirby\Exception\DuplicateException Duplicate first chunk (same filename and id)
-	 * @throws \Kirby\Exception\InvalidArgumentException Chunk offset does not match existing tmp file
-	 * @throws \Kirby\Exception\InvalidArgumentException The maximum file size for this blueprint was exceeded
-	 * @throws \Kirby\Exception\InvalidArgumentException Template or total length changed between chunks
-	 * @throws \Kirby\Exception\NotFoundException Subsequent chunk has no  existing tmp file
+	 * @throws DuplicateException Duplicate first chunk (same filename and id)
+	 * @throws InvalidArgumentException Chunk offset does not match existing tmp file
+	 * @throws InvalidArgumentException The maximum file size for this blueprint was exceeded
+	 * @throws InvalidArgumentException Template or total length changed between chunks
+	 * @throws NotFoundException Subsequent chunk has no  existing tmp file
 	 */
 	protected static function validateChunk(
 		string $source,
@@ -431,7 +428,7 @@ readonly class Upload
 			// validate file (extension, name) for first chunk;
 			// will also be validate again by `$model->createFile()`
 			// when completely uploaded
-			FileRules::validFile($file, false);
+			$file->guards()->validators()->validateFile(false);
 
 			// first chunk is valid
 			return;
@@ -474,7 +471,7 @@ readonly class Upload
 	/**
 	 * Validate the files array for upload
 	 *
-	 * @throws \Exception No files were uploaded
+	 * @throws Exception No files were uploaded
 	 */
 	protected static function validateFiles(array $files): void
 	{

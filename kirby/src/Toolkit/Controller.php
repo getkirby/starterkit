@@ -12,9 +12,6 @@ use ReflectionFunction;
  * magic dependency injection based on the
  * defined variable names.
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -69,8 +66,10 @@ class Controller
 		return $this->function->call($bind, ...$args);
 	}
 
-	public static function load(string $file, string|null $in = null): static|null
-	{
+	public static function load(
+		string $file,
+		string|null $in = null
+	): static|null {
 		if (is_file($file) === false) {
 			return null;
 		}

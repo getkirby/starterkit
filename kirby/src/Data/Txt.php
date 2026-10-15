@@ -9,9 +9,6 @@ use Kirby\Toolkit\Str;
 /**
  * Kirby Txt Data Handler
  *
- * @package   Kirby Data
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -40,17 +37,19 @@ class Txt extends Handler
 	/**
 	 * Helper for converting the value
 	 */
-	protected static function encodeValue(array|string|float $value): string
+	protected static function encodeValue(array|bool|float|string $value): string
 	{
 		// avoid problems with certain values
 		$value = match (true) {
-			is_array($value) => Data::encode($value, 'yaml'),
-			is_float($value) => Str::float($value),
+			$value === true  => 'true',
+			$value === false => 'false',
+			is_array($value) => $value === [] ? '' : Data::encode($value, 'yaml'),
+			is_float($value) => Str::float($value) ?? '',
 			default          => $value
 		};
 
 		// escape accidental dividers within a field
-		$value = preg_replace('!(?<=\n|^)----!', '\\----', $value);
+		$value = preg_replace('!(?<=\n|^)----!', '\\----', $value) ?? $value;
 
 		return $value;
 	}
@@ -112,7 +111,7 @@ class Txt extends Handler
 				$key = str_replace(['-', ' '], '_', $key);
 
 				// Don't add fields with empty keys
-				if (empty($key) === true) {
+				if ($key === '') {
 					continue;
 				}
 

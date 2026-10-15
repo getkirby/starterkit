@@ -2,6 +2,7 @@
 
 namespace Kirby\Cms;
 
+use Kirby\Blueprint\Blueprint;
 use Kirby\Data\Data;
 use Kirby\Filesystem\F;
 use Kirby\Toolkit\BlockCollectionAccess;
@@ -13,9 +14,6 @@ use Stringable;
  * Represents a User role with attached
  * permissions. Roles are defined by user blueprints.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */

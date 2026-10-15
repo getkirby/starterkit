@@ -13,14 +13,10 @@ use Kirby\Toolkit\Str;
 
 /**
  * Sane handler for SVG files
- * @since 3.5.4
  *
- * @package   Kirby Sane
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- *            Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
+ * @since     3.5.4
  */
 class Svg extends Xml
 {
@@ -488,7 +484,7 @@ class Svg extends Xml
 	/**
 	 * Parses the given string into a `Toolkit\Dom` object
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the file couldn't be parsed
+	 * @throws InvalidArgumentException If the file couldn't be parsed
 	 */
 	protected static function parse(string $string): Dom
 	{

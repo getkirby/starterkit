@@ -3,25 +3,23 @@
 namespace Kirby\Uuid;
 
 use Generator;
-use Kirby\Cms\App;
 use Kirby\Cms\File;
-use Kirby\Cms\HasFiles;
+use Kirby\Cms\Page;
+use Kirby\Cms\Site;
+use Kirby\Cms\User;
 
 /**
  * UUID for $file
  *
- * @package   Kirby Uuid
- * @author    Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  * @since     3.8.0
  *
- * @extends \Kirby\Uuid\ModelUuid<\Kirby\Cms\File>
+ * @extends ModelUuid<File>
  */
 class FileUuid extends ModelUuid
 {
-	protected const TYPE = 'file';
+	protected const string TYPE = 'file';
 
 	/**
 	 * Looks up UUID in cache and resolves to file object;
@@ -36,8 +34,8 @@ class FileUuid extends ModelUuid
 			if ($value = Uuids::cache()->get($key)) {
 				// value is an array containing
 				// the UUID for the parent and the filename
-				/** @var HasFiles $parent */
-				$parent = Uuid::for($value['parent'])->model();
+				/** @var Page|Site|User|null $parent */
+				$parent = Uuid::from($value['parent'])?->model();
 				$file   = $parent?->file($value['filename']);
 
 				// the cached parent/filename pair can be stale,
@@ -55,7 +53,7 @@ class FileUuid extends ModelUuid
 	 * Generator for all files in the site
 	 * (of all pages, users and site)
 	 *
-	 * @return \Generator|\Kirby\Cms\File[]
+	 * @return Generator<string, File>
 	 */
 	public static function index(): Generator
 	{
@@ -70,6 +68,14 @@ class FileUuid extends ModelUuid
 		foreach (UserUuid::index() as $user) {
 			yield from $user->files();
 		}
+	}
+
+	/**
+	 * Returns the file object
+	 */
+	public function model(bool $lazy = false): File|null
+	{
+		return parent::model($lazy);
 	}
 
 	/**
@@ -95,20 +101,6 @@ class FileUuid extends ModelUuid
 	 */
 	public function toPermalink(): string
 	{
-		// make sure UUID is cached because the permalink
-		// route only looks up UUIDs from cache
-		if ($this->isCached() === false) {
-			$this->populate();
-		}
-
-		return App::instance()->url() . '/@/' . static::TYPE . '/' . $this->id();
-	}
-
-	/**
-	 * @deprecated 5.1.0 Use `::toPermalink()` instead
-	 */
-	public function url(): string
-	{
-		return $this->toPermalink();
+		return (new Permalink($this))->url();
 	}
 }

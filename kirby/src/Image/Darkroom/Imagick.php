@@ -10,9 +10,6 @@ use Kirby\Image\Focus;
 /**
  * Imagick darkroom driver
  *
- * @package   Kirby Image
- * @author    Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  * @since     5.1.0
@@ -121,7 +118,7 @@ class Imagick extends Darkroom
 	 * Creates and runs the full imagemagick command
 	 * to process the image
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function process(string $file, array $options = []): array
 	{

@@ -23,14 +23,11 @@ use Kirby\Exception\LogicException;
  *    `initialize` method that defines which keys
  *    are available.
  *
- * @package   Kirby Cms
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  *
  * @template TValue
- * @extends \Kirby\Cms\Collection<TValue>
+ * @extends Collection<TValue>
  */
 abstract class LazyCollection extends Collection
 {
@@ -159,9 +156,22 @@ abstract class LazyCollection extends Collection
 	}
 
 	/**
+	 * Filters elements by one of the
+	 * predefined filter methods, by a
+	 * custom filter function or an array of filters
+	 */
+	public function filter(string|array|Closure $field, ...$args): static
+	{
+		// to filter through values, we need all values present
+		$this->hydrate();
+
+		return parent::filter($field, ...$args);
+	}
+
+	/**
 	 * Find one or multiple elements by id
 	 *
-	 * @param string ...$keys
+	 * @param string|list<string> ...$keys
 	 * @return TValue|static
 	 */
 	public function find(...$keys)
@@ -178,30 +188,6 @@ abstract class LazyCollection extends Collection
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Returns the elements in reverse order
-	 */
-	public function flip(): static
-	{
-		// flipping at least requires the collection structure
-		$this->initialize();
-
-		return parent::flip();
-	}
-
-	/**
-	 * Filters elements by one of the
-	 * predefined filter methods, by a
-	 * custom filter function or an array of filters
-	 */
-	public function filter(string|array|Closure $field, ...$args): static
-	{
-		// to filter through values, we need all values present
-		$this->hydrate();
-
-		return parent::filter($field, ...$args);
 	}
 
 	/**
@@ -226,8 +212,19 @@ abstract class LazyCollection extends Collection
 	}
 
 	/**
+	 * Returns the elements in reverse order
+	 */
+	public function flip(): static
+	{
+		// flipping at least requires the collection structure
+		$this->initialize();
+
+		return parent::flip();
+	}
+
+	/**
 	 * Returns an iterator for the elements
-	 * @return \Iterator<TKey, TValue>
+	 * @return Iterator<string, TValue>
 	 */
 	public function getIterator(): Iterator
 	{
@@ -239,13 +236,17 @@ abstract class LazyCollection extends Collection
 				$value = $this->hydrateElement($key);
 			}
 
+			if ($value === null) {
+				continue;
+			}
+
 			yield $key => $value;
 		}
 	}
 
 	/**
 	 * Checks by key if an element is included
-	 * @param TKey $key
+	 * @param string|TValue $key
 	 */
 	public function has(mixed $key): bool
 	{
@@ -283,6 +284,8 @@ abstract class LazyCollection extends Collection
 	 * and returns the hydrated object value (or `null` if the
 	 * element does not exist in the collection); to be
 	 * implemented in each specific collection
+	 *
+	 * @return TValue|null
 	 */
 	abstract protected function hydrateElement(string $key): object|null;
 
@@ -300,17 +303,6 @@ abstract class LazyCollection extends Collection
 		}
 
 		throw new LogicException(static::class . ' class does not implement `initialize()` method that is required for lazy initialization'); // @codeCoverageIgnore
-	}
-
-	/**
-	 * Returns an array of all keys
-	 */
-	public function keys(): array
-	{
-		// ensure we are returning all possible keys
-		$this->initialize();
-
-		return parent::keys();
 	}
 
 	/**
@@ -332,6 +324,17 @@ abstract class LazyCollection extends Collection
 
 		$this->hydrate();
 		return parent::keyOf($needle);
+	}
+
+	/**
+	 * Returns an array of all keys
+	 */
+	public function keys(): array
+	{
+		// ensure we are returning all possible keys
+		$this->initialize();
+
+		return parent::keys();
 	}
 
 	/**
@@ -488,7 +491,6 @@ abstract class LazyCollection extends Collection
 	 * @param int $offset The optional index to start the slice from
 	 * @param int|null $limit The optional number of elements to return
 	 * @return $this|static
-	 * @psalm-return ($offset is 0 && $limit is null ? $this : static)
 	 */
 	public function slice(
 		int $offset = 0,

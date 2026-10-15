@@ -4,7 +4,6 @@ use Kirby\Cms\App;
 use Kirby\Cms\File;
 use Kirby\Cms\Helpers;
 use Kirby\Cms\Html;
-use Kirby\Cms\ModelWithContent;
 use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
 use Kirby\Cms\Response;
@@ -18,6 +17,7 @@ use Kirby\Plugin\Assets as PluginAssets;
 use Kirby\Plugin\Plugin;
 use Kirby\Template\Slot;
 use Kirby\Template\Snippet;
+use Kirby\Template\Stack;
 use Kirby\Toolkit\Date;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Str;
@@ -132,6 +132,16 @@ if (Helpers::hasOverride('e') === false) { // @codeCoverageIgnore
 	function e(mixed $condition, mixed $value, mixed $alternative = null): void
 	{
 		echo $condition ? $value : $alternative;
+	}
+}
+
+if (Helpers::hasOverride('endpush') === false) { // @codeCoverageIgnore
+	/**
+	 * Ends the last started stack push
+	 */
+	function endpush(): void
+	{
+		Stack::end();
 	}
 }
 
@@ -263,7 +273,7 @@ if (Helpers::hasOverride('js') === false) { // @codeCoverageIgnore
 	 */
 	function js(
 		string|array|Plugin|PluginAssets $url,
-		string|array|bool|null $options = null
+		array|bool|null $options = null
 	): string|null {
 		return Html::js($url, $options);
 	}
@@ -388,10 +398,11 @@ if (Helpers::hasOverride('page') === false) { // @codeCoverageIgnore
 	 */
 	function page(string|null $id = null): Page|null
 	{
-		if (empty($id) === true) {
+		if ($id === null || $id === '') {
 			return App::instance()->site()->page();
 		}
 
+		/** @var \Kirby\Cms\Page|null */
 		return App::instance()->site()->find($id);
 	}
 }
@@ -410,6 +421,7 @@ if (Helpers::hasOverride('pages') === false) { // @codeCoverageIgnore
 
 		// always passes $id an array; ensures we get a
 		// collection even if only one ID is passed
+		/** @var \Kirby\Cms\Pages|null */
 		return App::instance()->site()->find($id);
 	}
 }
@@ -436,13 +448,31 @@ if (Helpers::hasOverride('params') === false) { // @codeCoverageIgnore
 	}
 }
 
+if (Helpers::hasOverride('push') === false) { // @codeCoverageIgnore
+	/**
+	 * Pushes content to a stack or starts capturing output
+	 */
+	function push(
+		string $name,
+		string|Stringable|null $content = null,
+		bool $unique = false
+	): void {
+		if ($content === null) {
+			Stack::begin($name, $unique);
+			return;
+		}
+
+		Stack::push($name, $content, $unique);
+	}
+}
+
 if (Helpers::hasOverride('qr') === false) { // @codeCoverageIgnore
 	/**
 	 * Creates a QR code object
 	 */
-	function qr(string|ModelWithContent $data): QrCode
+	function qr(string|Page|Site|File $data): QrCode
 	{
-		if ($data instanceof ModelWithContent) {
+		if (is_string($data) === false) {
 			$data = $data->url();
 		}
 
@@ -531,6 +561,30 @@ if (Helpers::hasOverride('snippet') === false) { // @codeCoverageIgnore
 		bool $slots = false
 	): Snippet|string|null {
 		return App::instance()->snippet($name, $data, $return, $slots);
+	}
+}
+
+if (Helpers::hasOverride('stack') === false) { // @codeCoverageIgnore
+	/**
+	 * Renders a stack and optionally clears it
+	 */
+	function stack(
+		string $name,
+		string $glue = PHP_EOL,
+		bool $return = false,
+		bool $clear = true
+	): string|null {
+		$content = match (Stack::isRendering()) {
+			true  => Stack::placeholder($name, $glue, $clear),
+			false => Stack::render($name, $glue, $clear)
+		};
+
+		if ($return === true) {
+			return $content;
+		}
+
+		echo $content;
+		return null;
 	}
 }
 

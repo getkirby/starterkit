@@ -9,9 +9,6 @@ use Closure;
  * `App::apply()` and `App::trigger()` methods
  * and makes them easier and more predictable to test.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  * @since     5.0.0
@@ -55,8 +52,9 @@ class Events
 	public function hooks(Event $event): array
 	{
 		// get all hooks for the event name
+		/** @var array<string, array> $hooks */
+		$hooks  = $this->app->extensions('hooks');
 		$name   = $event->name();
-		$hooks  = $this->app->extensions('hooks') ?? [];
 		$result = $hooks[$name] ?? [];
 
 		// get all hooks for the event name wildcards

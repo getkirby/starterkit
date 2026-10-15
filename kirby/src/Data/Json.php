@@ -7,9 +7,6 @@ use Kirby\Exception\InvalidArgumentException;
 /**
  * Simple Wrapper around json_encode and json_decode
  *
- * @package   Kirby Data
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -20,7 +17,7 @@ class Json extends Handler
 	 */
 	public static function encode($data, bool $pretty = false): string
 	{
-		$constants = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+		$constants = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR;
 
 		if ($pretty === true) {
 			$constants |= JSON_PRETTY_PRINT;

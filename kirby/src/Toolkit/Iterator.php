@@ -12,9 +12,6 @@ use IteratorAggregate;
  * class that builds the foundation of our
  * Collection class.
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  *
@@ -36,7 +33,7 @@ class Iterator implements Countable, IteratorAggregate
 
 	/**
 	 * Returns an iterator for the elements
-	 * @return \ArrayIterator<TKey, TValue>
+	 * @return PhpIterator<TKey, TValue>
 	 */
 	public function getIterator(): PhpIterator
 	{
@@ -47,6 +44,7 @@ class Iterator implements Countable, IteratorAggregate
 	 * Returns the current key
 	 * @deprecated
 	 * @todo Remove in v6
+	 * @return TKey|null
 	 */
 	public function key(): int|string|null
 	{
@@ -113,7 +111,7 @@ class Iterator implements Countable, IteratorAggregate
 	 */
 	public function valid(): bool
 	{
-		return $this->current() !== false;
+		return key($this->data) !== null;
 	}
 
 	/**

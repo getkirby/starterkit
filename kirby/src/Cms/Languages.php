@@ -9,13 +9,10 @@ use Kirby\Toolkit\Str;
 /**
  * A collection of all defined site languages
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  *
- * @extends \Kirby\Cms\Collection<\Kirby\Cms\Language>
+ * @extends Collection<Language>
  */
 class Languages extends Collection
 {
@@ -28,7 +25,7 @@ class Languages extends Collection
 	 * Creates a new collection with the given language objects
 	 *
 	 * @param null $parent
-	 * @throws \Kirby\Exception\DuplicateException
+	 * @throws DuplicateException
 	 */
 	public function __construct(
 		array $objects = [],

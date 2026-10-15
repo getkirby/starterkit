@@ -9,9 +9,6 @@ use Throwable;
 /**
  * Redis Cache Driver
  *
- * @package   Kirby Cache
- * @author    Ahmet Bora <ahmet@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -59,7 +56,10 @@ class RedisCache extends Cache
 
 		// sets the prefix if defined
 		if ($prefix = $options['prefix'] ?? null) {
-			$this->connection->setOption(Redis::OPT_PREFIX, rtrim($prefix, '/') . '/');
+			$this->connection->setOption(
+				Redis::OPT_PREFIX,
+				rtrim($prefix, '/') . '/'
+			);
 		}
 
 		// selects the database if defined
@@ -133,7 +133,7 @@ class RedisCache extends Cache
 
 		// escape glob metacharacters so a prefix containing *, ?, [ or \
 		// is matched literally and can't bleed into other prefixes
-		$pattern = addcslashes($prefix, '\\*?[]') . '*';
+		$pattern = addcslashes((string)$prefix, '\\*?[]') . '*';
 
 		try {
 			$it = null;
@@ -178,7 +178,7 @@ class RedisCache extends Cache
 	 */
 	public function remove(string $key): bool
 	{
-		return $this->connection->del($this->key($key));
+		return $this->connection->del($this->key($key)) > 0;
 	}
 
 	/**
@@ -206,9 +206,11 @@ class RedisCache extends Cache
 		$value = (new Value($value, $minutes))->toJson();
 
 		if ($minutes > 0) {
-			return $this->connection->setex($key, $minutes * 60, $value);
+			$result = $this->connection->setex($key, $minutes * 60, $value);
+		} else {
+			$result = $this->connection->set($key, $value);
 		}
 
-		return $this->connection->set($key, $value);
+		return $result === true;
 	}
 }

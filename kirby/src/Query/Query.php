@@ -2,7 +2,6 @@
 
 namespace Kirby\Query;
 
-use Closure;
 use Kirby\Cms\App;
 use Kirby\Cms\Collection;
 use Kirby\Cms\File;
@@ -10,8 +9,10 @@ use Kirby\Cms\Page;
 use Kirby\Cms\Site;
 use Kirby\Cms\User;
 use Kirby\Cms\Users;
+use Kirby\Exception\BadMethodCallException;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Image\QrCode;
+use Kirby\Query\Runners\DefaultRunner;
 use Kirby\Query\Runners\Runner;
 use Kirby\Toolkit\I18n;
 
@@ -19,10 +20,6 @@ use Kirby\Toolkit\I18n;
  * The Query class can be used to run expressions on arrays and objects,
  * including their methods with a very simple string-based syntax
  *
- * @package   Kirby Query
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- *            Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -30,8 +27,7 @@ class Query
 {
 	public static array $cache = [];
 	public static array $entries = [];
-
-	public Runner|string $runner;
+	public Runner $runner;
 
 	/**
 	 * Creates a new Query object
@@ -43,16 +39,15 @@ class Query
 			$this->query = trim($query);
 		}
 
-		$this->runner = App::instance()->option('query.runner', 'legacy');
+		$runner = App::instance()->option('query.runner', DefaultRunner::class);
 
-		if ($this->runner !== 'legacy') {
-
-			if (is_subclass_of($this->runner, Runner::class) === false) {
-				throw new InvalidArgumentException("Query runner $this->runner must extend " . Runner::class);
-			}
-
-			$this->runner = $this->runner::for($this);
+		if (is_subclass_of($runner, Runner::class) === false) {
+			throw new InvalidArgumentException(
+				message: 'Query runner "' . $runner . '" must extend ' . Runner::class
+			);
 		}
+
+		$this->runner = $runner::for($this);
 	}
 
 	/**
@@ -76,54 +71,16 @@ class Query
 	 * Returns the query result if anything
 	 * can be found, otherwise returns null
 	 *
-	 * @throws \Kirby\Exception\BadMethodCallException If an invalid method is accessed by the query
-	 * @throws \Kirby\Exception\InvalidArgumentException If an invalid query runner is set in the config option
+	 * @throws BadMethodCallException If an invalid method is accessed by the query
+	 * @throws InvalidArgumentException If an invalid query runner is set in the config option
 	 */
 	public function resolve(array|object $data = []): mixed
 	{
-		if (empty($this->query) === true) {
+		if ($this->query === null || $this->query === '') {
 			return $data;
 		}
 
-		// TODO: switch to 'interpreted' as default in v6
-		// TODO: remove in v7
-		// @codeCoverageIgnoreStart
-
-		if ($this->runner === 'legacy') {
-			return $this->resolveLegacy($data);
-		}
-		// @codeCoverageIgnoreEnd
-
 		return $this->runner->run($this->query, (array)$data);
-	}
-
-	/**
-	 * @deprecated 5.1.0
-	 * @codeCoverageIgnore
-	 */
-	private function resolveLegacy(array|object $data = []): mixed
-	{
-		// merge data with default entries
-		if (is_array($data) === true) {
-			$data = [...static::$entries, ...$data];
-		}
-
-		// direct data array access via key
-		if (
-			is_array($data) === true &&
-			array_key_exists($this->query, $data) === true
-		) {
-			$value = $data[$this->query];
-
-			if ($value instanceof Closure) {
-				$value = $value();
-			}
-
-			return $value;
-		}
-
-		// loop through all segments to resolve query
-		return Expression::factory($this->query, $this)->resolve($data);
 	}
 }
 
@@ -159,7 +116,8 @@ Query::$entries['t'] = function (
 	string|array|null $fallback = null,
 	string|null $locale = null
 ): string|null {
-	return I18n::translate($key, $fallback, $locale);
+	$result = I18n::translate($key, $fallback, $locale);
+	return is_string($result) ? $result : null;
 };
 
 Query::$entries['user'] = function (string|null $id = null): User|null {

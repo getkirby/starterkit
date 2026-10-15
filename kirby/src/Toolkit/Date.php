@@ -15,22 +15,16 @@ use Stringable;
 
 /**
  * Extension for PHP's `DateTime` class
- * @since 3.6.2
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- *            Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
+ * @since     3.6.2
  */
 class Date extends DateTime implements Stringable
 {
 	/**
-	 * Class constructor
-	 *
-	 * @param string|int|\DateTimeInterface $datetime Datetime string, UNIX timestamp or object
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $datetime Datetime string, UNIX timestamp or object
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function __construct(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -58,10 +52,10 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Rounds the datetime value up to next value of the specified unit
 	 *
-	 * @param string $unit `year`, `month`, `day`, `hour`, `minute` or `second`
+	 * @param $unit `year`, `month`, `day`, `hour`, `minute` or `second`
 	 * @return $this
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the unit name is invalid
+	 * @throws InvalidArgumentException If the unit name is invalid
 	 */
 	public function ceil(string $unit): static
 	{
@@ -75,7 +69,7 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Returns the interval between the provided and the object's datetime
 	 *
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function compare(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -106,7 +100,7 @@ class Date extends DateTime implements Stringable
 	public static function firstWeekday(string $locale): int
 	{
 		// config option, if available
-		$weekday = App::instance(null, true)?->option('date.weekday');
+		$weekday = App::instance(lazy: true)?->option('date.weekday');
 
 		if (is_int($weekday) === true) {
 			return $weekday;
@@ -121,23 +115,26 @@ class Date extends DateTime implements Stringable
 		// @codeCoverageIgnoreEnd
 
 		$calendar = IntlCalendar::createInstance(null, $locale);
-		$day      = $calendar->getFirstDayOfWeek();
 
-		return match ($day) {
-			// if any error occurs, return Monday
-			false   => 1, // @codeCoverageIgnore
-			// convert to 0-6 index numbering
-			default => $day - 1
-		};
+		/** @var int|false $day */
+		$day = $calendar->getFirstDayOfWeek();
+
+		// if any error occurs, return Monday
+		if ($day === false) {
+			return 1; // @codeCoverageIgnore
+		}
+
+		// convert to 0-6 index numbering
+		return $day - 1;
 	}
 
 	/**
 	 * Rounds the datetime value down to the specified unit
 	 *
-	 * @param string $unit `year`, `month`, `day`, `hour`, `minute` or `second`
+	 * @param $unit `year`, `month`, `day`, `hour`, `minute` or `second`
 	 * @return $this
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the unit name is invalid
+	 * @throws InvalidArgumentException If the unit name is invalid
 	 */
 	public function floor(string $unit): static
 	{
@@ -187,7 +184,7 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Checks if the object's datetime is the same as the given datetime
 	 *
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function is(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -199,7 +196,7 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Checks if the object's datetime is after the given datetime
 	 *
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function isAfter(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -211,7 +208,7 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Checks if the object's datetime is before the given datetime
 	 *
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function isBefore(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -233,7 +230,7 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Checks if the object's datetime is at or before the given datetime
 	 *
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function isMax(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -245,7 +242,7 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Checks if the object's datetime is at or after the given datetime
 	 *
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function isMin(
 		string|int|DateTimeInterface $datetime = 'now',
@@ -299,14 +296,20 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Returns the datetime which is nearest to the object's datetime
 	 *
-	 * @param string|int|\DateTimeInterface ...$datetime Datetime strings, UNIX timestamps or objects
+	 * @param ...$datetime Datetime strings, UNIX timestamps or objects
 	 */
 	public function nearest(
 		string|int|DateTimeInterface ...$datetime
 	): string|int|DateTimeInterface {
+		if ($datetime === []) {
+			throw new InvalidArgumentException(
+				message: 'At least one datetime must be provided'
+			);
+		}
+
 		$timestamp = $this->timestamp();
+		$nearest   = $datetime[0];
 		$minDiff   = PHP_INT_MAX;
-		$nearest   = null;
 
 		foreach ($datetime as $item) {
 			$itemObject    = new static($item, $this->timezone());
@@ -335,7 +338,7 @@ class Date extends DateTime implements Stringable
 	 * or fails silently by returning `null` on error
 	 */
 	public static function optional(
-		string|null $datetime = null,
+		string|int|DateTimeInterface|null $datetime = null,
 		DateTimeZone|null $timezone = null
 	): static|null {
 		if (empty($datetime) === true) {
@@ -352,11 +355,11 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Rounds the date to the nearest value of the given unit
 	 *
-	 * @param string $unit `year`, `month`, `day`, `hour`, `minute` or `second`
-	 * @param int $size Rounding step starting at `0` of the specified unit
+	 * @param $unit `year`, `month`, `day`, `hour`, `minute` or `second`
+	 * @param $size Rounding step starting at `0` of the specified unit
 	 * @return $this
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the unit name or size is invalid
+	 * @throws InvalidArgumentException If the unit name or size is invalid
 	 */
 	public function round(string $unit, int $size = 1): static
 	{
@@ -397,7 +400,7 @@ class Date extends DateTime implements Stringable
 	 * by the defined step
 	 * @since 3.7.0
 	 *
-	 * @param int|array|null $step array of `unit` and `size` to round to nearest
+	 * @param $step array of `unit` and `size` to round to nearest
 	 */
 	public static function roundedTimestamp(
 		string|null $date = null,
@@ -434,8 +437,8 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Overwrites the datetime value with a different one
 	 *
-	 * @param string|int|\DateTimeInterface $datetime Datetime string, UNIX timestamp or object
-	 * @param \DateTimeZone|null $timezone Optional default timezone if `$datetime` is string
+	 * @param $datetime Datetime string, UNIX timestamp or object
+	 * @param $timezone Optional default timezone if `$datetime` is string
 	 */
 	public function set(
 		string|int|DateTimeInterface $datetime,
@@ -450,12 +453,12 @@ class Date extends DateTime implements Stringable
 	 *
 	 * @param array|string|int|null $input Full array with `size` and/or `unit` keys, `unit`
 	 *                                     string, `size` int or `null` for the default
-	 * @param array|null $default Default values to use if one or both values are not provided
+	 * @param $default Default values to use if one or both values are not provided
 	 */
 	public static function stepConfig(
 		// no type hint to use InvalidArgumentException at the end
 		$input = null,
-		array|null $default = ['size' => 1, 'unit' => 'day']
+		array $default = ['size' => 1, 'unit' => 'day']
 	): array {
 		if ($input === null) {
 			return $default;
@@ -514,10 +517,10 @@ class Date extends DateTime implements Stringable
 	 * Returns the date, time or datetime in `YYYY-MM-DD hh:mm:ss` format
 	 * with optional timezone
 	 *
-	 * @param string $mode `date`, `time` or `datetime`
-	 * @param bool $timezone Whether the timezone is printed as well
+	 * @param $mode `date`, `time` or `datetime`
+	 * @param $timezone Whether the timezone is printed as well
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException If the mode is invalid
+	 * @throws InvalidArgumentException If the mode is invalid
 	 */
 	public function toString(
 		string $mode = 'datetime',
@@ -555,14 +558,15 @@ class Date extends DateTime implements Stringable
 	/**
 	 * Ensures that the provided string is a valid unit name
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	protected static function validateUnit(string $unit): void
 	{
 		$units = ['year', 'month', 'day', 'hour', 'minute', 'second'];
+
 		if (in_array($unit, $units, true) === false) {
 			throw new InvalidArgumentException(
-				message: 'Invalid rounding unit'
+				message: 'Invalid rounding unit: ' . $unit
 			);
 		}
 	}

@@ -2,7 +2,7 @@
 
 namespace Kirby\Content;
 
-use Kirby\Cms\Blueprint;
+use Kirby\Blueprint\Blueprint;
 use Kirby\Cms\File;
 use Kirby\Cms\ModelWithContent;
 use Kirby\Form\Form;
@@ -11,9 +11,6 @@ use Kirby\Form\Form;
  * The Content class handles all fields
  * for content from pages, the site and users
  *
- * @package   Kirby Content
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -91,9 +88,9 @@ class Content
 		$old       = $this->parent->blueprint();
 		$subfolder = dirname($old->name());
 		$new       = Blueprint::factory(
+			$this->parent,
 			$subfolder . '/' . $to,
-			$subfolder . '/default',
-			$this->parent
+			$subfolder . '/default'
 		);
 
 		// forms
@@ -156,6 +153,8 @@ class Content
 	/**
 	 * Returns either a single field object
 	 * or all registered fields
+	 *
+	 * @return ($key is null ? array<string, Field> : Field)
 	 */
 	public function get(string|null $key = null): Field|array
 	{

@@ -1,0 +1,15 @@
+# This field blueprint defines a pagelist field that can be reused across multiple blueprints
+# or multiple times within the same blueprint, see `/site/blueprints/pages/notes.yml` and `/site/blueprints/site.yml`
+# Page lists can have different layouts and display additional information or a preview image
+# More about pagelist fields: https://getkirby.com/docs/reference/panel/fields/pagelist
+type: pagelist
+label: Notes
+parent: kirby.page("notes")
+info: "{{ page.published }}"
+template: note
+empty: No notes yet
+sortBy: date desc
+image:
+  query: page.cover
+  cover: true
+  ratio: 3/2

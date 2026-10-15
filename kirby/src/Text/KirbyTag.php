@@ -16,9 +16,6 @@ use Kirby\Uuid\Uuid;
 /**
  * Representation and parse of a single KirbyTag.
  *
- * @package   Kirby Text
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -102,6 +99,11 @@ class KirbyTag
 		return $this->$attr ?? null;
 	}
 
+	public function __set(string $name, mixed $value): void
+	{
+		$this->{strtolower($name)} = $value;
+	}
+
 	public function attr(string $name, $default = null)
 	{
 		$name = strtolower($name);
@@ -125,18 +127,15 @@ class KirbyTag
 
 		// check first for UUID
 		if (Uuid::is($path, 'file') === true) {
-			if (
-				is_object($parent) === true &&
-				method_exists($parent, 'files') === true
-			) {
+			if ($parent && method_exists($parent, 'files') === true) {
 				$context = $parent->files();
 			}
 
-			return Uuid::for($path, $context ?? null)->model();
+			return Uuid::from($path, context: $context ?? null)->model();
 		}
 
 		if (
-			is_object($parent) === true &&
+			$parent &&
 			method_exists($parent, 'file') === true &&
 			$file = $parent->file($path)
 		) {
@@ -205,7 +204,7 @@ class KirbyTag
 		// convert it to arrays of keys and values
 		$chunks = array_chunk($search, 2);
 		$keys   = array_column($chunks, 0);
-		$values = array_map('trim', array_column($chunks, 1));
+		$values = array_map(trim(...), array_column($chunks, 1));
 
 		// ensure that there is a value for each key
 		// otherwise combining won't work

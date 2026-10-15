@@ -14,9 +14,6 @@ use Kirby\Toolkit\Str;
  * methods as for any other Kirby files. Pass a
  * relative path to the class to create the asset.
  *
- * @package   Kirby Filesystem
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -61,7 +58,7 @@ class Asset
 	/**
 	 * Magic caller for asset methods
 	 *
-	 * @throws \Kirby\Exception\BadMethodCallException
+	 * @throws BadMethodCallException
 	 */
 	public function __call(string $method, array $arguments = []): mixed
 	{
@@ -90,6 +87,7 @@ class Asset
 	 */
 	public function id(): string
 	{
+		/** @var string */
 		return $this->root();
 	}
 

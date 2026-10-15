@@ -14,10 +14,6 @@ use Kirby\Toolkit\Tpl;
  * in templates and allows to pass data as well as to
  * optionally pass content to various predefined slots.
  *
- * @package   Kirby Template
- * @author    Bastian Allgeier <bastian@getkirby.com>,
- * 			  Nico Hoffmann <nico@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -143,6 +139,72 @@ class Snippet extends Tpl
 	}
 
 	/**
+	 * Loads the code of the given snippet.
+	 *
+	 * @param string $file Path to the snippet file
+	 * @param array $data Data available inside the snippet
+	 * @param Slots|null Slots available in the snippet
+	 * @return string The rendered content of the given snippet file
+	 */
+	public static function load(
+		string|null $file = null,
+		array $data = [],
+		Slots|null $slots = null
+	): string {
+		$scope = static::scope($data, $slots);
+
+		// start a new stack rendering context
+		Stack::open();
+
+		try {
+			// if the snippet is rendered inside another snippet,
+			// we need to keep the "outside" snippet to compare it later
+			$outside = Snippet::$current;
+
+			// load the snippet code
+			$snippet = parent::load(
+				file: $file,
+				data: $scope
+			);
+
+			// if last `endsnippet()` inside the current template
+			// has been omitted (= snippet was used as layout snippet),
+			// `Snippet::$current` will point to a snippet that was
+			// opened inside the template; if that snippet is the direct
+			// child of the snippet that was open before this snippet was
+			// rendered (which could be `null` if no snippet was open),
+			// take the buffer output from the template as default slot
+			// and render that nested snippet as final snippet output
+			if (
+				Snippet::$current === null ||
+				Snippet::$current->parent() !== $outside
+			) {
+				$output = $snippet;
+			} elseif (Snippet::$current->hasSlots() === false) {
+				// no slots have been defined, but the snippet code
+				// should be used as default slot
+				$output = Snippet::$current->render($data, [
+					'default' => $snippet
+				]);
+			} else {
+				// swallow any "unslotted" content
+				// between start and end
+				$output = Snippet::$current->render($data);
+			}
+		} finally {
+			Stack::close();
+		}
+
+		// if all stack rendering contexts have been closed,
+		// replace all stack placeholders with the stack content
+		if (Stack::isRendering() === false) {
+			$output = Stack::replace($output);
+		}
+
+		return $output;
+	}
+
+	/**
 	 * Closes the last openend slot
 	 */
 	public function endslot(): void
@@ -179,7 +241,6 @@ class Snippet extends Tpl
 
 		// for snippets without slots, directly load and return
 		// the snippet's template file
-		$data = static::scope($data);
 		return static::load($file, $data);
 	}
 
@@ -220,6 +281,8 @@ class Snippet extends Tpl
 	/**
 	 * Opens the snippet and starts output
 	 * buffering to catch all slots in between
+	 *
+	 * @return $this
 	 */
 	public function open(): static
 	{
@@ -264,9 +327,11 @@ class Snippet extends Tpl
 		// as well as the data passed to the Snippet instance
 		$data = array_replace_recursive($this->data, $data);
 
+		// load the template representing this snippet
 		return static::load(
 			file: $this->file,
-			data: static::scope($data, $this->slots())
+			data: $data,
+			slots: $this->slots()
 		);
 	}
 
@@ -276,7 +341,9 @@ class Snippet extends Tpl
 	 */
 	public static function root(): string
 	{
-		return App::instance()->root('snippets');
+		/** @var string $root */
+		$root = App::instance()->root('snippets');
+		return $root;
 	}
 
 	/**
@@ -304,7 +371,7 @@ class Snippet extends Tpl
 	/**
 	 * Returns the data variables that get passed to a snippet
 	 *
-	 * @param \Kirby\Template\Slots|null $slots If null, an empty dummy object is used
+	 * @param Slots|null $slots If null, an empty dummy object is used
 	 */
 	protected static function scope(
 		array $data = [],

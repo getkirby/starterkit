@@ -5,6 +5,7 @@ namespace Kirby\Cms;
 use Closure;
 use Kirby\Exception\NotFoundException;
 use Kirby\Filesystem\F;
+use Kirby\Toolkit\Collection;
 use Kirby\Toolkit\Controller;
 
 /**
@@ -15,9 +16,6 @@ use Kirby\Toolkit\Controller;
  * This class is mainly used in the `$kirby->collection()`
  * method to provide easy access to registered collections
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -40,7 +38,7 @@ class Collections
 	 * Magic caller to enable something like
 	 * `$collections->myCollection()`
 	 *
-	 * @return \Kirby\Toolkit\Collection|null
+	 * @return Collection|null
 	 * @todo 6.0 Add return type declaration
 	 */
 	public function __call(string $name, array $arguments = [])
@@ -51,7 +49,7 @@ class Collections
 	/**
 	 * Loads a collection by name if registered
 	 *
-	 * @return \Kirby\Toolkit\Collection|null
+	 * @return Collection|null
 	 * @todo 6.0 Add deprecation warning when anything else than a Collection is returned
 	 * @todo 7.0 Add PHP return type declaration for `Toolkit\Collection`
 	 */
@@ -99,7 +97,7 @@ class Collections
 	 * Loads collection from php file in a
 	 * given directory or from plugin extension.
 	 *
-	 * @throws \Kirby\Exception\NotFoundException
+	 * @throws NotFoundException
 	 */
 	public function load(string $name): mixed
 	{

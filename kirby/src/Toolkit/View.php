@@ -3,16 +3,11 @@
 namespace Kirby\Toolkit;
 
 use Exception;
-use Kirby\Filesystem\F;
 use Stringable;
-use Throwable;
 
 /**
  * Simple PHP view engine
  *
- * @package   Kirby Toolkit
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -69,22 +64,7 @@ class View implements Stringable
 			throw new Exception($this->missingViewMessage());
 		}
 
-		ob_start();
-
-		try {
-			F::load($this->file(), null, $this->data());
-		} catch (Throwable $e) {
-			$exception = $e;
-		}
-
-		$content = ob_get_contents();
-		ob_end_clean();
-
-		if (isset($exception) === true) {
-			throw $exception;
-		}
-
-		return $content;
+		return Tpl::load($this->file(), $this->data());
 	}
 
 	/**

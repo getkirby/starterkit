@@ -13,15 +13,12 @@ use Kirby\Toolkit\Str;
  * The query builder is used by the Database class
  * to build SQL queries with a fluent API
  *
- * @package   Kirby Database
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
 class Query
 {
-	public const ERROR_INVALID_QUERY_METHOD = 0;
+	public const int ERROR_INVALID_QUERY_METHOD = 0;
 
 	/**
 	 * The object which should be fetched for each row
@@ -203,7 +200,7 @@ class Query
 	 * Sets the name of the table, which should be queried
 	 *
 	 * @return $this
-	 * @throws \Kirby\Exception\InvalidArgumentException if the table does not exist
+	 * @throws InvalidArgumentException if the table does not exist
 	 */
 	public function table(string $table): static
 	{
@@ -320,7 +317,7 @@ class Query
 	 * by not passing an argument.
 	 *
 	 * @return array|$this
-	 * @psalm-return ($bindings is array ? $this : array)
+	 * @psalm-return ($bindings is array ? static : array)
 	 */
 	public function bindings(array|null $bindings = null): array|static
 	{
@@ -410,7 +407,7 @@ class Query
 	 *
 	 * @return $this
 	 */
-	public function order(string|null $order = null)
+	public function order(string|null $order = null): static
 	{
 		$this->order = $order;
 		return $this;
@@ -442,8 +439,9 @@ class Query
 	 * Builds the different types of SQL queries
 	 * This uses the SQL class to build stuff.
 	 *
-	 * @param string $type (select, update, insert)
+	 * @param string $type (select, update, insert, delete)
 	 * @return array The final query
+	 * @throws InvalidArgumentException If the query type is invalid
 	 */
 	public function build(string $type): array
 	{
@@ -479,7 +477,9 @@ class Query
 				'where'    => $this->where,
 				'bindings' => $this->bindings
 			]),
-			default => null
+			default => throw new InvalidArgumentException(
+				'Invalid query type: ' . $type
+			)
 		};
 	}
 
@@ -821,14 +821,14 @@ class Query
 	/**
 	 * Builder for where and having clauses
 	 *
-	 * @param array $args Arguments, see where() description
-	 * @param mixed $current Current value (like $this->where)
+	 * @param $args Arguments, see where() description
+	 * @param $current Current value (like $this->where)
 	 */
 	protected function filterQuery(
 		array $args,
-		$current,
+		string|null $current,
 		string $mode = 'AND'
-	) {
+	): string|null {
 		$result = '';
 
 		switch (count($args)) {

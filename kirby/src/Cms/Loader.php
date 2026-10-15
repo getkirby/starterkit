@@ -8,7 +8,7 @@ use Kirby\Filesystem\F;
 
 /**
  * The Loader class is an internal loader for
- * core parts, like areas, components, sections, etc.
+ * core parts, like areas, components, fields, etc.
  *
  * It's exposed in the `$kirby->load()` and the
  * `$kirby->core()->load()` methods.
@@ -20,9 +20,6 @@ use Kirby\Filesystem\F;
  * untouched core parts. This is useful if you want to
  * reuse or fall back to core features in your plugins.
  *
- * @package   Kirby Cms
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
  */
@@ -179,22 +176,6 @@ class Loader
 		}
 
 		return $area;
-	}
-
-	/**
-	 * Loads a particular section definition
-	 */
-	public function section(string $name): array|null
-	{
-		return $this->resolve($this->extension('sections', $name));
-	}
-
-	/**
-	 * Loads all section defintions
-	 */
-	public function sections(): array
-	{
-		return $this->resolveAll($this->extensions('sections'));
 	}
 
 	/**

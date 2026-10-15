@@ -6,6 +6,7 @@ use Closure;
 use Kirby\Database\Sql\Mysql;
 use Kirby\Database\Sql\Sqlite;
 use Kirby\Exception\InvalidArgumentException;
+use Kirby\Exception\LogicException;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\Collection;
 use Kirby\Toolkit\Obj;
@@ -17,9 +18,6 @@ use Throwable;
 /**
  * A simple database class
  *
- * @package   Kirby Database
- * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://opensource.org/licenses/MIT
  */
@@ -140,7 +138,7 @@ class Database
 	/**
 	 * Connects to a database
 	 *
-	 * @throws \Kirby\Exception\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function connect(array $params = []): PDO|null
 	{
@@ -335,11 +333,29 @@ class Database
 			$this->statement->execute();
 
 			$this->affected  = $this->statement->rowCount();
-			$this->lastId    = Str::startsWith($query, 'insert ', true) ? $this->connection->lastInsertId() : null;
 			$this->lastError = null;
+
+			if (Str::startsWith($query, 'insert ', true) === true) {
+				$lastId = $this->connection->lastInsertId();
+
+				if ($lastId === false) {
+					$this->lastId = null;
+				} elseif (is_numeric($lastId) === true) {
+					$this->lastId = (int)$lastId;
+				} else {
+					// @codeCoverageIgnoreStart
+					throw new LogicException(
+						message: 'Database::lastId() only supports integer primary keys, got "' . $lastId . '"'
+					);
+					// @codeCoverageIgnoreEnd
+				}
+			} else {
+				$this->lastId = null;
+			}
 
 			// store the final sql to add it to the trace later
 			$this->lastQuery = $this->statement->queryString;
+
 		} catch (Throwable $e) {
 			// store the error
 			$this->affected  = 0;

@@ -13,13 +13,10 @@ use Kirby\Toolkit\Str;
 
 /**
  * Checks for updates and affected vulnerabilities
- * @since 3.8.0
  *
- * @package   Kirby Cms
- * @author    Lukas Bestle <lukas@getkirby.com>
- * @link      https://getkirby.com
  * @copyright Bastian Allgeier
  * @license   https://getkirby.com/license
+ * @since     3.8.0
  */
 class UpdateStatus
 {
@@ -46,10 +43,10 @@ class UpdateStatus
 	protected bool|null $noVulns = null;
 
 	// caches
-	protected array $messages;
-	protected array $targetData;
-	protected array|bool $versionEntry;
-	protected array $vulnerabilities;
+	protected array|null $messages = null;
+	protected array|null $targetData = null;
+	protected array|false|null $versionEntry = null;
+	protected array|null $vulnerabilities = null;
 
 	/**
 	 * @param array|null $data Custom override for the getkirby.com update data

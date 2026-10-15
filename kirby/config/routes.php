@@ -5,11 +5,10 @@ use Kirby\Cms\Cors;
 use Kirby\Cms\LanguageRoutes;
 use Kirby\Cms\Media;
 use Kirby\Http\Response;
-use Kirby\Panel\Panel;
 use Kirby\Panel\Plugins;
 use Kirby\Plugin\Assets;
 use Kirby\Toolkit\Str;
-use Kirby\Uuid\Uuid;
+use Kirby\Uuid\Permalink;
 
 return function (App $kirby) {
 	$api   = $kirby->option('api.slug', 'api');
@@ -80,15 +79,10 @@ return function (App $kirby) {
 			}
 		],
 		[
-			'pattern' => $media . '/plugins/index.(css|js)',
+			'pattern' => $media . '/plugins/([a-zA-Z0-9-]+/[a-zA-Z0-9-]+)\.([a-f0-9]+)\.(css|js|dev\.js)',
 			'env'     => 'media',
-			'action'  => function (string $type) use ($kirby) {
-				$plugins = new Plugins();
-
-				return $kirby
-					->response()
-					->type($type)
-					->body($plugins->read($type));
+			'action'  => function (string $plugin, string $hash, string $extension) {
+				return Plugins::resolve($plugin, $hash, $extension);
 			}
 		],
 		[
@@ -156,8 +150,8 @@ return function (App $kirby) {
 			'pattern' => $panel . '/(:all?)',
 			'method'  => 'ALL',
 			'env'     => 'panel',
-			'action'  => function (string|null $path = null) {
-				return Panel::router($path);
+			'action'  => function (string|null $path = null) use ($kirby) {
+				return $kirby->panel()->router()?->call($path);
 			}
 		],
 		// permalinks for page/file UUIDs
@@ -166,17 +160,16 @@ return function (App $kirby) {
 			'method'  => 'ALL',
 			'env'     => 'site',
 			'action'  => function (string $type, string $id) use ($kirby) {
+				$permalink = Permalink::for($type . '://' . $id);
+
 				// try to resolve to model, but only from UUID cache;
 				// this ensures that only existing UUIDs can be queried
 				// and attackers can't force Kirby to go through the whole
 				// site index with a non-existing UUID
-				if ($model = Uuid::for($type . '://' . $id)?->model(true)) {
-					return $kirby
-						->response()
-						->redirect($model->url());
+				if ($url = $permalink?->model(true)?->url()) {
+					return $kirby->response()->redirect($url);
 				}
 
-				// render the error page
 				return false;
 			}
 		],
