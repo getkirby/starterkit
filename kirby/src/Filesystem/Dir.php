@@ -142,15 +142,13 @@ class Dir
 	/**
 	 * Read the directory and all subdirectories
 	 *
-	 * @todo Remove support for `$ignore = null` in v6
-	 * @param array|false|null $ignore Array of absolute file paths;
-	 *                                 `false` to disable `Dir::$ignore` list
-	 *                                 (passing null is deprecated)
+	 * @param array|false $ignore Array of absolute file paths;
+	 *                            `false` to disable `Dir::$ignore` list
 	 */
 	public static function index(
 		string $dir,
 		bool $recursive = false,
-		array|false|null $ignore = [],
+		array|false $ignore = [],
 		string|null $path = null
 	): array {
 		$result = [];
@@ -485,6 +483,18 @@ class Dir
 			return true;
 		}
 
+		// another process may have removed the directory in the
+		// meantime, which PHP's stat cache doesn't know about yet
+		$exists = function () use ($dir): bool {
+			clearstatcache(true, $dir);
+			return is_dir($dir);
+		};
+
+		// the renames also fail if the directory is already gone
+		if ($exists() === false) {
+			return true;
+		}
+
 		// Rename failed (e.g. permission on parent); fall back to in-place removal.
 		// Delete all contents first, then retry to tolerate transient
 		// "directory not empty" errors caused by concurrent writes.
@@ -492,7 +502,7 @@ class Dir
 
 		// removeRecursive may have already removed $dir successfully;
 		// only retry if it still exists
-		if (is_dir($dir) === false) {
+		if ($exists() === false) {
 			return true;
 		}
 
@@ -503,7 +513,7 @@ class Dir
 
 			static::removeRecursive($dir);
 
-			if (is_dir($dir) === false) {
+			if ($exists() === false) {
 				return true;
 			}
 		}

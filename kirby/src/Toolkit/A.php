@@ -402,6 +402,13 @@ class A
 	/**
 	 * Join array elements as a string,
 	 * also supporting nested arrays
+	 *
+	 * ```php
+	 * $array = ['a', 'b', ['cc', 'dd']];
+	 *
+	 * A::implode($array); // abccdd
+	 * A::implode($array, ', '); // a, b, cc, dd
+	 * ```
 	 */
 	public static function implode(
 		array $array,
@@ -483,7 +490,7 @@ class A
 	/**
 	 * Returns the last element of an array
 	 *
-	 * @example
+	 * ```php
 	 * $array = [
 	 *   'cat'  => 'miao',
 	 *   'dog'  => 'wuff',
@@ -492,6 +499,7 @@ class A
 	 *
 	 * $last = A::last($array);
 	 * // last: 'tweet'
+	 * ```
 	 */
 	public static function last(array $array): mixed
 	{

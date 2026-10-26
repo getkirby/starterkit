@@ -73,6 +73,14 @@ trait FieldMethods
 
 	/**
 	 * Applies the callback function to the field
+	 *
+	 * ```php
+	 * echo $page->title()->callback(function ($field) {
+	 *   $field->value = 'Title: ' . $field->value;
+	 *   return $field;
+	 * });
+	 * ```
+	 *
 	 * @since 3.4.0
 	 */
 	public function callback(Closure $callback): mixed
@@ -511,8 +519,9 @@ trait FieldMethods
 	/**
 	 * Converts the value to a case of the given enum
 	 *
-	 * @example
+	 * ```php
 	 * $field->toEnum(MyEnum::class)
+	 * ```
 	 *
 	 * @template T of \BackedEnum
 	 * @param class-string<T> $enum

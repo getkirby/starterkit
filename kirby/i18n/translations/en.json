@@ -106,6 +106,8 @@
 	"error.content.lock.replace": "The version is locked and cannot be replaced",
 	"error.content.lock.update": "The version is locked and cannot be updated",
 
+	"error.csrf.invalid": "Invalid CSRF token",
+
 	"error.entries.max.plural": "You must not add more than {max} entries",
 	"error.entries.max.singular": "You must not add more than one entry",
 	"error.entries.min.plural": "You must add at least {min} entries",
@@ -245,6 +247,8 @@
 	"error.page.undefined": "The page cannot be found",
 	"error.page.update.permission": "You are not allowed to update \"{slug}\"",
 
+	"error.request.failed": "The request to {url} failed",
+
 	"error.role.notFound": "The role \"{name}\" cannot be found",
 
 	"error.site.changeTitle.empty": "The title must not be empty",
@@ -353,6 +357,7 @@
 
 	"error.version.discard.permission": "You are not allowed to discard this version",
 	"error.version.publish.permission": "You are not allowed to publish this version",
+	"error.version.removed": "The version has been removed by another request",
 	"error.version.save.permission": "You are not allowed to change this version",
 	"error.version.unlock.permission": "You are not allowed to unlock this version",
 
