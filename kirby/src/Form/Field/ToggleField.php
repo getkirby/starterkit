@@ -29,8 +29,12 @@ class ToggleField extends InputField
 	 */
 	#[Prop]
 	protected array|string|null $text = null;
-
 	protected bool|null $value = null;
+
+	public function default(): bool
+	{
+		return static::toBool(parent::default());
+	}
 
 	public function fill(mixed $value): static
 	{
@@ -39,6 +43,9 @@ class ToggleField extends InputField
 		);
 	}
 
+	/**
+	 * @return array<HtmlString>|HtmlString|null
+	 */
 	public function text(): array|HtmlString|null
 	{
 		$text = $this->text;
@@ -62,7 +69,7 @@ class ToggleField extends InputField
 
 	public function toFormValue(): bool
 	{
-		return $this->value ?? $this->default() ?? false;
+		return $this->value ?? $this->default();
 	}
 
 	public static function toBool(mixed $value): bool
@@ -80,7 +87,10 @@ class ToggleField extends InputField
 
 	protected function validateRequired(): void
 	{
-		if ($this->isRequired() === false) {
+		if (
+			$this->isRequired() === false ||
+			$this->isActive() === false
+		) {
 			return;
 		}
 

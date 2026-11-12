@@ -47,7 +47,7 @@ class Page extends Model
 	 * used in the panel, when the page
 	 * gets dragged onto a textarea
 	 *
-	 * @param string|null $type (`auto`|`kirbytext`|`markdown`)
+	 * @param $type (`auto`|`kirbytext`|`markdown`)
 	 */
 	public function dragText(string|null $type = null): string
 	{
@@ -77,20 +77,6 @@ class Page extends Model
 	public function dropdown(): array
 	{
 		return (new PageSettingsDropdownController($this->model))->load();
-	}
-
-	/**
-	 * Returns the setup for a dropdown option
-	 * which is used in the changes dropdown
-	 * for example.
-	 *
-	 * @deprecated 5.1.4 Use the Kirby\Panel\Ui\Item\PageItem class instead
-	 */
-	public function dropdownOption(): array
-	{
-		return (new PageItem(page: $this->model))->props() + [
-			'icon' => 'page'
-		];
 	}
 
 	/**
@@ -140,6 +126,7 @@ class Page extends Model
 	/**
 	 * Prepares the response data for page pickers
 	 * and page fields
+	 * @deprecated 6.0.0 Use `Kirby\Panel\Controller\Dialog\PagePickerDialogController::item()` instead
 	 */
 	public function pickerData(array $params = []): array
 	{
@@ -153,7 +140,7 @@ class Page extends Model
 
 		return [
 			...$item->props(),
-			'hasChildren' => $this->model->hasChildren(),
+			'hasChildren' => $this->model->children()->findBy('isListable', true) !== null,
 			'sortable'    => true
 		];
 	}

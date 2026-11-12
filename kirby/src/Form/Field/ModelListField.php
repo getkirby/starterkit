@@ -36,19 +36,27 @@ abstract class ModelListField extends DisplayField
 	use Mixin\SortBy;
 
 	/**
-	 * Names the entries in the error messages
+	 * Type of the listed models, e.g. `files` or `pages`
 	 */
 	public const string|null TYPE = null;
 
 	protected ModelsCollector|null $collector = null;
 
 	/**
-	 * Columns config for `layout: table`
+	 * Columns config for `layout: table`. `false` hides
+	 * a column, a string sets its label.
 	 */
 	#[Prop(computed: true, getter: 'defineColumns')]
 	protected array|null $columns = null;
 
+	/**
+	 * @var array<string, array<string, mixed>>|null
+	 */
 	protected array|null $columnsCache = null;
+
+	/**
+	 * @var list<string>|null
+	 */
 	protected array|null $columnFieldsCache = null;
 
 	/**
@@ -159,6 +167,8 @@ abstract class ModelListField extends DisplayField
 	/**
 	 * Column definitions for `layout: table`, with the type of
 	 * each column resolved from the blueprint of the entries
+	 *
+	 * @return array<string, array<string, mixed>>
 	 */
 	public function columns(): array
 	{
@@ -186,6 +196,8 @@ abstract class ModelListField extends DisplayField
 	/**
 	 * Blueprint field names behind all columns that read their
 	 * value from the model instead of from their own query
+	 *
+	 * @return list<string>
 	 */
 	protected function columnFields(): array
 	{
@@ -219,14 +231,21 @@ abstract class ModelListField extends DisplayField
 	 * the number of columns.
 	 *
 	 * @param TModel $model
+	 * @return array<string, mixed>
 	 */
 	protected function columnValues(ModelWithContent $model): array
 	{
+		$blueprint = $model->blueprint();
+		$fields    = [];
+
+		foreach ($this->columnFields() as $name) {
+			if ($field = $blueprint->field($name)) {
+				$fields[] = $field;
+			}
+		}
+
 		$form = new Form(
-			fields: array_intersect_key(
-				$model->blueprint()->fields(),
-				array_flip($this->columnFields())
-			),
+			fields: $fields,
 			model: $model
 		);
 
@@ -238,6 +257,8 @@ abstract class ModelListField extends DisplayField
 
 	/**
 	 * The props for all entries of the current page
+	 *
+	 * @return list<array<string, mixed>>
 	 */
 	public function data(): array
 	{
@@ -256,6 +277,8 @@ abstract class ModelListField extends DisplayField
 	 * Builds the column definitions for `layout: table`.
 	 * Subclasses extend this instead of `columns()`,
 	 * so that the cache holds the final set.
+	 *
+	 * @return array<string, array<string, mixed>>
 	 */
 	protected function defineColumns(): array
 	{
@@ -295,9 +318,12 @@ abstract class ModelListField extends DisplayField
 				continue;
 			}
 
-			if (is_array($column) === false) {
-				$column = [];
-			}
+			// a string is a shorthand for the label
+			$column = match (true) {
+				is_array($column)  => $column,
+				is_string($column) => ['label' => $column],
+				default            => []
+			};
 
 			$column['label'] ??= Str::ucfirst($name);
 			$column['label']   = $this->i18n($column['label']);
@@ -377,6 +403,9 @@ abstract class ModelListField extends DisplayField
 		return $this->flip;
 	}
 
+	/**
+	 * @return array<string, mixed>|false
+	 */
 	public function image(): array|false
 	{
 		if (is_string($this->image) === true) {
@@ -400,6 +429,9 @@ abstract class ModelListField extends DisplayField
 		return $this->total() >= $this->max;
 	}
 
+	/**
+	 * @return 'cardlets'|'cards'|'list'|'table'
+	 */
 	public function layout(): string
 	{
 		return match ($this->layout) {
@@ -444,6 +476,9 @@ abstract class ModelListField extends DisplayField
 		return $this->kirby()->request()->get('page', $this->page);
 	}
 
+	/**
+	 * @return array{limit: int, offset: int, page: int, total: int}
+	 */
 	public function pagination(): array
 	{
 		$pagination = $this->collector()->pagination();
@@ -457,7 +492,7 @@ abstract class ModelListField extends DisplayField
 	}
 
 	/**
-	 * @throws InvalidArgumentException
+	 * @throws InvalidArgumentException If the parent cannot be found or is no model
 	 */
 	public function parentModel(): ModelWithContent
 	{
@@ -499,6 +534,7 @@ abstract class ModelListField extends DisplayField
 	 * The props for a single entry in `layout: table`
 	 *
 	 * @param TModel $model
+	 * @return array<string, mixed>
 	 */
 	protected function row(ModelWithContent $model): array
 	{
@@ -526,7 +562,8 @@ abstract class ModelListField extends DisplayField
 			// without overwriting what the item already provides
 			if (isset($item[$name]) === false) {
 				$values ??= $this->columnValues($model);
-				$item[$name] = $values[$column['id'] ?? $name] ?? null;
+				// form values are keyed by the lowercased field name
+				$item[$name] = $values[strtolower($column['id'] ?? $name)] ?? null;
 			}
 		}
 
@@ -557,7 +594,7 @@ abstract class ModelListField extends DisplayField
 		}
 
 		// manual sorting is impossible while the list is filtered
-		if (empty($this->searchterm()) === false) {
+		if ($this->collector()->isSearching() === true) {
 			return false;
 		}
 
@@ -565,7 +602,6 @@ abstract class ModelListField extends DisplayField
 			$this->sortBy() === null &&
 			$this->flip() === false;
 	}
-
 
 	public function state(): array
 	{

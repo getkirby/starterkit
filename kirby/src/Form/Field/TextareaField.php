@@ -16,13 +16,11 @@ use Kirby\Reflection\Attributes\Prop;
  * @license   https://getkirby.com/license
  * @since     6.0.0
  */
-class TextareaField extends InputField
+class TextareaField extends StringField
 {
 	use Mixin\Counter;
 	use Mixin\Font;
-	use Mixin\Maxlength;
-	use Mixin\Minlength;
-	use Mixin\Spellcheck;
+	use Mixin\Icon;
 	use Mixin\Upload;
 
 	/**
@@ -47,8 +45,6 @@ class TextareaField extends InputField
 	#[Prop]
 	protected string|null $size = null;
 
-	protected string $value = '';
-
 	public function api(): array
 	{
 		$field = $this;
@@ -59,9 +55,7 @@ class TextareaField extends InputField
 				'method'  => 'POST',
 				'action'  => function () use ($field) {
 					// @codeCoverageIgnoreStart
-					/**
-					 * @var Api
-					 */
+					/** @var Api $api */
 					$api = $this;
 
 					return $field->upload(
@@ -80,6 +74,9 @@ class TextareaField extends InputField
 		];
 	}
 
+	/**
+	 * @return array<string>|bool
+	 */
 	public function buttons(): array|bool
 	{
 		return $this->buttons;
@@ -117,13 +114,5 @@ class TextareaField extends InputField
 	public function size(): string|null
 	{
 		return $this->size;
-	}
-
-	protected function validations(): array
-	{
-		return [
-			'minlength',
-			'maxlength'
-		];
 	}
 }

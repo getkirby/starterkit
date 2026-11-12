@@ -16,6 +16,8 @@ use Kirby\Toolkit\Date;
  */
 abstract class DateTimeField extends InputField
 {
+	use Mixin\After;
+	use Mixin\Before;
 	use Mixin\Icon;
 
 	public const ISO = 'Y-m-d H:i:s';
@@ -31,11 +33,12 @@ abstract class DateTimeField extends InputField
 
 	#[Prop]
 	protected string|null $max = null;
+
 	#[Prop]
 	protected string|null $min = null;
+
 	#[Prop(setter: 'setStep')]
 	protected array $step = [];
-
 	protected Date|null $value = null;
 
 	public function default(): string|null
@@ -72,7 +75,6 @@ abstract class DateTimeField extends InputField
 			return null;
 		}
 
-		// if `step` option is set, round to nearest step
 		if ($step = $this->step()) {
 			$step = Date::stepConfig($step);
 			$value->round($step['unit'], $step['size']);

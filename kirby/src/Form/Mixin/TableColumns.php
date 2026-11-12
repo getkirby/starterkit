@@ -13,16 +13,24 @@ use Kirby\Reflection\Attributes\Prop;
 trait TableColumns
 {
 	/**
-	 * Columns definition for the table
+	 * Columns definition for the table. `false` hides a column,
+	 * a string sets its label.
 	 */
 	#[Prop(computed: true)]
 	protected array|null $columns = null;
 
 	/**
 	 * Cache for the columns definition
+	 *
+	 * @var array<string, array<string, mixed>>|null
 	 */
 	protected array|null $columnsCache = null;
 
+	/**
+	 * Returns the normalized columns, keyed by field name
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
 	public function columns(): array
 	{
 		return $this->columnsCache ??= $this->normalizeColumns(
@@ -31,15 +39,21 @@ trait TableColumns
 		);
 	}
 
+	/**
+	 * @param array<string, array<string, mixed>> $fields
+	 * @return array<string, true>
+	 */
 	protected function columnsFromFields(array $fields): array
 	{
-		// get all field names
-		$columnNames = array_column($fields, 'name');
-
-		// create keys for each name
-		return array_fill_keys($columnNames, true);
+		$names = array_column($fields, 'name');
+		return array_fill_keys($names, true);
 	}
 
+	/**
+	 * @param array<string, mixed>|true $column
+	 * @param array<string, mixed>|null $field
+	 * @return array<string, mixed>|null
+	 */
 	protected function normalizeColumn(string $name, array|true $column, array|null $field): array|null
 	{
 		// Skip empty and unsaveable fields
@@ -59,18 +73,32 @@ trait TableColumns
 		return $column;
 	}
 
+	/**
+	 * @param array<string, array<string, mixed>> $fields
+	 */
 	protected function normalizeColumns(array $columns, array $fields): array
 	{
 		// lower case all keys, because field names will
 		// be lowercase as well.
 		$columns = array_change_key_case($columns);
 
-		// create auto-columns from fields
+		// `false` hides a column
+		$hidden  = array_filter($columns, fn ($column) => $column === false);
+		$columns = array_diff_key($columns, $hidden);
+
+		// create auto-columns from all other fields
 		if ($columns === []) {
-			$columns = $this->columnsFromFields($fields);
+			$columns = array_diff_key($this->columnsFromFields($fields), $hidden);
 		}
 
 		foreach ($columns as $name => $column) {
+			// a string is a shorthand for the label
+			$column = match (true) {
+				is_array($column)  => $column,
+				is_string($column) => ['label' => $column],
+				default            => true
+			};
+
 			$columns[$name] = $this->normalizeColumn($name, $column, $fields[$name] ?? null);
 		}
 

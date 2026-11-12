@@ -31,9 +31,9 @@ class Users extends LazyCollection
 	 * Creates a new Collection with the given objects
 	 *
 	 * @param iterable<TValue> $objects
-	 * @param string|null $root Directory to dynamically load user
-	 *                          objects from during hydration
-	 * @param array $inject Props to inject into hydrated user objects
+	 * @param $root Directory to dynamically load user
+	 *             objects from during hydration
+	 * @param $inject Props to inject into hydrated user objects
 	 */
 	public function __construct(
 		iterable $objects = [],
@@ -122,6 +122,20 @@ class Users extends LazyCollection
 		}
 
 		return $files;
+	}
+
+	/**
+	 * Finds a user in the collection by email address only
+	 * @since 6.0.0
+	 * @return TValue|null
+	 */
+	public function findByEmail(string $email): User|null
+	{
+		if (V::email($email) === false) {
+			return null;
+		}
+
+		return parent::findBy('email', Str::lower($email));
 	}
 
 	/**
