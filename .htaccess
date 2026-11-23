@@ -1,5 +1,5 @@
 # Kirby .htaccess
-# revision 2023-07-22
+# revision 2026-11-19
 
 # rewrite rules
 <IfModule mod_rewrite.c>
@@ -34,6 +34,10 @@ RewriteRule ^site/(.*) index.php [L]
 
 # block direct access to Kirby and the Panel sources
 RewriteRule ^kirby/(.*) index.php [L]
+
+# block direct access to Composer files and dependencies
+RewriteRule ^vendor/(.*) index.php [L]
+RewriteRule ^composer\.(json|lock)$ index.php [L]
 
 # make site links work
 RewriteCond %{REQUEST_FILENAME} !-f
